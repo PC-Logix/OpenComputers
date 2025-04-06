@@ -126,7 +126,7 @@ trait RedstoneAware extends RotationAware {
 
   override def validate(): Unit = {
     super.validate()
-    if (!this.isInstanceOf[Tickable]) {
+    if (!this.isInstanceOf[Tickable] && isServer) {
       EventHandler.scheduleServer(() => EnumFacing.values().foreach(updateRedstoneInput))
     }
   }
