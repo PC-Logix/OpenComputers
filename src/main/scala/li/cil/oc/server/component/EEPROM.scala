@@ -77,7 +77,7 @@ class EEPROM extends AbstractManagedEnvironment with DeviceInfo {
       return result(Unit, "storage is readonly")
     }
     label = args.optString(0, "EEPROM").trim.take(24)
-    if (label.length == 0) label = "EEPROM"
+    if (label.isEmpty) label = "EEPROM"
     result(label)
   }
 
