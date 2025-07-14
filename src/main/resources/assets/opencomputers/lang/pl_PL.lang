@@ -262,3 +262,5 @@ oc:tooltip.cuttingwire="Używany, aby przeciąć bloki gliny na kształt płyte
 oc:tooltip.debugcard="Przedmiot trybu kreatywnego, pozwala na manipulację światem w celu ułatwienia testowania. Używasz na własne ryzyko."
 oc:tooltip.diamondchip="Drobny element niegdyś promiennego diamentu. Już nigdy nie będzie taki sam."
 oc:tooltip.disassembler="Rozdziela przedmioty na ich części składowe. §lUwaga§7: części te mają %s%% szans na zniszczenie w trakcie rozdzielania!"
+oc:tooltip.tier="§8Poziom %s"
+oc:tooltip.upgradesign="Pozwala na czytanie i pisanie tekstu na tabliczkach."
