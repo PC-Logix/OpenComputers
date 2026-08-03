@@ -7,7 +7,8 @@
 * Fixed server leaks in Player, SideTracker and StaticSimpleEnvironment. (Alexdoru)
 * glGetError() is no longer called if logging GL errors is disabled. (mitchej123)
 * Improved Polish translation.
+* OpenComputers native libraries are now stored in an `opencomputers/natives` subdirectory. (CaitlynMainer)
 
 ## List of contributors
 
-airone01, Alexdoru, asie, hinyb, mitchej123
+airone01, Alexdoru, asie, CaitlynMainer, hinyb, mitchej123
