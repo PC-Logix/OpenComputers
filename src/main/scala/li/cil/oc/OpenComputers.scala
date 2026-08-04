@@ -2,6 +2,7 @@ package li.cil.oc
 
 import li.cil.oc.common.IMC
 import li.cil.oc.common.Proxy
+import li.cil.oc.common.asm.template.StaticSimpleEnvironment
 import li.cil.oc.server.command.CommandHandler
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.Mod.EventHandler
@@ -88,6 +89,7 @@ object OpenComputers {
   @EventHandler
   def serverStop(e: FMLServerStoppedEvent): Unit = {
     ThreadPoolFactory.safePools.foreach(_.waitForCompletion())
+    StaticSimpleEnvironment.onServerStopped()
   }
 
   @EventHandler

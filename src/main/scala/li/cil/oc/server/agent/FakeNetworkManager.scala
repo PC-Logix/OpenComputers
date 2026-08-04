@@ -6,7 +6,7 @@ import net.minecraft.network.EnumPacketDirection
 import net.minecraft.network.NetworkManager
 import net.minecraft.network.Packet
 
-object FakeNetworkManager extends NetworkManager(EnumPacketDirection.CLIENTBOUND) {
+class FakeNetworkManager extends NetworkManager(EnumPacketDirection.CLIENTBOUND) {
   override def sendPacket(packetIn: Packet[_]): Unit = {}
 
   override def sendPacket(packetIn: Packet[_], listener: GenericFutureListener[_ <: Future[_ >: Void]], listeners: GenericFutureListener[_ <: Future[_ >: Void]]*): Unit = {}
