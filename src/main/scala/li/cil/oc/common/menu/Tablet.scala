@@ -13,7 +13,7 @@ class Tablet( id: Int, playerInventory: Inventory, val stack: ItemStack, tablet:
 
   override protected def getHostClass = classOf[TabletWrapper]
 
-  addSlot(new StaticComponentSlot(this, otherInventory, otherInventory.getContainerSize - 1, 80, 35, getHostClass, slot1, tier1) {
+  addSlot(new StaticComponentSlot(this, otherInventory, otherInventory.getContainerSize - 1, 90, 35, getHostClass, slot1, tier1) {
     override def mayPlace(stack: ItemStack): Boolean = {
       if (DriverScreen.worksWith(stack, getHostClass)) return false
       super.mayPlace(stack)

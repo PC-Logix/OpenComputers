@@ -168,9 +168,7 @@ class Tablet(props: Properties) extends Item(props) with traits.SimpleItem with 
         else {
           if (player.isCrouching) {
             if (!level.isClientSide) {
-              val tablet = Tablet.Server.get(stack, player)
-              tablet.machine.stop()
-              if (tablet.data.tier > Tier.One) player match {
+              player match {
                 case srvPlr: ServerPlayer => MenuTypes.openTabletGui(srvPlr, Tablet.get(stack, player))
                 case _ =>
               }
