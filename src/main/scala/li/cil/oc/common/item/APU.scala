@@ -23,4 +23,6 @@ class APU(props: Properties, val tier: Int) extends Item(props) with traits.Simp
   override protected def tooltipData: Seq[Any] = {
     super[CPULike].tooltipData ++ super[GPULike].tooltipData
   }
+
+  override protected def canResetComponentIdentity: Boolean = true
 }
