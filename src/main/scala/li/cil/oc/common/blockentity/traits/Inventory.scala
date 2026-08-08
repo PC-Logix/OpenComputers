@@ -71,7 +71,8 @@ trait Inventory extends BaseBlockEntity with container.Inventory {
   // ----------------------------------------------------------------------- //
 
   override def stillValid(player: Player) =
-    player.distanceToSqr(x + 0.5, y + 0.5, z + 0.5) <= 64
+    if (isMoving) player.distanceToSqr(movingPosition.x, movingPosition.y, movingPosition.z) <= 64
+    else player.distanceToSqr(x + 0.5, y + 0.5, z + 0.5) <= 64
 
   // ----------------------------------------------------------------------- //
 

@@ -83,6 +83,13 @@ Translations live in
 The English locale is the source of truth for keys. Instructions for adding
 loot-disk programs are in the [loot README](src/main/resources/assets/opencomputers/loot/README.md).
 
+## Computronics
+
+The porting of Blocks and Items from [Computronics](https://github.com/Vexatos/Computronics)
+and their inclusion in the base mod was approved by
+[@asiekierka](https://github.com/MightyPirates/OpenComputers/commits?author=asiekierka)
+and [@Vexatos](https://github.com/Vexatos).
+
 ## Using the API
 
 API artifacts use the Maven coordinates `li.cil.oc:opencomputers` with the

@@ -88,6 +88,12 @@ class Machine(val host: MachineHost) extends AbstractManagedEnvironment with mac
 
   private val addedComponents = mutable.Set.empty[Component]
 
+  // A Create contraption places its captured block entities one at a time.
+  // Keep already-known components alive while those tiny temporary networks
+  // split and merge, then reconcile them against the finished structure.
+  private var componentRestoreGrace = 0
+  private val deferredRemovedComponents = mutable.Map.empty[String, String]
+
   private val _users = mutable.Set.empty[String]
 
   private val signals = mutable.Queue.empty[Machine.Signal]
@@ -469,7 +475,7 @@ class Machine(val host: MachineHost) extends AbstractManagedEnvironment with mac
   def isRunning(context: Context, args: Arguments): Array[AnyRef] =
     result(isRunning)
 
-  @Callback(doc = """function([frequency:string or number[, duration:number]]) -- Plays a tone, useful to alert users via audible feedback.""")
+  @Callback(doc = """function([frequency:string or number[, duration:number[, async:boolean]]]) -- Plays a tone, useful to alert users via audible feedback.""")
   def beep(context: Context, args: Arguments): Array[AnyRef] = {
     if (args.count == 1 && args.isString(0)) {
       beep(args.checkString(0))
@@ -480,7 +486,10 @@ class Machine(val host: MachineHost) extends AbstractManagedEnvironment with mac
       }
       val duration = args.optDouble(1, 0.1)
       val durationInMilliseconds = math.max(50, math.min(5000, (duration * 1000).toInt))
-      context.pause(durationInMilliseconds / 1000.0)
+      val async = args.optBoolean(2, false)
+      if (!async) {
+        context.pause(durationInMilliseconds / 1000.0)
+      }
       beep(frequency.toShort, durationInMilliseconds.toShort)
     }
     null
@@ -529,6 +538,7 @@ class Machine(val host: MachineHost) extends AbstractManagedEnvironment with mac
     // but that wouldn't trigger a connect message anymore due to the higher
     // reachability).
     processAddedComponents()
+    tickComponentRestoreGrace()
 
     // Component overflow check, crash if too many components are connected, to
     // avoid confusion on the user's side due to components not showing up.
@@ -703,6 +713,7 @@ class Machine(val host: MachineHost) extends AbstractManagedEnvironment with mac
   // ----------------------------------------------------------------------- //
 
   def addComponent(component: Component): Unit = {
+    deferredRemovedComponents -= component.address
     if (!_components.contains(component.address)) {
       addedComponents += component
     }
@@ -710,10 +721,41 @@ class Machine(val host: MachineHost) extends AbstractManagedEnvironment with mac
 
   def removeComponent(component: Component): Unit = {
     if (_components.contains(component.address)) {
-      _components.synchronized(_components -= component.address)
-      signal("component_removed", component.address, component.name)
+      if (componentRestoreGrace > 0) {
+        deferredRemovedComponents(component.address) = component.name
+      }
+      else {
+        _components.synchronized(_components -= component.address)
+        signal("component_removed", component.address, component.name)
+      }
     }
     addedComponents -= component
+  }
+
+  /** Suppress transient component removal events while Create restores blocks. */
+  def beginComponentRestoreGrace(ticks: Int): Unit = {
+    if (isRunning) {
+      componentRestoreGrace = math.max(componentRestoreGrace, ticks)
+      pause(componentRestoreGrace / 20.0)
+    }
+  }
+
+  private def tickComponentRestoreGrace(): Unit = if (componentRestoreGrace > 0) {
+    componentRestoreGrace -= 1
+    if (componentRestoreGrace == 0) {
+      val network = node.network
+      for ((address, name) <- deferredRemovedComponents) {
+        val restored = network != null && (network.node(address) match {
+          case component: Component => component.name == name
+          case _ => false
+        })
+        if (!restored && _components.contains(address)) {
+          _components.synchronized(_components -= address)
+          signal("component_removed", address, name)
+        }
+      }
+      deferredRemovedComponents.clear()
+    }
   }
 
   private def processAddedComponents(): Unit = {
@@ -733,6 +775,8 @@ class Machine(val host: MachineHost) extends AbstractManagedEnvironment with mac
   }
 
   private def verifyComponents(): Unit = {
+    if (componentRestoreGrace > 0) return
+
     val invalid = mutable.Set.empty[String]
     for ((address, name) <- _components) {
       node.network.node(address) match {
@@ -977,6 +1021,8 @@ class Machine(val host: MachineHost) extends AbstractManagedEnvironment with mac
       this.synchronized(state.synchronized {
         state.clear()
         state.push(Machine.State.Stopped)
+        componentRestoreGrace = 0
+        deferredRemovedComponents.clear()
         Option(architecture).foreach(_.close())
         signals.clear()
         uptime = 0

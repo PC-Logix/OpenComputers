@@ -113,7 +113,34 @@ public class OCItemModelProvider extends ItemModelProvider {
         basicItem(OCItems.DataCardTier1().get());
         basicItem(OCItems.DataCardTier2().get());
         basicItem(OCItems.DataCardTier3().get());
-        basicItem(OCItems.AudioCardTier1().get());
+
+        // Computronics content-only port.
+        basicItem(OCItems.ComputronicsTape().get());
+        basicItem(OCItems.ComputronicsTapeGold().get());
+        basicItem(OCItems.ComputronicsTapeDiamond().get());
+        basicItem(OCItems.ComputronicsTapeNetherStar().get());
+        basicItem(OCItems.ComputronicsTapeCopper().get());
+        basicItem(OCItems.ComputronicsTapeSteel().get());
+        basicItem(OCItems.ComputronicsTapeGreg().get());
+        basicItem(OCItems.ComputronicsTapeIndustrial().get());
+        basicItem(OCItems.ComputronicsPortableTapeDrive().get());
+        basicItem(OCItems.ComputronicsTapeTrack().get());
+        basicItem(OCItems.ComputronicsCameraUpgrade().get());
+        basicItem(OCItems.ComputronicsChatUpgrade().get());
+        basicItem(OCItems.ComputronicsRadarUpgrade().get());
+        basicItem(OCItems.ComputronicsParticleCard().get());
+        basicItem(OCItems.ComputronicsSpoofingCard().get());
+        basicItem(OCItems.ComputronicsBeepCard().get());
+        basicItem(OCItems.ComputronicsSelfDestructingCard().get());
+        basicItem(OCItems.ComputronicsColorfulUpgrade().get());
+        basicItem(OCItems.ComputronicsNoiseCard().get());
+        basicItem(OCItems.ComputronicsSoundCard().get());
+        basicItem(OCItems.ComputronicsLightBoard().get());
+        basicItem(OCItems.ComputronicsServerSelfDestructor().get());
+        basicItem(OCItems.ComputronicsRackCapacitor().get());
+        basicItem(OCItems.ComputronicsSwitchBoard().get());
+        basicItem(OCItems.ComputronicsSpeechUpgrade().get());
+        basicItem(OCItems.ComputronicsMagicalMemory().get());
 
         // Upgrade components.
         basicItem(OCItems.AngelUpgrade().get());
@@ -214,6 +241,18 @@ public class OCItemModelProvider extends ItemModelProvider {
         simpleBlockItem(OpenPrinter.FILE_CABINET.get());
         simpleBlockItem(OpenPrinter.PRINTER.get());
         simpleBlockItem(OpenPrinter.SHREDDER.get());
+
+        simpleBlockItem(OCBlocks.ComputronicsIronNote().get());
+        simpleBlockItem(OCBlocks.ComputronicsAudioCable().get());
+        simpleBlockItem(OCBlocks.ComputronicsSpeaker().get());
+        simpleBlockItem(OCBlocks.ComputronicsTapeReader().get());
+        simpleBlockItem(OCBlocks.ComputronicsCamera().get());
+        simpleBlockItem(OCBlocks.ComputronicsChatBox().get());
+        simpleBlockItem(OCBlocks.ComputronicsCipher().get());
+        simpleBlockItem(OCBlocks.ComputronicsCipherAdvanced().get());
+        simpleBlockItem(OCBlocks.ComputronicsRadar().get());
+        simpleBlockItem(OCBlocks.ComputronicsColorfulLamp().get());
+        simpleBlockItem(OCBlocks.ComputronicsSpeechBox().get());
     }
 
     private ItemModelBuilder basicItem(Item item, String texture) {

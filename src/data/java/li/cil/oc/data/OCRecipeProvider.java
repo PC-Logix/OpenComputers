@@ -33,6 +33,7 @@ class OCRecipeProvider extends RecipeProvider {
         addUpgrades(output);
         addStorage(output);
         addBlocks(output);
+        addComputronics(output);
         addOpenPrinter(output);
 
         addFloppy(output, "openos", "OpenOS (Operating System)", OCItems.Manual(), DyeColor.GREEN);
@@ -767,15 +768,6 @@ class OCRecipeProvider extends RecipeProvider {
             .unlockedBy(getHasName(OCItems.Card()), has(OCItems.Card()))
             .save(output);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, OCItems.AudioCardTier1())
-            .pattern("CNU")
-            .pattern(" B ")
-            .define('C', OCItems.ChipTier2())
-            .define('B', OCItems.Card())
-            .define('N', Items.NOTE_BLOCK)
-            .define('U', OCItems.ControlUnit())
-            .unlockedBy(getHasName(OCItems.Card()), has(OCItems.Card()))
-            .save(output);
     }
 
     private void addUpgrades(RecipeOutput output) {
@@ -1342,6 +1334,111 @@ class OCRecipeProvider extends RecipeProvider {
             .define('Z', OpenPrinter.COLOR_INK)
             .unlockedBy(getHasName(OpenPrinter.COLOR_INK), has(OpenPrinter.COLOR_INK))
             .save(output, ResourceLocation.fromNamespaceAndPath(OpenComputers.ID(), "printer_ink_color_refill"));
+    }
+
+    private void addComputronics(RecipeOutput output) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, OCBlocks.ComputronicsIronNote())
+            .pattern("iii").pattern("ini").pattern("iii")
+            .define('i', Tags.Items.INGOTS_IRON).define('n', Items.NOTE_BLOCK)
+            .unlockedBy(getHasName(Items.NOTE_BLOCK), has(Items.NOTE_BLOCK)).save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, OCBlocks.ComputronicsAudioCable(), 8)
+            .pattern("ini").define('i', Tags.Items.INGOTS_IRON).define('n', Items.NOTE_BLOCK)
+            .unlockedBy(getHasName(Items.NOTE_BLOCK), has(Items.NOTE_BLOCK)).save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, OCBlocks.ComputronicsSpeaker())
+            .pattern("sIs").pattern("ini").pattern("sIs")
+            .define('s', Items.STONE).define('I', Tags.Items.INGOTS_IRON).define('i', Items.IRON_BARS).define('n', Items.NOTE_BLOCK)
+            .unlockedBy(getHasName(Items.NOTE_BLOCK), has(Items.NOTE_BLOCK)).save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, OCBlocks.ComputronicsTapeReader())
+            .pattern("iii").pattern("iri").pattern("ini")
+            .define('i', Tags.Items.INGOTS_IRON).define('r', Items.REDSTONE).define('n', OCBlocks.ComputronicsIronNote())
+            .unlockedBy(getHasName(OCBlocks.ComputronicsIronNote()), has(OCBlocks.ComputronicsIronNote())).save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, OCBlocks.ComputronicsCamera())
+            .pattern("sss").pattern("ege").pattern("iii")
+            .define('s', Items.STONE_BRICKS).define('e', Items.ENDER_PEARL).define('g', Items.GLASS).define('i', Tags.Items.INGOTS_IRON)
+            .unlockedBy(getHasName(Items.ENDER_PEARL), has(Items.ENDER_PEARL)).save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, OCBlocks.ComputronicsChatBox())
+            .pattern("sss").pattern("ses").pattern("iri")
+            .define('s', Items.STONE_BRICKS).define('e', Items.ENDER_PEARL).define('i', Tags.Items.INGOTS_IRON).define('r', Items.REDSTONE)
+            .unlockedBy(getHasName(Items.ENDER_PEARL), has(Items.ENDER_PEARL)).save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, OCBlocks.ComputronicsCipher())
+            .pattern("sss").pattern("srs").pattern("eie")
+            .define('s', Items.STONE_BRICKS).define('r', Items.REDSTONE).define('e', Items.ENDER_PEARL).define('i', Tags.Items.INGOTS_IRON)
+            .unlockedBy(getHasName(Items.ENDER_PEARL), has(Items.ENDER_PEARL)).save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, OCBlocks.ComputronicsCipherAdvanced())
+            .pattern("gdg").pattern("gcg").pattern("eie")
+            .define('g', Tags.Items.INGOTS_GOLD).define('d', Items.DIAMOND).define('c', OCBlocks.ComputronicsCipher()).define('e', Items.ENDER_PEARL).define('i', Tags.Items.INGOTS_IRON)
+            .unlockedBy(getHasName(OCBlocks.ComputronicsCipher()), has(OCBlocks.ComputronicsCipher())).save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, OCBlocks.ComputronicsRadar())
+            .pattern("sts").pattern("rbr").pattern("scs")
+            .define('s', Items.STONE_BRICKS).define('t', Items.REDSTONE_TORCH).define('r', Items.REDSTONE).define('b', Items.BOWL).define('c', Items.COMPARATOR)
+            .unlockedBy(getHasName(Items.COMPARATOR), has(Items.COMPARATOR)).save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, OCBlocks.ComputronicsColorfulLamp())
+            .pattern("igi").pattern("glg").pattern("igi")
+            .define('i', Tags.Items.INGOTS_IRON).define('g', Items.GLASS).define('l', Items.GLOWSTONE_DUST)
+            .unlockedBy(getHasName(Items.GLOWSTONE_DUST), has(Items.GLOWSTONE_DUST)).save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, OCBlocks.ComputronicsSpeechBox())
+            .pattern("iii").pattern("isi").pattern("iri")
+            .define('i', Tags.Items.INGOTS_IRON).define('s', OCBlocks.ComputronicsSpeaker()).define('r', Items.ENDER_PEARL)
+            .unlockedBy(getHasName(OCBlocks.ComputronicsSpeaker()), has(OCBlocks.ComputronicsSpeaker())).save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, OCItems.ComputronicsTapeTrack())
+            .pattern(" i ").pattern("rrr").pattern("iii")
+            .define('i', Tags.Items.INGOTS_IRON).define('r', Items.REDSTONE)
+            .unlockedBy(getHasName(Items.REDSTONE), has(Items.REDSTONE)).save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, OCItems.ComputronicsTape())
+            .pattern(" i ").pattern("iii").pattern(" T ")
+            .define('i', Tags.Items.INGOTS_IRON).define('T', OCItems.ComputronicsTapeTrack())
+            .unlockedBy(getHasName(OCItems.ComputronicsTapeTrack()), has(OCItems.ComputronicsTapeTrack())).save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, OCItems.ComputronicsPortableTapeDrive())
+            .pattern("sgs").pattern("sTs").pattern("srs")
+            .define('s', Items.STONE_BRICKS).define('g', Items.GLASS).define('T', OCBlocks.ComputronicsTapeReader()).define('r', Items.REDSTONE)
+            .unlockedBy(getHasName(OCBlocks.ComputronicsTapeReader()), has(OCBlocks.ComputronicsTapeReader())).save(output);
+
+        addComputronicsCard(output, OCItems.ComputronicsCameraUpgrade(), OCItems.ChipTier1(), OCItems.CircuitBoard());
+        addComputronicsCard(output, OCItems.ComputronicsChatUpgrade(), OCItems.ChipTier1(), OCItems.Interweb());
+        addComputronicsCard(output, OCItems.ComputronicsRadarUpgrade(), OCItems.ChipTier2(), OCBlocks.MotionSensor());
+        addComputronicsCard(output, OCItems.ComputronicsParticleCard(), OCItems.ChipTier1(), Items.FIREWORK_STAR);
+        addComputronicsCard(output, OCItems.ComputronicsSpoofingCard(), OCItems.ChipTier1(), OCItems.NetworkCard());
+        addComputronicsCard(output, OCItems.ComputronicsBeepCard(), OCItems.ChipTier1(), OCBlocks.ComputronicsSpeaker());
+        addComputronicsCard(output, OCItems.ComputronicsSelfDestructingCard(), OCItems.ChipTier1(), Items.TNT);
+        addComputronicsCard(output, OCItems.ComputronicsColorfulUpgrade(), OCItems.ChipTier1(), OCBlocks.ComputronicsColorfulLamp());
+        addComputronicsCard(output, OCItems.ComputronicsNoiseCard(), OCItems.ChipTier2(), OCItems.ComputronicsBeepCard());
+        addComputronicsCard(output, OCItems.ComputronicsSoundCard(), OCItems.ChipTier3(), OCItems.ComputronicsNoiseCard());
+        addComputronicsCard(output, OCItems.ComputronicsLightBoard(), OCItems.ChipTier1(), Items.GLOWSTONE_DUST);
+        addComputronicsCard(output, OCItems.ComputronicsServerSelfDestructor(), OCItems.ChipTier1(), Items.TNT);
+        addComputronicsCard(output, OCItems.ComputronicsRackCapacitor(), OCItems.ChipTier1(), OCItems.CapacitorMountable());
+        addComputronicsCard(output, OCItems.ComputronicsSwitchBoard(), OCItems.ChipTier1(), Items.LEVER);
+        addComputronicsCard(output, OCItems.ComputronicsSpeechUpgrade(), OCItems.ChipTier2(), OCBlocks.ComputronicsSpeechBox());
+        addComputronicsCard(output, OCItems.ComputronicsMagicalMemory(), OCItems.RAMTier1(), Items.NETHER_STAR);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, OCItems.ComputronicsTapeGold())
+            .pattern(" i ").pattern("gTg").pattern(" i ").define('i', Tags.Items.INGOTS_IRON).define('g', Tags.Items.INGOTS_GOLD).define('T', OCItems.ComputronicsTapeTrack())
+            .unlockedBy(getHasName(OCItems.ComputronicsTapeTrack()), has(OCItems.ComputronicsTapeTrack())).save(output);
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, OCItems.ComputronicsTapeDiamond())
+            .pattern(" i ").pattern("ddd").pattern(" T ").define('i', Tags.Items.INGOTS_IRON).define('d', Items.DIAMOND).define('T', OCItems.ComputronicsTapeTrack())
+            .unlockedBy(getHasName(OCItems.ComputronicsTapeTrack()), has(OCItems.ComputronicsTapeTrack())).save(output);
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, OCItems.ComputronicsTapeNetherStar())
+            .pattern(" n ").pattern("nnn").pattern(" T ").define('n', Items.NETHER_STAR).define('T', OCItems.ComputronicsTapeTrack())
+            .unlockedBy(getHasName(OCItems.ComputronicsTapeTrack()), has(OCItems.ComputronicsTapeTrack())).save(output);
+    }
+
+    private void addComputronicsCard(RecipeOutput output, ItemLike result, ItemLike chip, ItemLike core) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, result)
+            .pattern("ici").pattern("cCc").pattern("iri")
+            .define('i', Tags.Items.INGOTS_IRON).define('c', chip).define('C', core).define('r', Items.REDSTONE)
+            .unlockedBy(getHasName(OCItems.PrintedCircuitBoard()), has(OCItems.PrintedCircuitBoard())).save(output);
     }
 
     private void addBlocks(RecipeOutput output) {

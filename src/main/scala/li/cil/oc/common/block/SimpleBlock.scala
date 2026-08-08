@@ -7,12 +7,13 @@ import li.cil.oc.common.blockentity
 import li.cil.oc.common.blockentity.traits.Colored
 import li.cil.oc.common.blockentity.traits.Inventory
 import li.cil.oc.common.blockentity.traits.Rotatable
+import li.cil.oc.common.block.property.PropertyRotatable
 import li.cil.oc.server.loot.LootFunctions
 import li.cil.oc.util.Color
 import li.cil.oc.util.Tooltip
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties
 import net.minecraft.world.level.block.state.BlockState
-import net.minecraft.world.level.block.{Block, BaseEntityBlock => ContainerBlock, RenderShape => BlockRenderType}
+import net.minecraft.world.level.block.{Block, BaseEntityBlock => ContainerBlock, Mirror, RenderShape => BlockRenderType, Rotation}
 import net.minecraft.world.item.{TooltipFlag => ITooltipFlag, Item}
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.player.{Player => PlayerEntity}
@@ -112,6 +113,34 @@ abstract class SimpleBlock(props: Properties) extends ContainerBlock(props) {
   override def canHarvestBlock(state: BlockState, world: BlockGetter, pos: BlockPos, player: PlayerEntity) = true
 
   override def canBeReplaced(state: BlockState, ctx: BlockPlaceContext): Boolean = false
+
+  /**
+   * Vanilla/Create transform block states directly. This is separate from the
+   * legacy wrench path below, which rotates the block entity in-place.
+   */
+  @SuppressWarnings(Array("deprecation"))
+  override protected def rotate(state: BlockState, rotation: Rotation): BlockState = {
+    var result = state
+    if (state.hasProperty(PropertyRotatable.Facing)) {
+      result = result.setValue(PropertyRotatable.Facing, rotation.rotate(state.getValue(PropertyRotatable.Facing)))
+    }
+    if (state.hasProperty(PropertyRotatable.Yaw)) {
+      result = result.setValue(PropertyRotatable.Yaw, rotation.rotate(state.getValue(PropertyRotatable.Yaw)))
+    }
+    result
+  }
+
+  @SuppressWarnings(Array("deprecation"))
+  override protected def mirror(state: BlockState, mirror: Mirror): BlockState = {
+    var result = state
+    if (state.hasProperty(PropertyRotatable.Facing)) {
+      result = result.setValue(PropertyRotatable.Facing, mirror.mirror(state.getValue(PropertyRotatable.Facing)))
+    }
+    if (state.hasProperty(PropertyRotatable.Yaw)) {
+      result = result.setValue(PropertyRotatable.Yaw, mirror.mirror(state.getValue(PropertyRotatable.Yaw)))
+    }
+    result
+  }
   
   def getValidRotations(world: World, pos: BlockPos): Array[Direction] = validRotations_
 

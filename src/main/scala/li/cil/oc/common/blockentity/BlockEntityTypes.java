@@ -190,6 +190,22 @@ public final class BlockEntityTypes {
                             Items.get(Constants.BlockName$.MODULE$.Waypoint()).block())
                     .build(null));
 
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ComputronicsBlockEntity>> COMPUTRONICS =
+            BLOCK_ENTITY_TYPES.register("computronics", () -> BlockEntityType.Builder
+                    .of((pos, state) -> ComputronicsBlockEntity$.MODULE$.create(pos, state),
+                            Items.get(Constants.BlockName$.MODULE$.ComputronicsIronNote()).block(),
+                            Items.get(Constants.BlockName$.MODULE$.ComputronicsAudioCable()).block(),
+                            Items.get(Constants.BlockName$.MODULE$.ComputronicsSpeaker()).block(),
+                            Items.get(Constants.BlockName$.MODULE$.ComputronicsTapeReader()).block(),
+                            Items.get(Constants.BlockName$.MODULE$.ComputronicsCamera()).block(),
+                            Items.get(Constants.BlockName$.MODULE$.ComputronicsChatBox()).block(),
+                            Items.get(Constants.BlockName$.MODULE$.ComputronicsCipher()).block(),
+                            Items.get(Constants.BlockName$.MODULE$.ComputronicsCipherAdvanced()).block(),
+                            Items.get(Constants.BlockName$.MODULE$.ComputronicsRadar()).block(),
+                            Items.get(Constants.BlockName$.MODULE$.ComputronicsColorfulLamp()).block(),
+                            Items.get(Constants.BlockName$.MODULE$.ComputronicsSpeechBox()).block())
+                    .build(null));
+
     public static void init(IEventBus bus) {
         BLOCK_ENTITY_TYPES.register(bus);
     }

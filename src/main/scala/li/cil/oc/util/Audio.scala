@@ -78,6 +78,58 @@ object Audio {
     play(x, y, z, ".", frequencyInHz, durationInMilliseconds)
   }
 
+  /** Plays one Computronics waveform without introducing a second OpenAL path. */
+  def playWave(x: Float, y: Float, z: Float, mode: Int, frequencyInHz: Int, durationInMilliseconds: Int,
+              delayInMilliseconds: Int, requestedGain: Float, fmFrequency: Int = 0, fmIntensity: Float = 0,
+              amFrequency: Int = 0, attack: Int = 0, decay: Int = 0, sustain: Float = 1, release: Int = 0): Unit = {
+    val mc = Minecraft.getInstance
+    if (mc == null || mc.player == null) return
+    val distanceBasedGain = math.max(0, 1 - mc.player.position.distanceTo(new Vec3(x, y, z)) / maxDistance).toFloat
+    val gain = distanceBasedGain * volume * math.max(0, math.min(1, requestedGain))
+    if (gain <= 0 || amplitude <= 0) return
+
+    val delay = math.max(0, math.min(16000, delayInMilliseconds))
+    val duration = math.max(50, math.min(5000, durationInMilliseconds))
+    val totalSamples = (delay + duration) * sampleRate / 1000
+    val data = new Array[Byte](totalSamples)
+    java.util.Arrays.fill(data, 127.toByte)
+    val start = delay * sampleRate / 1000
+    val count = duration * sampleRate / 1000
+    val fmStep = math.max(20, fmFrequency).toFloat / sampleRate
+    val amStep = math.max(20, amFrequency).toFloat / sampleRate
+    var phase = 0f
+    var fmPhase = 0f
+    var amPhase = 0f
+    var sample = 0
+    while (sample < count && start + sample < data.length) {
+      val elapsed = sample * 1000.0 / sampleRate
+      val fm = if (fmFrequency > 0) math.sin(fmPhase * 2 * math.Pi) * fmIntensity * fmFrequency else 0
+      val carrier = math.max(20, math.min(2000, frequencyInHz + fm)).toFloat / sampleRate
+      val value = mode match {
+        case 1 => math.sin(phase * 2 * math.Pi).toFloat
+        case 2 => (1 - 4 * math.abs(phase - 0.5f)).toFloat
+        case 3 => (2 * phase - 1).toFloat
+        case 4 => (if (scala.util.Random.nextBoolean()) 1f else -1f)
+        case _ => if (phase < 0.5f) 1f else -1f
+      }
+      val attackGain = if (attack > 0 && elapsed < attack) elapsed / attack else 1.0
+      val decayGain = if (decay > 0 && elapsed > attack && elapsed < attack + decay)
+        1.0 - (1.0 - sustain) * (elapsed - attack) / decay else sustain
+      val releaseStart = duration - release
+      val releaseGain = if (release > 0 && elapsed > releaseStart) math.max(0, (duration - elapsed) / release) else 1.0
+      val amGain = if (amFrequency > 0) 0.5 + 0.5 * math.sin(amPhase * 2 * math.Pi) else 1.0
+      data(start + sample) = (127 + value * amplitude * attackGain * decayGain * releaseGain * amGain).toByte
+      phase += carrier
+      if (phase >= 1) phase -= 1
+      fmPhase += fmStep
+      if (fmPhase >= 1) fmPhase -= 1
+      amPhase += amStep
+      if (amPhase >= 1) amPhase -= 1
+      sample += 1
+    }
+    play(x, y, z, data, gain)
+  }
+
   def play(x: Float, y: Float, z: Float, pattern: String, frequencyInHz: Int = 1000, durationInMilliseconds: Int = 200): Unit = {
     val mc = Minecraft.getInstance
     val distanceBasedGain = math.max(0, 1 - mc.player.position.distanceTo(new Vec3(x, y, z)) / maxDistance).toFloat
@@ -125,7 +177,7 @@ object Audio {
       }
       data.asInstanceOf[Buffer].rewind()
 
-      // Watch out for sound cards running out of memory... this apparently
+      // Watch out for OpenAL running out of memory... this apparently
       // really does happen. I'm assuming this is due to too many sounds being
       // kept loaded, since from what I can see OC's releasing its audio
       // memory as it should.
@@ -134,7 +186,7 @@ object Audio {
           case e: OpenALException =>
             if (e.errorCode == AL10.AL_OUT_OF_MEMORY) {
               // Well... let's just stop here.
-              OpenComputers.log.info("Couldn't play computer speaker sound because your sound card ran out of memory. Either your sound card is just really low-end, or there are just too many sounds in use already by other mods. Disabling computer speakers to avoid spamming your log file now.")
+              OpenComputers.log.info("Couldn't play computer speaker sound because OpenAL ran out of memory. Disabling computer speakers to avoid spamming the log file now.")
               disableAudio = true
             }
             else {

@@ -26,7 +26,10 @@ trait Rotatable extends RotationAware with internal.Rotatable {
   // Accessors
   // ----------------------------------------------------------------------- //
 
-  def pitch = if (getLevel != null && getLevel.isLoaded(getBlockPos)) getLevel.getBlockState(getBlockPos) match {
+  def pitch = if (isMoving) movingBlockState match {
+    case rotatable if rotatable.getProperties.contains(PropertyRotatable.Pitch) => rotatable.getValue(PropertyRotatable.Pitch)
+    case _ => Direction.NORTH
+  } else if (getLevel != null && getLevel.isLoaded(getBlockPos)) getLevel.getBlockState(getBlockPos) match {
     case rotatable if rotatable.getProperties.contains(PropertyRotatable.Pitch) => rotatable.getValue(PropertyRotatable.Pitch)
     case _ => Direction.NORTH
   } else null
@@ -37,7 +40,11 @@ trait Rotatable extends RotationAware with internal.Rotatable {
       case _ => Direction.NORTH
     }, yaw)
 
-  def yaw = if (getLevel != null && getLevel.isLoaded(getBlockPos)) getLevel.getBlockState(getBlockPos) match {
+  def yaw = if (isMoving) movingBlockState match {
+    case rotatable if rotatable.getProperties.contains(PropertyRotatable.Yaw) => rotatable.getValue(PropertyRotatable.Yaw)
+    case rotatable if rotatable.getProperties.contains(PropertyRotatable.Facing) => rotatable.getValue(PropertyRotatable.Facing)
+    case _ => Direction.SOUTH
+  } else if (getLevel != null && getLevel.isLoaded(getBlockPos)) getLevel.getBlockState(getBlockPos) match {
     case rotatable if rotatable.getProperties.contains(PropertyRotatable.Yaw) => rotatable.getValue(PropertyRotatable.Yaw)
     case rotatable if rotatable.getProperties.contains(PropertyRotatable.Facing) => rotatable.getValue(PropertyRotatable.Facing)
     case _ => Direction.SOUTH
@@ -61,6 +68,10 @@ trait Rotatable extends RotationAware with internal.Rotatable {
       case yaw =>
         trySetPitchYaw(Direction.NORTH, yaw)
     }
+
+  /** Public bridge for integrations that transform a block entity off-world. */
+  def setFromPitchAndYaw(newPitch: Direction, newYaw: Direction): Boolean =
+    trySetPitchYaw(newPitch, newYaw)
 
   def invertRotation() =
     trySetPitchYaw(pitch match {

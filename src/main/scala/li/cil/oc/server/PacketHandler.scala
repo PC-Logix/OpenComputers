@@ -43,7 +43,9 @@ object PacketHandler extends CommonPacketHandler {
   private def canInteractWith(buffer: api.internal.TextBuffer, player: Player): Boolean = buffer match {
     case textBuffer: TextBuffer => textBuffer.host match {
       case screen: Screen => screen.screens.exists(part =>
-        player.distanceToSqr(part.x + 0.5, part.y + 0.5, part.z + 0.5) <= 64)
+        // A Create contraption keeps the fake Screen at its local block position,
+        // but EnvironmentHost exposes the real moving position for interaction.
+        player.distanceToSqr(part.xPosition, part.yPosition, part.zPosition) <= 64)
       case remote: RemoteTerminalHost => remote.isBufferUsable(buffer, player)
       case _ => true
     }

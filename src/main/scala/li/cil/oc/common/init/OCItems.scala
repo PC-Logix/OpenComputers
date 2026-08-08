@@ -459,8 +459,76 @@ object OCItems extends ItemAPI {
   val DataCardTier2: DeferredItem[item.DataCard] = registerItem(new item.DataCard(defaultProps.rarity(Rarity.UNCOMMON), Tier.Two), Constants.ItemName.DataCardTier2)
   val DataCardTier3: DeferredItem[item.DataCard] = registerItem(new item.DataCard(defaultProps.rarity(Rarity.RARE), Tier.Three), Constants.ItemName.DataCardTier3)
 
-  // 1.9
-  val AudioCardTier1: DeferredItem[item.AudioCard] = registerItem(new item.AudioCard(defaultProps), Constants.ItemName.AudioCardTier1)
+  /////////////////////////////////////////////////////////////////
+  // Computronics content port.
+  /////////////////////////////////////////////////////////////////
+  private def computronicsItem = new item.ComputronicsItem(new Item.Properties())
+  val ComputronicsTape: DeferredItem[item.ComputronicsItem] = registerItem(computronicsItem, Constants.ItemName.ComputronicsTape)
+  val ComputronicsTapeGold: DeferredItem[item.ComputronicsItem] = registerItem(computronicsItem, Constants.ItemName.ComputronicsTapeGold)
+  val ComputronicsTapeDiamond: DeferredItem[item.ComputronicsItem] = registerItem(computronicsItem, Constants.ItemName.ComputronicsTapeDiamond)
+  val ComputronicsTapeNetherStar: DeferredItem[item.ComputronicsItem] = registerItem(computronicsItem, Constants.ItemName.ComputronicsTapeNetherStar)
+  val ComputronicsTapeCopper: DeferredItem[item.ComputronicsItem] = registerItem(computronicsItem, Constants.ItemName.ComputronicsTapeCopper)
+  val ComputronicsTapeSteel: DeferredItem[item.ComputronicsItem] = registerItem(computronicsItem, Constants.ItemName.ComputronicsTapeSteel)
+  val ComputronicsTapeGreg: DeferredItem[item.ComputronicsItem] = registerItem(computronicsItem, Constants.ItemName.ComputronicsTapeGreg)
+  val ComputronicsTapeIndustrial: DeferredItem[item.ComputronicsItem] = registerItem(computronicsItem, Constants.ItemName.ComputronicsTapeIndustrial)
+  val ComputronicsPortableTapeDrive: DeferredItem[item.ComputronicsItem] = registerItem(new item.ComputronicsItem(new Item.Properties().stacksTo(1)), Constants.ItemName.ComputronicsPortableTapeDrive)
+  val ComputronicsTapeTrack: DeferredItem[item.ComputronicsItem] = registerItem(computronicsItem, Constants.ItemName.ComputronicsTapeTrack)
+  val ComputronicsCameraUpgrade: DeferredItem[item.ComputronicsItem] = registerItem(computronicsItem, Constants.ItemName.ComputronicsCameraUpgrade)
+  val ComputronicsChatUpgrade: DeferredItem[item.ComputronicsItem] = registerItem(computronicsItem, Constants.ItemName.ComputronicsChatUpgrade)
+  val ComputronicsRadarUpgrade: DeferredItem[item.ComputronicsItem] = registerItem(computronicsItem, Constants.ItemName.ComputronicsRadarUpgrade)
+  val ComputronicsParticleCard: DeferredItem[item.ComputronicsItem] = registerItem(computronicsItem, Constants.ItemName.ComputronicsParticleCard)
+  val ComputronicsSpoofingCard: DeferredItem[item.ComputronicsItem] = registerItem(computronicsItem, Constants.ItemName.ComputronicsSpoofingCard)
+  val ComputronicsBeepCard: DeferredItem[item.ComputronicsItem] = registerItem(computronicsItem, Constants.ItemName.ComputronicsBeepCard)
+  val ComputronicsSelfDestructingCard: DeferredItem[item.ComputronicsItem] = registerItem(computronicsItem, Constants.ItemName.ComputronicsSelfDestructingCard)
+  val ComputronicsColorfulUpgrade: DeferredItem[item.ComputronicsItem] = registerItem(computronicsItem, Constants.ItemName.ComputronicsColorfulUpgrade)
+  val ComputronicsNoiseCard: DeferredItem[item.ComputronicsItem] = registerItem(computronicsItem, Constants.ItemName.ComputronicsNoiseCard)
+  val ComputronicsSoundCard: DeferredItem[item.ComputronicsItem] = registerItem(computronicsItem, Constants.ItemName.ComputronicsSoundCard)
+  val ComputronicsLightBoard: DeferredItem[item.ComputronicsItem] = registerItem(computronicsItem, Constants.ItemName.ComputronicsLightBoard)
+  val ComputronicsServerSelfDestructor: DeferredItem[item.ComputronicsItem] = registerItem(computronicsItem, Constants.ItemName.ComputronicsServerSelfDestructor)
+  val ComputronicsRackCapacitor: DeferredItem[item.ComputronicsItem] = registerItem(computronicsItem, Constants.ItemName.ComputronicsRackCapacitor)
+  val ComputronicsSwitchBoard: DeferredItem[item.ComputronicsItem] = registerItem(computronicsItem, Constants.ItemName.ComputronicsSwitchBoard)
+  val ComputronicsSpeechUpgrade: DeferredItem[item.ComputronicsItem] = registerItem(computronicsItem, Constants.ItemName.ComputronicsSpeechUpgrade)
+  val ComputronicsMagicalMemory: DeferredItem[item.ComputronicsItem] = registerItem(new item.ComputronicsItem(new Item.Properties().rarity(Rarity.EPIC)), Constants.ItemName.ComputronicsMagicalMemory)
+
+  private val computronicsContentIds: Set[String] = Set(
+    Constants.BlockName.ComputronicsIronNote,
+    Constants.BlockName.ComputronicsAudioCable,
+    Constants.BlockName.ComputronicsSpeaker,
+    Constants.BlockName.ComputronicsTapeReader,
+    Constants.BlockName.ComputronicsCamera,
+    Constants.BlockName.ComputronicsChatBox,
+    Constants.BlockName.ComputronicsCipher,
+    Constants.BlockName.ComputronicsCipherAdvanced,
+    Constants.BlockName.ComputronicsRadar,
+    Constants.BlockName.ComputronicsColorfulLamp,
+    Constants.BlockName.ComputronicsSpeechBox,
+    Constants.ItemName.ComputronicsTape,
+    Constants.ItemName.ComputronicsTapeGold,
+    Constants.ItemName.ComputronicsTapeDiamond,
+    Constants.ItemName.ComputronicsTapeNetherStar,
+    Constants.ItemName.ComputronicsTapeCopper,
+    Constants.ItemName.ComputronicsTapeSteel,
+    Constants.ItemName.ComputronicsTapeGreg,
+    Constants.ItemName.ComputronicsTapeIndustrial,
+    Constants.ItemName.ComputronicsPortableTapeDrive,
+    Constants.ItemName.ComputronicsTapeTrack,
+    Constants.ItemName.ComputronicsCameraUpgrade,
+    Constants.ItemName.ComputronicsChatUpgrade,
+    Constants.ItemName.ComputronicsRadarUpgrade,
+    Constants.ItemName.ComputronicsParticleCard,
+    Constants.ItemName.ComputronicsSpoofingCard,
+    Constants.ItemName.ComputronicsBeepCard,
+    Constants.ItemName.ComputronicsSelfDestructingCard,
+    Constants.ItemName.ComputronicsColorfulUpgrade,
+    Constants.ItemName.ComputronicsNoiseCard,
+    Constants.ItemName.ComputronicsSoundCard,
+    Constants.ItemName.ComputronicsLightBoard,
+    Constants.ItemName.ComputronicsServerSelfDestructor,
+    Constants.ItemName.ComputronicsRackCapacitor,
+    Constants.ItemName.ComputronicsSwitchBoard,
+    Constants.ItemName.ComputronicsSpeechUpgrade,
+    Constants.ItemName.ComputronicsMagicalMemory
+  )
 
   /////////////////////////////////////////////////////////////////
   // Upgrade components.
@@ -542,7 +610,7 @@ object OCItems extends ItemAPI {
     import Constants.{BlockName => B, ItemName => I}
     // Assembled devices are not usable without their component data. Their
     // configured creative variants are added explicitly below.
-    val excluded = Set(B.Microcontroller, B.Print, B.Robot, I.Drone, I.Tablet)
+    val excluded = Set(B.Microcontroller, B.Print, B.Robot, I.Drone, I.Tablet) ++ computronicsContentIds
 
     def accept(id: String, info: ItemInfo): Unit = {
       if (id != B.PowerConverter || !Settings.get.ignorePower) {
@@ -575,6 +643,13 @@ object OCItems extends ItemAPI {
       descriptors.get(Constants.ItemName.RedstoneCardTier2).foreach { info =>
         event.accept(info.createItemStack(1))
       }
+    }
+  }
+
+  def decorateComputronicsCreativeTab(event: BuildCreativeModeTabContentsEvent): Unit = {
+    for ((id, info) <- descriptors if computronicsContentIds.contains(id)) {
+      val stack = info.createItemStack(1)
+      if (!stack.isEmpty) event.accept(stack)
     }
   }
 }

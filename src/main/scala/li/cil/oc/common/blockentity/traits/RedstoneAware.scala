@@ -132,7 +132,13 @@ trait RedstoneAware extends RotationAware {
     }
   }
 
-  def updateRedstoneInput(side: Direction): Unit = setInput(side, BundledRedstone.computeInput(position, side))
+  def updateRedstoneInput(side: Direction): Unit = {
+    val inputPosition = if (isMoving) {
+      li.cil.oc.util.BlockPosition(movingBlockPos, getLevel)
+    } else position
+    val inputSide = if (isMoving) movingDirection(side) else side
+    setInput(side, BundledRedstone.computeInput(inputPosition, inputSide))
+  }
 
   // ----------------------------------------------------------------------- //
 
@@ -171,16 +177,21 @@ trait RedstoneAware extends RotationAware {
 
   protected def onRedstoneOutputEnabledChanged(): Unit = {
     if (getLevel != null) {
-      getLevel.updateNeighborsAt(getBlockPos, getBlockState.getBlock)
+      val blockPos = if (isMoving) movingBlockPos else getBlockPos
+      val block = if (isMoving) movingBlockState.getBlock else getBlockState.getBlock
+      getLevel.updateNeighborsAt(blockPos, block)
       if (isServer) ServerPacketSender.sendRedstoneState(this)
       else getLevel.sendBlockUpdated(getBlockPos, getLevel.getBlockState(getBlockPos), getLevel.getBlockState(getBlockPos), 3)
     }
   }
 
   protected def onRedstoneOutputChanged(side: Direction): Unit = {
-    val blockPos = BlockPosHelper.relative(getBlockPos, side)
-    getLevel.neighborChanged(blockPos, getBlockState.getBlock, blockPos)
-    getLevel.updateNeighborsAtExceptFromFacing(blockPos, getLevel.getBlockState(blockPos).getBlock, side.getOpposite)
+    val sourcePos = if (isMoving) movingBlockPos else getBlockPos
+    val sourceBlock = if (isMoving) movingBlockState.getBlock else getBlockState.getBlock
+    val outputSide = if (isMoving) movingDirection(side) else side
+    val blockPos = if (isMoving) movingNeighbor(side) else BlockPosHelper.relative(sourcePos, side)
+    getLevel.neighborChanged(blockPos, sourceBlock, sourcePos)
+    getLevel.updateNeighborsAtExceptFromFacing(blockPos, getLevel.getBlockState(blockPos).getBlock, outputSide.getOpposite)
 
     if (isServer) ServerPacketSender.sendRedstoneState(this)
     else getLevel.sendBlockUpdated(getBlockPos, getLevel.getBlockState(getBlockPos), getLevel.getBlockState(getBlockPos), 3)

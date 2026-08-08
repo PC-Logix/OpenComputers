@@ -57,6 +57,19 @@ object Constants {
     final val Transposer = "transposer"
     final val Waypoint = "waypoint"
 
+    // Computronics content port.
+    final val ComputronicsIronNote = "iron_noteblock"
+    final val ComputronicsAudioCable = "audio_cable"
+    final val ComputronicsSpeaker = "speaker"
+    final val ComputronicsTapeReader = "tape_reader"
+    final val ComputronicsCamera = "camera"
+    final val ComputronicsChatBox = "chatbox"
+    final val ComputronicsCipher = "cipher"
+    final val ComputronicsCipherAdvanced = "cipher_advanced"
+    final val ComputronicsRadar = "radar"
+    final val ComputronicsColorfulLamp = "colorful_lamp"
+    final val ComputronicsSpeechBox = "speech_box"
+
     def Case(tier: Int): String = ItemUtils.caseNameWithTierSuffix("case", tier)
   }
 
@@ -71,7 +84,6 @@ object Constants {
     final val APUTier2 = "apu2"
     final val APUTier3 = "apu3"
     final val ArrowKeys = "arrowkeys"
-    final val AudioCardTier1 = "audiocard1"
     final val BatteryUpgradeTier1 = "batteryupgrade1"
     final val BatteryUpgradeTier2 = "batteryupgrade2"
     final val BatteryUpgradeTier3 = "batteryupgrade3"
@@ -200,6 +212,35 @@ object Constants {
     final val WirelessNetworkCardTier2 = "wlancard2"
     final val WorldSensorCard = "worldsensorcard"
     final val Wrench = "wrench"
+
+    // Computronics content port. These are individual modern items instead of
+    // the legacy metadata-backed ItemMultiple registrations.
+    final val ComputronicsTape = "tape"
+    final val ComputronicsTapeGold = "tape_gold"
+    final val ComputronicsTapeDiamond = "tape_diamond"
+    final val ComputronicsTapeNetherStar = "tape_nether_star"
+    final val ComputronicsTapeCopper = "tape_copper"
+    final val ComputronicsTapeSteel = "tape_steel"
+    final val ComputronicsTapeGreg = "tape_greg"
+    final val ComputronicsTapeIndustrial = "tape_ig"
+    final val ComputronicsPortableTapeDrive = "portable_tape_drive"
+    final val ComputronicsTapeTrack = "tape_track"
+    final val ComputronicsCameraUpgrade = "camera_upgrade"
+    final val ComputronicsChatUpgrade = "chat_upgrade"
+    final val ComputronicsRadarUpgrade = "radar_upgrade"
+    final val ComputronicsParticleCard = "particle_card"
+    final val ComputronicsSpoofingCard = "spoofing_card"
+    final val ComputronicsBeepCard = "beep_card"
+    final val ComputronicsSelfDestructingCard = "self_destructing_card"
+    final val ComputronicsColorfulUpgrade = "colorful_upgrade"
+    final val ComputronicsNoiseCard = "noise_card"
+    final val ComputronicsSoundCard = "sound_card"
+    final val ComputronicsLightBoard = "light_board"
+    final val ComputronicsServerSelfDestructor = "server_self_destructor"
+    final val ComputronicsRackCapacitor = "rack_capacitor"
+    final val ComputronicsSwitchBoard = "switch_board"
+    final val ComputronicsSpeechUpgrade = "speech_upgrade"
+    final val ComputronicsMagicalMemory = "magical_memory"
 
     def DroneCase(tier: Int): String = ItemUtils.caseNameWithTierSuffix("dronecase", tier)
 

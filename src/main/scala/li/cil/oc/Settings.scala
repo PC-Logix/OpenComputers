@@ -513,11 +513,6 @@ class Settings(val config: Config) {
   // >= 1.8.8
   val httpUserAgent = config.getString("internet.httpUserAgent")
 
-  // >= 1.9.0
-  val audioCardChunkSize: Int = config.getInt("audio.chunkSize") max 0 // 4096
-  val audioCardBufferLimit: Int = config.getInt("audio.bufferLimit") max 0 // 8 MiB (8 * 1024 * 1024)
-  val audioCardSampleRate: Int = config.getInt("audio.sampleRate") min 48000 max 0 // 48000
-  val audioCardFormat: Int = config.getInt("audio.format") // 1
 }
 
 object Settings {

@@ -14,13 +14,29 @@ import net.neoforged.neoforge.client.model.data.{ModelData, ModelProperty}
 trait Environment extends BaseBlockEntity with network.Environment with network.EnvironmentHost {
   protected var isChangeScheduled = false
 
-  override def getEnvironmentLevel: Level = getLevel
+  override def getEnvironmentLevel: Level = if (movingLevel != null) movingLevel else getLevel
 
-  override def xPosition: Double = x + 0.5
+  override def xPosition: Double = if (movingPosition != null) movingPosition.x else x + 0.5
 
-  override def yPosition: Double = y + 0.5
+  override def yPosition: Double = if (movingPosition != null) movingPosition.y else y + 0.5
 
-  override def zPosition: Double = z + 0.5
+  override def zPosition: Double = if (movingPosition != null) movingPosition.z else z + 0.5
+
+  /** Save a captured environment while Create still owns its off-world NBT. */
+  def saveMovingState(nbt: CompoundTag, provider: HolderLookup.Provider): Unit = saveAdditional(nbt, provider)
+
+  /** Remove the temporary OC node before Create places the real block entity. */
+  def disposeMoving(): Unit = {
+    Option(node).foreach(_.remove())
+    this match {
+      case sidedEnvironment: SidedEnvironment =>
+        for (side <- Direction.values) {
+          Option(sidedEnvironment.sidedNode(side)).foreach(_.remove())
+        }
+      case _ =>
+    }
+    endMoving()
+  }
 
   override def markChanged(): Unit = if (this.isInstanceOf[Tickable]) isChangeScheduled = true else this.setChanged()
 
@@ -30,7 +46,7 @@ trait Environment extends BaseBlockEntity with network.Environment with network.
 
   override protected def initialize(): Unit = {
     super.initialize()
-    if (isServer) {
+    if (isServer && !isMoving) {
       EventHandler.scheduleServer(this)
     }
   }

@@ -5,14 +5,6 @@ object PacketType extends Enumeration {
   // Server -> Client
   AdapterState,
   Analyze,
-  AudioStart,
-  AudioChunk,
-  AudioPlay,
-  AudioPause ,
-  AudioResume,
-  AudioStop,
-  AudioClose,
-  AudioSetLoop,
   ChargerState,
   ClientLog,
   ColorChange,
@@ -78,6 +70,7 @@ object PacketType extends Enumeration {
   SoundEffect,
   Sound,
   SoundPattern,
+  ComputronicsTone,
   TransposerActivity,
   WaypointLabel, // Goes both ways.
 

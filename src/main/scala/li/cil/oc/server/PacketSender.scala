@@ -32,63 +32,6 @@ import java.util.concurrent.TimeUnit
 import scala.collection.mutable
 
 object PacketSender {
-  def sendAudioStart(host: EnvironmentHost, sessionId: Int, channel: Int, sampleRate: Int, channels: Int, format: Int, loop: Boolean, pos: BlockPosition): Unit = {
-    val pb = new SimplePacketBuilder(PacketType.AudioStart)
-    pb.writeInt(sessionId)
-    pb.writeInt(channel)
-    pb.writeInt(sampleRate)
-    pb.writeInt(channels)
-    pb.writeInt(format)
-    pb.writeBoolean(loop)
-    pb.writeBlockPosCoords(pos)
-    pb.sendToPlayersNearHost(host, Option(Settings.get.maxNetworkClientSoundPacketDistance))
-  }
-
-  def sendAudioChunk(host: EnvironmentHost, sessionId: Int, data: Array[Byte]): Unit = {
-    val pb = new CompressedPacketBuilder(PacketType.AudioChunk)
-    pb.writeInt(sessionId)
-    pb.writeInt(data.length)
-    pb.write(data)
-    pb.sendToPlayersNearHost(host, Option(Settings.get.maxNetworkClientSoundPacketDistance))
-  }
-
-  def sendAudioPlay(host: EnvironmentHost, sessionId: Int): Unit = {
-    val pb = new SimplePacketBuilder(PacketType.AudioPlay)
-    pb.writeInt(sessionId)
-    pb.sendToPlayersNearHost(host, Option(Settings.get.maxNetworkClientSoundPacketDistance))
-  }
-
-  def sendAudioPause(host: EnvironmentHost, sessionId: Int): Unit = {
-    val pb = new SimplePacketBuilder(PacketType.AudioPause)
-    pb.writeInt(sessionId)
-    pb.sendToPlayersNearHost(host, Option(Settings.get.maxNetworkClientSoundPacketDistance))
-  }
-
-  def sendAudioResume(host: EnvironmentHost, sessionId: Int): Unit = {
-    val pb = new SimplePacketBuilder(PacketType.AudioResume)
-    pb.writeInt(sessionId)
-    pb.sendToPlayersNearHost(host, Option(Settings.get.maxNetworkClientSoundPacketDistance))
-  }
-
-  def sendAudioStop(host: EnvironmentHost, sessionId: Int): Unit = {
-    val pb = new SimplePacketBuilder(PacketType.AudioStop)
-    pb.writeInt(sessionId)
-    pb.sendToPlayersNearHost(host, Option(Settings.get.maxNetworkClientSoundPacketDistance))
-  }
-
-  def sendAudioClose(host: EnvironmentHost, sessionId: Int): Unit = {
-    val pb = new SimplePacketBuilder(PacketType.AudioClose)
-    pb.writeInt(sessionId)
-    pb.sendToPlayersNearHost(host, Option(Settings.get.maxNetworkClientSoundPacketDistance))
-  }
-
-  def sendAudioSetLoop(host: EnvironmentHost, sessionId: Int, loop: Boolean): Unit = {
-    val pb = new SimplePacketBuilder(PacketType.AudioSetLoop)
-    pb.writeInt(sessionId)
-    pb.writeBoolean(loop)
-    pb.sendToPlayersNearHost(host, Option(Settings.get.maxNetworkClientSoundPacketDistance))
-  }
-  
   def sendAdapterState(t: blockentity.Adapter): Unit = {
     val pb = new SimplePacketBuilder(PacketType.AdapterState)
 
@@ -925,6 +868,31 @@ object PacketSender {
     pb.writeInt(blockPos.z)
     pb.writeUTF(pattern)
 
+    pb.sendToNearbyPlayers(level, x, y, z, Option(Settings.get.maxNetworkClientSoundPacketDistance))
+  }
+
+  def sendComputronicsTone(level: Level, x: Double, y: Double, z: Double, mode: Int, frequency: Int,
+                           duration: Int, delay: Int, volume: Double, fmFrequency: Int = 0,
+                           fmIntensity: Double = 0, amFrequency: Int = 0, attack: Int = 0,
+                           decay: Int = 0, sustain: Double = 1, release: Int = 0): Unit = {
+    val pb = new SimplePacketBuilder(PacketType.ComputronicsTone)
+    val blockPos = BlockPosition(x, y, z)
+    pb.writeUTF(level.dimension.location.toString)
+    pb.writeInt(blockPos.x)
+    pb.writeInt(blockPos.y)
+    pb.writeInt(blockPos.z)
+    pb.writeByte(mode)
+    pb.writeShort(frequency.toShort)
+    pb.writeShort(duration.toShort)
+    pb.writeShort(delay.toShort)
+    pb.writeFloat(volume.toFloat)
+    pb.writeShort(fmFrequency.toShort)
+    pb.writeFloat(fmIntensity.toFloat)
+    pb.writeShort(amFrequency.toShort)
+    pb.writeShort(attack.toShort)
+    pb.writeShort(decay.toShort)
+    pb.writeFloat(sustain.toFloat)
+    pb.writeShort(release.toShort)
     pb.sendToNearbyPlayers(level, x, y, z, Option(Settings.get.maxNetworkClientSoundPacketDistance))
   }
 

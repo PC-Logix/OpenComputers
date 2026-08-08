@@ -79,6 +79,21 @@ object OCBlocks {
   // v1.7.2
   val CarpetedCapacitor: DeferredBlock[CarpetedCapacitor] = BLOCKS.register(Constants.BlockName.CarpetedCapacitor, () => Items.registerBlock(new CarpetedCapacitor(defaultProps), Constants.BlockName.CarpetedCapacitor, defaultItemProps))
 
+  // Computronics content port. External-mod integrations are intentionally
+  // excluded; the native block-entity behavior is registered below.
+  private def computronicsProps = Properties.of().mapColor(MapColor.METAL).strength(2, 5)
+  val ComputronicsIronNote: DeferredBlock[ComputronicsBlock] = BLOCKS.register(Constants.BlockName.ComputronicsIronNote, () => Items.registerBlock(new ComputronicsBlock(computronicsProps, Constants.BlockName.ComputronicsIronNote), Constants.BlockName.ComputronicsIronNote, defaultItemProps))
+  val ComputronicsAudioCable: DeferredBlock[ComputronicsBlock] = BLOCKS.register(Constants.BlockName.ComputronicsAudioCable, () => Items.registerBlock(new ComputronicsBlock(computronicsProps, Constants.BlockName.ComputronicsAudioCable), Constants.BlockName.ComputronicsAudioCable, defaultItemProps))
+  val ComputronicsSpeaker: DeferredBlock[ComputronicsBlock] = BLOCKS.register(Constants.BlockName.ComputronicsSpeaker, () => Items.registerBlock(new ComputronicsBlock(computronicsProps, Constants.BlockName.ComputronicsSpeaker), Constants.BlockName.ComputronicsSpeaker, defaultItemProps))
+  val ComputronicsTapeReader: DeferredBlock[ComputronicsBlock] = BLOCKS.register(Constants.BlockName.ComputronicsTapeReader, () => Items.registerBlock(new ComputronicsBlock(computronicsProps, Constants.BlockName.ComputronicsTapeReader), Constants.BlockName.ComputronicsTapeReader, defaultItemProps))
+  val ComputronicsCamera: DeferredBlock[ComputronicsBlock] = BLOCKS.register(Constants.BlockName.ComputronicsCamera, () => Items.registerBlock(new ComputronicsBlock(computronicsProps, Constants.BlockName.ComputronicsCamera), Constants.BlockName.ComputronicsCamera, defaultItemProps))
+  val ComputronicsChatBox: DeferredBlock[ComputronicsBlock] = BLOCKS.register(Constants.BlockName.ComputronicsChatBox, () => Items.registerBlock(new ComputronicsBlock(computronicsProps, Constants.BlockName.ComputronicsChatBox), Constants.BlockName.ComputronicsChatBox, defaultItemProps))
+  val ComputronicsCipher: DeferredBlock[ComputronicsBlock] = BLOCKS.register(Constants.BlockName.ComputronicsCipher, () => Items.registerBlock(new ComputronicsBlock(computronicsProps, Constants.BlockName.ComputronicsCipher), Constants.BlockName.ComputronicsCipher, defaultItemProps))
+  val ComputronicsCipherAdvanced: DeferredBlock[ComputronicsBlock] = BLOCKS.register(Constants.BlockName.ComputronicsCipherAdvanced, () => Items.registerBlock(new ComputronicsBlock(computronicsProps, Constants.BlockName.ComputronicsCipherAdvanced), Constants.BlockName.ComputronicsCipherAdvanced, defaultItemProps))
+  val ComputronicsRadar: DeferredBlock[ComputronicsBlock] = BLOCKS.register(Constants.BlockName.ComputronicsRadar, () => Items.registerBlock(new ComputronicsBlock(computronicsProps, Constants.BlockName.ComputronicsRadar), Constants.BlockName.ComputronicsRadar, defaultItemProps))
+  val ComputronicsColorfulLamp: DeferredBlock[ComputronicsBlock] = BLOCKS.register(Constants.BlockName.ComputronicsColorfulLamp, () => Items.registerBlock(new ComputronicsBlock(computronicsProps, Constants.BlockName.ComputronicsColorfulLamp), Constants.BlockName.ComputronicsColorfulLamp, defaultItemProps))
+  val ComputronicsSpeechBox: DeferredBlock[ComputronicsBlock] = BLOCKS.register(Constants.BlockName.ComputronicsSpeechBox, () => Items.registerBlock(new ComputronicsBlock(computronicsProps, Constants.BlockName.ComputronicsSpeechBox), Constants.BlockName.ComputronicsSpeechBox, defaultItemProps))
+
   def init(bus: IEventBus): Unit = {
     BLOCKS.register(bus)
   }

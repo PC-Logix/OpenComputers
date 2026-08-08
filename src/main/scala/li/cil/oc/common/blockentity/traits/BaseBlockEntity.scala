@@ -7,6 +7,7 @@ import li.cil.oc.client.Sound
 import li.cil.oc.common.SaveHandler
 import li.cil.oc.util.{BlockPosition, SideTracker}
 import net.minecraft.core.HolderLookup
+import net.minecraft.core.{BlockPos, Direction}
 import net.minecraft.core.component.{DataComponentHolder, DataComponentMap, DataComponentPatch, DataComponentType, PatchedDataComponentMap}
 import net.minecraft.nbt.{CompoundTag, NbtOps}
 import net.minecraft.network.Connection
@@ -14,9 +15,59 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket
 import net.neoforged.api.distmarker.{Dist, OnlyIn}
 import net.neoforged.neoforge.client.model.data.ModelProperty
 import net.neoforged.neoforge.common.MutableDataComponentHolder
+import net.minecraft.world.level.Level
+import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.phys.Vec3
+
+import java.util.function.UnaryOperator
 
 trait BaseBlockEntity extends net.minecraft.world.level.block.entity.BlockEntity {
   private final val IsServerDataTag = Settings.namespace + "isServerData"
+
+  // Create keeps captured block entities off-world while a contraption moves.
+  // These helpers live here because Rotatable and RedstoneAware are sibling
+  // traits, not children of Environment.
+  protected var movingLevel: Level = null
+  protected var movingPosition: Vec3 = null
+  protected var movingRotation: UnaryOperator[Vec3] = null
+  protected var movingState: BlockState = null
+
+  def isMoving: Boolean = movingPosition != null
+
+  def beginMoving(level: Level, position: Vec3, rotation: UnaryOperator[Vec3], state: BlockState): Unit = {
+    movingLevel = level
+    movingPosition = position
+    movingRotation = rotation
+    movingState = state
+    initialize()
+  }
+
+  def updateMovingPosition(position: Vec3, rotation: UnaryOperator[Vec3], state: BlockState): Unit = {
+    movingPosition = position
+    movingRotation = rotation
+    movingState = state
+  }
+
+  def movingBlockPos: BlockPos = if (movingPosition == null) getBlockPos else BlockPos.containing(movingPosition)
+
+  def movingBlockState: BlockState = if (movingState == null) getBlockState else movingState
+
+  def movingDirection(side: Direction): Direction = {
+    if (movingRotation == null) side
+    else {
+      val vector = movingRotation.apply(new Vec3(side.getStepX, side.getStepY, side.getStepZ))
+      Direction.getNearest(vector.x, vector.y, vector.z)
+    }
+  }
+
+  def movingNeighbor(side: Direction): BlockPos = movingBlockPos.relative(movingDirection(side))
+
+  def endMoving(): Unit = {
+    movingLevel = null
+    movingPosition = null
+    movingRotation = null
+    movingState = null
+  }
 
   def x: Int = getBlockPos.getX
 
