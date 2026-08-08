@@ -11,8 +11,6 @@ class Memory(props: Properties, val tier: Int) extends Item(props) with traits.S
   @Deprecated
   override def getDescriptionId = super.getDescriptionId + tier
 
-  override protected def tooltipName = Option(unlocalizedName)
-
   val kiloBytes: Int = Settings.get.ramSizes(tier)
 
   override def getName(stack: ItemStack): Component = {

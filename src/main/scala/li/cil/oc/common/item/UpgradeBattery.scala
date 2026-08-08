@@ -15,8 +15,6 @@ class UpgradeBattery(props: Properties, val tier: Int) extends Item(props) with 
   @Deprecated
   override def getDescriptionId = super.getDescriptionId + tier
 
-  override protected def tooltipName = Option(unlocalizedName)
-
   override protected def tooltipData = Seq(Settings.get.bufferCapacitorUpgrades(tier).toInt)
 
   override def isBarVisible(stack: ItemStack) = true

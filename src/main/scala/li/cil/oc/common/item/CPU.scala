@@ -11,6 +11,4 @@ class CPU(props: Properties, val tier: Int) extends Item(props) with traits.Simp
   override def getDescriptionId = super.getDescriptionId + tier
 
   override def cpuTier = tier
-
-  override protected def tooltipName = Option(unlocalizedName)
 }

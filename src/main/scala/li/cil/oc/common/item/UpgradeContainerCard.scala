@@ -9,7 +9,5 @@ class UpgradeContainerCard(props: Properties, val tier: Int) extends Item(props)
   @Deprecated
   override def getDescriptionId = super.getDescriptionId + tier
 
-  override protected def tooltipName = Option(unlocalizedName)
-
   override protected def tooltipData = Seq(tier + 1)
 }

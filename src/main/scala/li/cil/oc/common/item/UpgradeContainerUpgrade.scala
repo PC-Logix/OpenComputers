@@ -9,7 +9,5 @@ class UpgradeContainerUpgrade(props: Properties, val tier: Int) extends Item(pro
   @Deprecated
   override def getDescriptionId = super.getDescriptionId + tier
 
-  override protected def tooltipName = Option(unlocalizedName)
-
   override protected def tooltipData = Seq(tier + 1)
 }

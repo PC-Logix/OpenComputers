@@ -12,6 +12,4 @@ class GraphicsCard(props: Properties, val tier: Int) extends Item(props) with tr
   override def getDescriptionId = super.getDescriptionId + tier
 
   override def gpuTier = tier
-
-  override protected def tooltipName = Option(unlocalizedName)
 }

@@ -22,8 +22,6 @@ class UpgradeDatabase(props: Properties, val tier: Int) extends Item(props) with
   @Deprecated
   override def getDescriptionId = super.getDescriptionId + tier
 
-  override protected def tooltipName = Option(unlocalizedName)
-
   override protected def tooltipData = Seq(Settings.get.databaseEntriesPerTier(tier))
 
   override def use(stack: ItemStack, level: Level, player: Player): InteractionResultHolder[ItemStack] = {

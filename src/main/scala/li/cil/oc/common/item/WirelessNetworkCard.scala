@@ -8,6 +8,4 @@ import net.neoforged.neoforge.common.extensions.IItemExtension
 class WirelessNetworkCard(props: Properties, var tier: Int) extends Item(props) with traits.SimpleItem with traits.ItemTier with IItemExtension {
   @Deprecated
   override def getDescriptionId = super.getDescriptionId + tier
-  
-  override protected def tooltipName = Option(unlocalizedName)
 }

@@ -11,6 +11,4 @@ class DroneCase(props: Properties, val tier: Int) extends Item(props) with trait
   override def getDescriptionId = super.getDescriptionId + tier
 
   override protected def tierFromDriver(stack: ItemStack) = tier
-
-  override protected def tooltipName = Option(unlocalizedName)
 }

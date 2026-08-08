@@ -25,8 +25,6 @@ class Server(props: Properties, val tier: Int) extends Item(props) with traits.S
   @Deprecated
   override def getDescriptionId = super.getDescriptionId + tier
 
-  override protected def tooltipName = Option(unlocalizedName)
-
   private object HelperInventory extends ServerInventory {
     var container = ItemStack.EMPTY
 

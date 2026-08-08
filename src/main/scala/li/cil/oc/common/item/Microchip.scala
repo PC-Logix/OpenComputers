@@ -9,6 +9,4 @@ import net.neoforged.neoforge.common.extensions.IItemExtension
 class Microchip(props: Properties, val tier: Int) extends Item(props) with traits.SimpleItem with IItemExtension {
   @Deprecated
   override def getDescriptionId = super.getDescriptionId + tier
-
-  override protected def tooltipName = Option(unlocalizedName)
 }
