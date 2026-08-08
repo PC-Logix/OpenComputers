@@ -10,4 +10,6 @@ class WirelessNetworkCard(props: Properties, var tier: Int) extends Item(props) 
   override def getDescriptionId = super.getDescriptionId + tier
   
   override protected def tooltipName = Option(unlocalizedName)
+
+  override protected def canResetComponentIdentity: Boolean = true
 }

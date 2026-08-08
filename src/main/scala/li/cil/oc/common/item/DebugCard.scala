@@ -18,6 +18,8 @@ import net.minecraft.Util
 import net.neoforged.neoforge.common.extensions.IItemExtension
 
 class DebugCard(props: Properties) extends Item(props) with traits.SimpleItem with IItemExtension {
+  override protected def canResetComponentIdentity: Boolean = true
+
   override protected def tooltipExtended(stack: ItemStack, tooltip: util.List[Component]): Unit = {
     super.tooltipExtended(stack, tooltip)
     val data = new DebugCardData(stack)

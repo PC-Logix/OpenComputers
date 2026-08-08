@@ -8,4 +8,6 @@ import net.neoforged.neoforge.common.extensions.IItemExtension
 class DataCard(props: Properties, val tier: Int) extends Item(props) with traits.SimpleItem with traits.ItemTier with IItemExtension {
   @Deprecated
   override def getDescriptionId = super.getDescriptionId + tier
+
+  override protected def canResetComponentIdentity: Boolean = true
 }

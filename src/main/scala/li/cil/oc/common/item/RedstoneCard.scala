@@ -10,4 +10,6 @@ class RedstoneCard(props: Properties, val tier: Int) extends Item(props) with tr
   override def getDescriptionId = super.getDescriptionId + tier
 
   override protected def tooltipName = Option(unlocalizedName)
+
+  override protected def canResetComponentIdentity: Boolean = true
 }
