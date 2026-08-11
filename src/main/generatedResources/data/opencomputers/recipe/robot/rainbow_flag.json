@@ -1,0 +1,48 @@
+{
+  "type": "opencomputers:transform_shapeless",
+  "category": "misc",
+  "functions": [
+    {
+      "type": "opencomputers:copy_components",
+      "exclude": [
+        "opencomputers:robot_flag"
+      ],
+      "from": {
+        "item": "opencomputers:robot"
+      }
+    }
+  ],
+  "ingredients": [
+    {
+      "tag": "c:dyes/red"
+    },
+    {
+      "tag": "c:dyes/orange"
+    },
+    {
+      "tag": "c:dyes/yellow"
+    },
+    {
+      "tag": "c:dyes/green"
+    },
+    {
+      "tag": "c:dyes/blue"
+    },
+    {
+      "tag": "c:dyes/purple"
+    },
+    {
+      "item": "minecraft:stick"
+    },
+    {
+      "item": "opencomputers:robot"
+    }
+  ],
+  "result": {
+    "components": {
+      "opencomputers:robot_flag": "opencomputers:rainbow_flag"
+    },
+    "count": 1,
+    "id": "opencomputers:robot"
+  }
+}

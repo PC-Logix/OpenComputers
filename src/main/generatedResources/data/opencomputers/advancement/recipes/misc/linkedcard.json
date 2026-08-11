@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_chip3": {
+      "conditions": {
+        "items": [
+          {
+            "items": "opencomputers:chip3"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "opencomputers:linkedcard"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_chip3"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "opencomputers:linkedcard"
+    ]
+  }
+}

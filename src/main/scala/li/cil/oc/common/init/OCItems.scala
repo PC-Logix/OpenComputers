@@ -1,20 +1,20 @@
 package li.cil.oc.common.init
 
+import li.cil.oc.{common, Constants, OpenComputers, Settings}
 import li.cil.oc.api.detail.{ItemAPI, ItemInfo}
 import li.cil.oc.api.fs.FileSystem
+import li.cil.oc.common.{item, Loot, Tier}
 import li.cil.oc.common.block.SimpleBlock
 import li.cil.oc.common.datacomponents.OCComponents
 import li.cil.oc.common.item.data._
 import li.cil.oc.common.item.traits.SimpleItem
-import li.cil.oc.common.{Loot, Tier, item}
 import li.cil.oc.server.machine.luac.LuaStateFactory
 import li.cil.oc.util.{Rarity => OCRarity}
-import li.cil.oc.{Constants, OpenComputers, Settings, common}
 import net.minecraft.core.registries.Registries
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
-import net.minecraft.world.item.Item.Properties
 import net.minecraft.world.item._
+import net.minecraft.world.item.Item.Properties
 import net.minecraft.world.level.block.Block
 import net.neoforged.bus.api.{EventPriority, IEventBus}
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent
@@ -24,6 +24,7 @@ import java.nio.ByteBuffer
 import java.util.concurrent.Callable
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
+import scala.util.Using
 
 object OCItems extends ItemAPI {
   private val ITEMS: DeferredRegister.Items = DeferredRegister.createItems(Settings.resourceDomain)
@@ -527,9 +528,8 @@ object OCItems extends ItemAPI {
 
   private def initPostStorage(): Unit = {
     val luaBios = {
-      val code = new Array[Byte](4 * 1024)
-      val count = OpenComputers.getClass.getResourceAsStream(Settings.scriptPath + "bios.lua").read(code)
-      createEEPROM("EEPROM (Lua BIOS)", code.take(count), null, readonly = false)
+      val code = Using.resource(OpenComputers.getClass.getResourceAsStream(Settings.scriptPath + "bios.lua"))(_.readAllBytes())
+      createEEPROM("EEPROM (Lua BIOS)", code, null, readonly = false)
     }
     registerStack(luaBios, Constants.ItemName.LuaBios)
   }

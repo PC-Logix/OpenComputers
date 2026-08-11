@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "opencomputers:ssd2"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "opencomputers:ssd2"
+  }
+}

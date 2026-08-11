@@ -1,19 +1,15 @@
 package li.cil.oc.common.recipe
 
-import li.cil.oc.util.ItemColorizer
-import li.cil.oc.util.StackOption
+import li.cil.oc.util.{ItemColorizer, StackOption}
 import net.minecraft.core.HolderLookup
-import net.minecraft.world.item.Item
-import net.minecraft.world.item.Items
-import net.minecraft.world.item.ItemStack
-import net.minecraft.resources.ResourceLocation
-import net.minecraft.world.item.crafting.{CraftingBookCategory, CustomRecipe, CraftingInput}
+import net.minecraft.world.item.{Item, Items, ItemStack}
+import net.minecraft.world.item.crafting.{CraftingBookCategory, CraftingInput, CustomRecipe}
 import net.minecraft.world.level.{ItemLike, Level}
 
 /**
-  * @author Vexatos
-  */
-class DecolorizeRecipe(id: ResourceLocation, target: ItemLike) extends CustomRecipe(CraftingBookCategory.MISC) {
+ * @author Vexatos
+ */
+class DecolorizeRecipe(target: ItemLike) extends CustomRecipe(CraftingBookCategory.MISC) {
   val targetItem: Item = target.asItem()
 
   override def matches(crafting: CraftingInput, level: Level): Boolean = {
@@ -43,5 +39,5 @@ class DecolorizeRecipe(id: ResourceLocation, target: ItemLike) extends CustomRec
 
   override def canCraftInDimensions(width: Int, height: Int): Boolean = width * height >= 2
 
-  override def getSerializer = Recipes.DECOLORIZE.getSerializer
+  override def getSerializer = Recipes.DECOLORIZE.get
 }

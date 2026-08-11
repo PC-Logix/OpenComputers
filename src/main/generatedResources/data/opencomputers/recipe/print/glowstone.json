@@ -1,0 +1,33 @@
+{
+  "type": "opencomputers:transform_shapeless",
+  "category": "misc",
+  "functions": [
+    {
+      "type": "opencomputers:copy_components",
+      "from": {
+        "item": "opencomputers:print"
+      }
+    },
+    {
+      "type": "opencomputers:add_print_light",
+      "light": 4
+    }
+  ],
+  "ingredients": [
+    {
+      "item": "opencomputers:print"
+    },
+    [
+      {
+        "item": "minecraft:glowstone"
+      },
+      {
+        "tag": "c:froglights"
+      }
+    ]
+  ],
+  "result": {
+    "count": 1,
+    "id": "opencomputers:print"
+  }
+}

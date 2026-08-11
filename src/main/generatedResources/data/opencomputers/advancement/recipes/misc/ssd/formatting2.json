@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_ssd2": {
+      "conditions": {
+        "items": [
+          {
+            "items": "opencomputers:ssd2"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "opencomputers:ssd/formatting2"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_ssd2"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "opencomputers:ssd/formatting2"
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "type": "opencomputers:transform_shapeless",
+  "category": "misc",
+  "functions": [
+    {
+      "type": "opencomputers:copy_components",
+      "from": {
+        "item": "opencomputers:print"
+      }
+    },
+    {
+      "type": "opencomputers:add_print_light",
+      "light": 1
+    }
+  ],
+  "ingredients": [
+    {
+      "item": "opencomputers:print"
+    },
+    {
+      "tag": "c:dusts/glowstone"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "opencomputers:print"
+  }
+}

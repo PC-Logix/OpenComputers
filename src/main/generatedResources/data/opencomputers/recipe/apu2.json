@@ -1,0 +1,35 @@
+{
+  "type": "opencomputers:transform_shaped",
+  "category": "misc",
+  "functions": [
+    {
+      "type": "opencomputers:set_default_architecture"
+    }
+  ],
+  "key": {
+    "B": {
+      "item": "opencomputers:componentbus2"
+    },
+    "C": {
+      "item": "opencomputers:chip2"
+    },
+    "G": {
+      "item": "opencomputers:graphicscard2"
+    },
+    "P": {
+      "item": "opencomputers:cpu3"
+    },
+    "d": {
+      "item": "opencomputers:chipdiamond"
+    }
+  },
+  "pattern": [
+    "dCd",
+    "PBG",
+    "dCd"
+  ],
+  "result": {
+    "count": 1,
+    "id": "opencomputers:apu2"
+  }
+}

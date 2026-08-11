@@ -23,7 +23,7 @@ import net.minecraft.world.InteractionResult
 import net.minecraft.world.item.Item.TooltipContext
 
 trait FileSystemLike extends SimpleItem {
-  override protected def tooltipName = None
+  override protected def tooltipName: Option[String] = None
 
   def kiloBytes: Int
 

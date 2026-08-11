@@ -87,7 +87,7 @@ trait SimpleItem extends Item with api.driver.item.UpgradeRenderer with IItemExt
       case _ => 0
     }
 
-  protected def tooltipName = Option(unlocalizedName)
+  protected def tooltipName: Option[String] = Option(unlocalizedName)
 
   protected def tooltipData = Seq.empty[Any]
 

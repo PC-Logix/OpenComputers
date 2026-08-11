@@ -4,7 +4,7 @@ import cats.implicits.catsSyntaxOrder
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import io.netty.buffer.ByteBuf
-import li.cil.oc.{Constants, Settings, api}
+import li.cil.oc.{api, Constants, Settings}
 import li.cil.oc.common.IMC
 import li.cil.oc.common.datacomponents.{OCComponents, ScalaCodec, ScalaStreamCodec}
 import li.cil.oc.util.ExtendedAABB._
@@ -26,6 +26,7 @@ case class PrintData(var label: Option[String] = None,
                      var pressurePlate: Boolean = false,
                      val stateOff: mutable.Set[PrintData.Shape] = mutable.Set.empty[PrintData.Shape],
                      val stateOn: mutable.Set[PrintData.Shape] = mutable.Set.empty[PrintData.Shape],
+                     @Deprecated
                      var isBeaconBase: Boolean = false,
                      var lightLevel: Int = 0,
                      var noclipOff: Boolean = false,

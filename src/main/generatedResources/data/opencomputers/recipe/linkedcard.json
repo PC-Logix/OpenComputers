@@ -1,0 +1,32 @@
+{
+  "type": "opencomputers:transform_shaped",
+  "category": "misc",
+  "functions": [
+    {
+      "type": "opencomputers:set_unique_tunnel"
+    }
+  ],
+  "key": {
+    "C": {
+      "item": "opencomputers:chip3"
+    },
+    "I": {
+      "item": "opencomputers:interweb"
+    },
+    "L": {
+      "item": "opencomputers:internetcard"
+    },
+    "e": {
+      "item": "minecraft:ender_eye"
+    }
+  },
+  "pattern": [
+    "e e",
+    "LIL",
+    "C C"
+  ],
+  "result": {
+    "count": 2,
+    "id": "opencomputers:linkedcard"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "type": "opencomputers:transform_shapeless",
+  "category": "misc",
+  "functions": [
+    {
+      "type": "opencomputers:copy_components",
+      "from": {
+        "item": "opencomputers:floppy"
+      },
+      "include": [
+        "opencomputers:disk_color"
+      ]
+    }
+  ],
+  "ingredients": [
+    {
+      "item": "opencomputers:floppy"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "opencomputers:floppy"
+  }
+}

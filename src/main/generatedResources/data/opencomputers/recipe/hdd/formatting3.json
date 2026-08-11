@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "opencomputers:hdd3"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "opencomputers:hdd3"
+  }
+}

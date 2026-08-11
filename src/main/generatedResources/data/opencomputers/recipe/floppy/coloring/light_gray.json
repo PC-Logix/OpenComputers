@@ -1,0 +1,30 @@
+{
+  "type": "opencomputers:transform_shapeless",
+  "category": "misc",
+  "functions": [
+    {
+      "type": "opencomputers:copy_components",
+      "exclude": [
+        "opencomputers:disk_color"
+      ],
+      "from": {
+        "item": "opencomputers:floppy"
+      }
+    }
+  ],
+  "ingredients": [
+    {
+      "item": "opencomputers:floppy"
+    },
+    {
+      "tag": "c:dyes/light_gray"
+    }
+  ],
+  "result": {
+    "components": {
+      "opencomputers:disk_color": "light_gray"
+    },
+    "count": 1,
+    "id": "opencomputers:floppy"
+  }
+}

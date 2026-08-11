@@ -1,60 +1,56 @@
 package li.cil.oc.common.recipe;
 
 import li.cil.oc.OpenComputers;
+import li.cil.oc.common.recipe.function.*;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.world.item.crafting.*;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
+import net.minecraft.world.level.ItemLike;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.NewRegistryEvent;
+import net.neoforged.neoforge.registries.RegistryBuilder;
 
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 public final class Recipes {
-    public static final class RecipeRegistration<R extends Recipe<?>> {
-        private final Supplier<RecipeType<R>> recipeType;
-        private final Supplier<RecipeSerializer<R>> serializer;
+    private static final DeferredRegister<RecipeSerializer<?>> SERIALIZERS = DeferredRegister.create(Registries.RECIPE_SERIALIZER, OpenComputers.ID());
 
-        public RecipeRegistration(Supplier<RecipeType<R>> recipeType, Supplier<RecipeSerializer<R>> serializer) {
-            this.recipeType = recipeType;
-            this.serializer = serializer;
-        }
-
-        public RecipeType<R> getRecipeType() {
-            return recipeType.get();
-        }
-
-        public RecipeSerializer<R> getSerializer() {
-            return serializer.get();
-        }
-    }
-
-    public static final DeferredRegister<RecipeSerializer<?>> SERIALIZERS = DeferredRegister.create(Registries.RECIPE_SERIALIZER, OpenComputers.ID());
-    public static final DeferredRegister<RecipeType<?>> RECIPES = DeferredRegister.create(Registries.RECIPE_TYPE, OpenComputers.ID());
-
-    public static final RecipeRegistration<LootDiskCyclingRecipe> LOOTDISK_CYCLING = register(
-            "crafting_lootdisk_cycling",
-            new SimpleCraftingRecipeSerializer<>(LootDiskCyclingRecipe::new)
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<LootDiskCyclingRecipe>> LOOTDISK_CYCLING = SERIALIZERS.register(
+        "crafting_lootdisk_cycling",
+        () -> new SimpleCraftingRecipeSerializer<>(LootDiskCyclingRecipe::new)
     );
-    public static final RecipeRegistration<ColorizeRecipe> COLORIZE = register("crafting_colorize", new ItemSpecialSerializer<>(ColorizeRecipe::new, ColorizeRecipe::targetItem));
-    public static final RecipeRegistration<DecolorizeRecipe> DECOLORIZE = register("crafting_decolorize", new ItemSpecialSerializer<>(DecolorizeRecipe::new, DecolorizeRecipe::targetItem));
-    public static final RecipeRegistration<RobotFlagRecipe> ROBOT_FLAG = register("crafting_robot_flag", new RobotFlagRecipe.Serializer());
-    public static final RecipeRegistration<ExtendedShapedRecipe> SHAPED_EXTENDED = register("crafting_shaped_extended", new ExtendedShapedRecipe.Serializer());
-    public static final RecipeRegistration<ExtendedShapelessRecipe> SHAPELESS_EXTENDED = register("crafting_shapeless_extended", new ExtendedShapelessRecipe.Serializer());
 
-    private static <R extends Recipe<?>> RecipeRegistration<R> register(String id, RecipeSerializer<R> serializer) {
-        DeferredHolder<RecipeType<?>, RecipeType<R>> recipeType = RECIPES.register(id, () -> new RecipeType<>() {
-            @Override
-            public String toString() { return id; }
-        });
-        DeferredHolder<RecipeSerializer<?>, RecipeSerializer<R>> recipeSerializer = SERIALIZERS.register(id, () -> serializer);
-        return new RecipeRegistration<>(
-                recipeType::get,
-                recipeSerializer::get
-        );
-    }
-    
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<ColorizeRecipe>> COLORIZE = SERIALIZERS.register("crafting_colorize", () -> itemSpecialSerializer(ColorizeRecipe::new, ColorizeRecipe::targetItem));
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<DecolorizeRecipe>> DECOLORIZE = SERIALIZERS.register("crafting_decolorize", () -> itemSpecialSerializer(DecolorizeRecipe::new, DecolorizeRecipe::targetItem));
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<TransformShapedRecipe>> TRANSFORM_SHAPED = SERIALIZERS.register("transform_shaped", () -> TransformShapedRecipe.SERIALIZER);
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<TransformShapelessRecipe>> TRANSFORM_SHAPELESS = SERIALIZERS.register("transform_shapeless", () -> TransformShapelessRecipe.SERIALIZER);
+
+    private static final DeferredRegister<RecipeFunction.Type<?>> FUNCTIONS = DeferredRegister.create(RecipeFunction.REGISTRY, OpenComputers.ID());
+
+    public static final DeferredHolder<RecipeFunction.Type<?>, RecipeFunction.Type<AddPrintLight>> ADD_PRINT_LIGHT = FUNCTIONS.register("add_print_light", () -> AddPrintLight.TYPE);
+    public static final DeferredHolder<RecipeFunction.Type<?>, RecipeFunction.Type<CopyComponents>> COPY_COMPONENTS = FUNCTIONS.register("copy_components", () -> CopyComponents.TYPE);
+    public static final DeferredHolder<RecipeFunction.Type<?>, RecipeFunction.Type<ReplaceEEPROM>> REPLACE_EEPROM = FUNCTIONS.register("replace_eeprom", () -> ReplaceEEPROM.TYPE);
+    public static final DeferredHolder<RecipeFunction.Type<?>, RecipeFunction.Type<SetDefaultArchitecture>> SET_DEFAULT_ARCHITECTURE = FUNCTIONS.register("set_default_architecture", () -> SetDefaultArchitecture.TYPE);
+    public static final DeferredHolder<RecipeFunction.Type<?>, RecipeFunction.Type<SetEEPROMData>> SET_EEPROM_DATA = FUNCTIONS.register("set_eeprom_data", () -> SetEEPROMData.TYPE);
+    public static final DeferredHolder<RecipeFunction.Type<?>, RecipeFunction.Type<SetSourceMap>> SET_SOURCE_MAP = FUNCTIONS.register("set_source_map", () -> SetSourceMap.TYPE);
+    public static final DeferredHolder<RecipeFunction.Type<?>, RecipeFunction.Type<SetUniqueTunnel>> SET_UNIQUE_TUNNEL = FUNCTIONS.register("set_unique_tunnel", () -> SetUniqueTunnel.TYPE);
+
     public static void init(IEventBus eventBus) {
-        RECIPES.register(eventBus);
+        eventBus.addListener((NewRegistryEvent event) -> event.create(new RegistryBuilder<>(RecipeFunction.REGISTRY).sync(true)));
         SERIALIZERS.register(eventBus);
+        FUNCTIONS.register(eventBus);
+    }
+
+    private static <T extends Recipe<?>> RecipeSerializer<T> itemSpecialSerializer(Function<ItemLike, T> ctor, Function<T, Item> getter) {
+        return new BasicRecipeSerializer<>(
+            BuiltInRegistries.ITEM.byNameCodec().fieldOf("item").xmap(ctor, getter),
+            ByteBufCodecs.registry(Registries.ITEM).map(ctor, getter)
+        );
     }
 }

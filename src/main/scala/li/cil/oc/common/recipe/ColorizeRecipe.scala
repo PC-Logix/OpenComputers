@@ -15,7 +15,7 @@ import net.minecraft.world.level.{ItemLike, Level}
 /**
   * @author asie, Vexatos
   */
-class ColorizeRecipe(id: ResourceLocation, target: ItemLike) extends CustomRecipe(CraftingBookCategory.MISC) {
+class ColorizeRecipe(target: ItemLike) extends CustomRecipe(CraftingBookCategory.MISC) {
   val targetItem: Item = target.asItem()
 
   override def matches(crafting: CraftingInput, level: Level): Boolean = {
@@ -82,5 +82,5 @@ class ColorizeRecipe(id: ResourceLocation, target: ItemLike) extends CustomRecip
 
   override def canCraftInDimensions(width: Int, height: Int): Boolean = width * height >= 2
 
-  override def getSerializer = Recipes.COLORIZE.getSerializer
+  override def getSerializer = Recipes.COLORIZE.get
 }

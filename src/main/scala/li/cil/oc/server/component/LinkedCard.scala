@@ -89,8 +89,6 @@ class LinkedCard extends AbstractManagedEnvironment with QuantumNetwork.QuantumN
 
   // ----------------------------------------------------------------------- //
 
-  private final val TunnelTag = Settings.namespace + "tunnel"
-
   override def loadData(holder: DataComponentHolder): Unit = {
     super.loadData(holder)
 

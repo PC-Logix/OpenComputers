@@ -1,0 +1,35 @@
+{
+  "type": "opencomputers:transform_shaped",
+  "category": "misc",
+  "functions": [
+    {
+      "type": "opencomputers:set_default_architecture"
+    }
+  ],
+  "key": {
+    "A": {
+      "item": "opencomputers:alu"
+    },
+    "C": {
+      "item": "opencomputers:chip1"
+    },
+    "U": {
+      "item": "opencomputers:cu"
+    },
+    "i": {
+      "tag": "c:nuggets/iron"
+    },
+    "r": {
+      "tag": "c:dusts/redstone"
+    }
+  },
+  "pattern": [
+    "iri",
+    "CUC",
+    "iAi"
+  ],
+  "result": {
+    "count": 1,
+    "id": "opencomputers:cpu1"
+  }
+}

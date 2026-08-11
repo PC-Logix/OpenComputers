@@ -1,0 +1,27 @@
+{
+  "type": "opencomputers:transform_shapeless",
+  "category": "misc",
+  "functions": [
+    {
+      "type": "opencomputers:copy_components",
+      "from": {
+        "item": "opencomputers:drone"
+      }
+    },
+    {
+      "type": "opencomputers:replace_eeprom"
+    }
+  ],
+  "ingredients": [
+    {
+      "item": "opencomputers:drone"
+    },
+    {
+      "item": "opencomputers:eeprom"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "opencomputers:drone"
+  }
+}

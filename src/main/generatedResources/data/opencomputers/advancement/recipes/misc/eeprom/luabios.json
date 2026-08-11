@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_eeprom": {
+      "conditions": {
+        "items": [
+          {
+            "items": "opencomputers:eeprom"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "opencomputers:eeprom/luabios"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_eeprom"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "opencomputers:eeprom/luabios"
+    ]
+  }
+}
