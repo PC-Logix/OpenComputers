@@ -58,7 +58,15 @@ object CallbackWrapper {
     mv.visitTypeInsn(Opcodes.CHECKCAST, className)
     mv.visitVarInsn(Opcodes.ALOAD, 2)
     mv.visitVarInsn(Opcodes.ALOAD, 3)
-    mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, className, m.getName, Type.getMethodDescriptor(m), false)
+    // Methods discovered via an implemented interface (e.g. default methods
+    // like NetworkControl's @Callback methods) must be invoked with
+    // INVOKEINTERFACE, not INVOKEVIRTUAL. Using INVOKEVIRTUAL against an
+    // interface owner throws IncompatibleClassChangeError at call time.
+    if (m.getDeclaringClass.isInterface) {
+      mv.visitMethodInsn(Opcodes.INVOKEINTERFACE, className, m.getName, Type.getMethodDescriptor(m), true)
+    } else {
+      mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, className, m.getName, Type.getMethodDescriptor(m), false)
+    }
     mv.visitInsn(Opcodes.ARETURN)
     mv.visitMaxs(3, 3)
     mv.visitEnd()
