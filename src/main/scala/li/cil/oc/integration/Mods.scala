@@ -26,6 +26,7 @@ object Mods {
   val JustEnoughItems = new SimpleMod(IDs.JustEnoughItems)
   val AppliedEnergistics2 = new SimpleMod(IDs.AppliedEnergistics2)
   val Mekanism = new SimpleMod(IDs.Mekanism)
+  val CreateAddition = new SimpleMod(IDs.CreateAddition)
   val Minecraft = new SimpleMod(IDs.Minecraft)
   val OpenComputers = new SimpleMod(IDs.OpenComputers)
   val EnderStorage = new SimpleMod(IDs.EnderStorage)
@@ -40,6 +41,7 @@ object Mods {
     integration.minecraft.ModMinecraft,
     integration.computercraft.ModComputerCraft,
     integration.appeng.ModAppliedEnergistics2.INSTANCE,
+    integration.createaddition.ModCreateAddition.INSTANCE,
     integration.enderstorage.ModEnderStorage,
     integration.projectred.ModProjectRed,
 
@@ -101,6 +103,7 @@ object Mods {
     final val JustEnoughItems = "jei"
     final val AppliedEnergistics2 = "ae2"
     final val Mekanism = "mekanism"
+    final val CreateAddition = "createaddition"
     final val Minecraft = "minecraft"
     final val OpenComputers = "opencomputers"
     final val EnderStorage = "enderstorage"

@@ -258,6 +258,10 @@ dependencies {
     runtimeOnly("mekanism:Mekanism:${mekanism_version}")
     runtimeOnly("mekanism:Mekanism:${mekanism_version}:generators")
 
+    // Create: Crafts & Additions
+    compileOnly("maven.modrinth:createaddition:${createaddition_version}")
+    runtimeOnly("maven.modrinth:createaddition:${createaddition_version}")
+
     // JEI
     compileOnly("mezz.jei:${jeiSlug}-neoforge-api:${jei_version}")
     devRuntimeOnly("mezz.jei:${jeiSlug}-neoforge:${jei_version}")
