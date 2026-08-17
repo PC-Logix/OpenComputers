@@ -240,6 +240,10 @@ private[oc] object Registry extends api.detail.DriverAPI {
     val converted = memo.asScala.getOrElseUpdate(obj, mutable.Map.empty[AnyRef, AnyRef]) match {
       case map: mutable.Map[AnyRef, AnyRef]@unchecked => map
       case map: java.util.Map[AnyRef, AnyRef]@unchecked => map.asScala
+      case _ =>
+        val fresh = mutable.Map.empty[AnyRef, AnyRef]
+        memo.asScala += obj -> fresh
+        fresh
     }
     map.collect {
       case (key: AnyRef, value: AnyRef) => converted += convertRecursively(key, memo) -> convertRecursively(value, memo)
