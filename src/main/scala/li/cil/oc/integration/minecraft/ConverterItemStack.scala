@@ -75,12 +75,14 @@ object ConverterItemStack extends api.driver.Converter {
           case lore: ItemLore => {
             output += "lore" -> lore.lines().map(_.getString).mkString("\n")
           }
+          case _ =>
         }
 
         stack.getCapability(Capabilities.EnergyStorage.ITEM) match {
           case storage: IEnergyStorage => {
             output += "Energy" -> Int.box(storage.getEnergyStored)
           }
+          case _ =>
         }
 
         // custom mod tags
