@@ -81,8 +81,9 @@ object Callbacks {
 
   private def staticAnalyze(seed: Class[_], shouldAdd: Option[String => Boolean] = None, optCallbacks: Option[mutable.Map[String, Callback]] = None) = {
     val callbacks = optCallbacks.getOrElse(mutable.Map.empty[String, Callback])
-    var c: Class[_] = seed
-    while (c != null && c != classOf[Object]) {
+    val visited = mutable.Set.empty[Class[_]]
+
+    def processMethods(c: Class[_]): Unit = {
       val ms = c.getDeclaredMethods
 
       ms.filter(_.isAnnotationPresent(classOf[machine.Callback])).foreach(m =>
@@ -105,9 +106,21 @@ object Callbacks {
           }
         }
       )
-
-      c = c.getSuperclass
     }
+
+    // getDeclaredMethods only ever returns methods declared directly on a
+    // class, never default methods inherited from implemented interfaces
+    // (e.g. NetworkControl's @Callback defaults). Walking only
+    // getSuperclass, as before, silently drops every interface-provided
+    // callback. Recurse into interfaces (and their super-interfaces) too.
+    def visit(c: Class[_]): Unit = {
+      if (c == null || c == classOf[Object] || !visited.add(c)) return
+      processMethods(c)
+      c.getInterfaces.foreach(visit)
+      visit(c.getSuperclass)
+    }
+
+    visit(seed)
     callbacks
   }
 
