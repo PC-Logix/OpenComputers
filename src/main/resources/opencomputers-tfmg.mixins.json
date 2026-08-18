@@ -1,0 +1,15 @@
+{
+  "required": false,
+  "minVersion": "0.8",
+  "package": "li.cil.oc.integration.tfmg.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "ElectricalNetworkMixin",
+    "VoltageAlteringBlockEntityMixin",
+    "ElectricalNetworkUpdateInFrontDeferMixin",
+    "VoltageAlteringBlockEntityPacketThrottleMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
