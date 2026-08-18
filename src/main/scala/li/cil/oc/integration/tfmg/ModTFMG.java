@@ -23,5 +23,7 @@ public final class ModTFMG implements ModProxy {
         Driver.add(DriverElectricSwitch.INSTANCE);
         Driver.add(DriverLargeElectricSwitch.Provider.INSTANCE);
         Driver.add(DriverLargeElectricSwitch.INSTANCE);
+        Driver.add(DriverAccumulator.Provider.INSTANCE);
+        Driver.add(DriverAccumulator.INSTANCE);
     }
 }
