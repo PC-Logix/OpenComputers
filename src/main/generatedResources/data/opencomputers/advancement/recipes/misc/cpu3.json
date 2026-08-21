@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_alu": {
+      "conditions": {
+        "items": [
+          {
+            "items": "opencomputers:alu"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "opencomputers:cpu3"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_alu"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "opencomputers:cpu3"
+    ]
+  }
+}

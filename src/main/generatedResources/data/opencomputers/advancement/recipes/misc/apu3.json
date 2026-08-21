@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_cpu4": {
+      "conditions": {
+        "items": [
+          {
+            "items": "opencomputers:cpu4"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_graphicscard3": {
+      "conditions": {
+        "items": [
+          {
+            "items": "opencomputers:graphicscard3"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "opencomputers:apu3"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_cpu4",
+      "has_graphicscard3"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "opencomputers:apu3"
+    ]
+  }
+}

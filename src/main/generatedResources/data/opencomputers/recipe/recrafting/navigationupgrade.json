@@ -1,0 +1,24 @@
+{
+  "type": "opencomputers:transform_shapeless",
+  "category": "misc",
+  "functions": [
+    {
+      "type": "opencomputers:set_source_map",
+      "from": {
+        "item": "minecraft:filled_map"
+      }
+    }
+  ],
+  "ingredients": [
+    {
+      "item": "opencomputers:navigationupgrade"
+    },
+    {
+      "item": "minecraft:filled_map"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "opencomputers:navigationupgrade"
+  }
+}

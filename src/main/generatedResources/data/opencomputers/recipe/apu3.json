@@ -1,0 +1,35 @@
+{
+  "type": "opencomputers:transform_shaped",
+  "category": "misc",
+  "functions": [
+    {
+      "type": "opencomputers:set_default_architecture"
+    }
+  ],
+  "key": {
+    "B": {
+      "item": "opencomputers:componentbus3"
+    },
+    "C": {
+      "item": "opencomputers:chip3"
+    },
+    "G": {
+      "item": "opencomputers:graphicscard3"
+    },
+    "P": {
+      "item": "opencomputers:cpu4"
+    },
+    "n": {
+      "item": "opencomputers:netheritesilicon"
+    }
+  },
+  "pattern": [
+    "nCn",
+    "PBG",
+    "nCn"
+  ],
+  "result": {
+    "count": 1,
+    "id": "opencomputers:apu3"
+  }
+}

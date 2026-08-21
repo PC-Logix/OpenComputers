@@ -1,13 +1,22 @@
 package li.cil.oc.data;
 
+import it.unimi.dsi.fastutil.Pair;
 import li.cil.oc.OpenComputers;
 import li.cil.oc.common.block.ChameliumBlock;
 import li.cil.oc.common.datacomponents.OCComponents;
 import li.cil.oc.common.init.OCBlocks;
 import li.cil.oc.common.init.OCItems;
+import li.cil.oc.common.init.OCTags;
 import li.cil.oc.common.openprinter.OpenPrinter;
+import li.cil.oc.common.recipe.ColorizeRecipe;
+import li.cil.oc.common.recipe.DecolorizeRecipe;
+import li.cil.oc.common.recipe.LootDiskCyclingRecipe;
+import li.cil.oc.common.recipe.function.*;
+import li.cil.oc.data.recipe.TransformShapedRecipeBuilder;
+import li.cil.oc.data.recipe.TransformShapelessRecipeBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.network.chat.Component;
@@ -18,11 +27,19 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.crafting.CompoundIngredient;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 class OCRecipeProvider extends RecipeProvider {
     private static final Map<DyeColor, TagKey<Item>> DYE_TAGS = Map.ofEntries(
@@ -56,10 +73,18 @@ class OCRecipeProvider extends RecipeProvider {
         addUpgrades(output);
         addStorage(output);
         addBlocks(output);
+        addRobotFlags(output);
+        addPrint(output);
+        addEEPROMRecrafting(output);
         addOpenPrinter(output);
 
         addFloppy(output, "openos", "OpenOS (Operating System)", OCItems.Manual(), DyeColor.GREEN);
         addFloppy(output, "oppm", "OPPM (Package Manager)", OCItems.Interweb(), DyeColor.CYAN);
+
+        addColorize(output, OCBlocks.Cable());
+        addColorize(output, OCItems.HoverBoots());
+
+        output.accept(ResourceLocation.fromNamespaceAndPath(OpenComputers.ID(), "lootdisks/cycling"), new LootDiskCyclingRecipe(CraftingBookCategory.MISC), null);
     }
 
     private void addMaterials(RecipeOutput output) {
@@ -86,7 +111,7 @@ class OCRecipeProvider extends RecipeProvider {
             .unlockedBy(getHasName(OCItems.Manual()), has(OCItems.Manual()))
             .save(output);
 
-        RecipeProvider.oreSmelting(output, java.util.List.of(OCItems.RawCircuitBoard()), RecipeCategory.MISC, OCItems.PrintedCircuitBoard(), 0.1f, 200, "");
+        addSmelting(output, OCItems.RawCircuitBoard(), OCItems.PrintedCircuitBoard(), 0.1f, 200);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, OCItems.Card())
             .pattern("i ")
@@ -443,6 +468,100 @@ class OCRecipeProvider extends RecipeProvider {
     }
 
     private void addComponents(RecipeOutput output) {
+        TransformShapedRecipeBuilder.of(RecipeCategory.MISC, OCItems.APUTier1().get())
+            .pattern("gCg")
+            .pattern("PBG")
+            .pattern("gCg")
+            .define('g', Tags.Items.NUGGETS_GOLD)
+            .define('C', OCItems.ChipTier1().get())
+            .define('B', OCItems.ComponentBusTier1().get())
+            .define('P', OCItems.CPUTier2().get())
+            .define('G', OCItems.GraphicsCardTier1().get())
+            .unlockedBy(getHasName(OCItems.CPUTier2()), has(OCItems.CPUTier2()))
+            .unlockedBy(getHasName(OCItems.GraphicsCardTier1()), has(OCItems.GraphicsCardTier1()))
+            .function(SetDefaultArchitecture.INSTANCE)
+            .save(output);
+
+        TransformShapedRecipeBuilder.of(RecipeCategory.MISC, OCItems.APUTier2().get())
+            .pattern("dCd")
+            .pattern("PBG")
+            .pattern("dCd")
+            .define('d', OCItems.DiamondChip().get())
+            .define('C', OCItems.ChipTier2().get())
+            .define('B', OCItems.ComponentBusTier2().get())
+            .define('P', OCItems.CPUTier3().get())
+            .define('G', OCItems.GraphicsCardTier2().get())
+            .unlockedBy(getHasName(OCItems.CPUTier3()), has(OCItems.CPUTier3()))
+            .unlockedBy(getHasName(OCItems.GraphicsCardTier2()), has(OCItems.GraphicsCardTier2()))
+            .function(SetDefaultArchitecture.INSTANCE)
+            .save(output);
+
+        TransformShapedRecipeBuilder.of(RecipeCategory.MISC, OCItems.APUTier3().get())
+            .pattern("nCn")
+            .pattern("PBG")
+            .pattern("nCn")
+            .define('n', OCItems.NetheriteSilicon().get())
+            .define('C', OCItems.ChipTier3().get())
+            .define('B', OCItems.ComponentBusTier3().get())
+            .define('P', OCItems.CPUTier4().get())
+            .define('G', OCItems.GraphicsCardTier3().get())
+            .unlockedBy(getHasName(OCItems.CPUTier4()), has(OCItems.CPUTier4()))
+            .unlockedBy(getHasName(OCItems.GraphicsCardTier3()), has(OCItems.GraphicsCardTier3()))
+            .function(SetDefaultArchitecture.INSTANCE)
+            .save(output);
+
+        TransformShapedRecipeBuilder.of(RecipeCategory.MISC, OCItems.CPUTier1().get())
+            .pattern("iri")
+            .pattern("CUC")
+            .pattern("iAi")
+            .define('i', Tags.Items.NUGGETS_IRON)
+            .define('r', Tags.Items.DUSTS_REDSTONE)
+            .define('C', OCItems.ChipTier1().get())
+            .define('U', OCItems.ControlUnit().get())
+            .define('A', OCItems.Alu().get())
+            .unlockedBy(getHasName(OCItems.Alu()), has(OCItems.Alu()))
+            .function(SetDefaultArchitecture.INSTANCE)
+            .save(output);
+
+        TransformShapedRecipeBuilder.of(RecipeCategory.MISC, OCItems.CPUTier2().get())
+            .pattern("grg")
+            .pattern("CUC")
+            .pattern("gAg")
+            .define('g', Tags.Items.NUGGETS_GOLD)
+            .define('r', Tags.Items.DUSTS_REDSTONE)
+            .define('C', OCItems.ChipTier2().get())
+            .define('U', OCItems.ControlUnit().get())
+            .define('A', OCItems.Alu().get())
+            .unlockedBy(getHasName(OCItems.Alu()), has(OCItems.Alu()))
+            .function(SetDefaultArchitecture.INSTANCE)
+            .save(output);
+
+        TransformShapedRecipeBuilder.of(RecipeCategory.MISC, OCItems.CPUTier3().get())
+            .pattern("drd")
+            .pattern("CUC")
+            .pattern("dAd")
+            .define('d', OCItems.DiamondChip().get())
+            .define('r', Tags.Items.DUSTS_REDSTONE)
+            .define('C', OCItems.ChipTier3().get())
+            .define('U', OCItems.ControlUnit().get())
+            .define('A', OCItems.Alu().get())
+            .unlockedBy(getHasName(OCItems.Alu()), has(OCItems.Alu()))
+            .function(SetDefaultArchitecture.INSTANCE)
+            .save(output);
+
+        TransformShapedRecipeBuilder.of(RecipeCategory.MISC, OCItems.CPUTier4().get())
+            .pattern("nrn")
+            .pattern("CUC")
+            .pattern("nAn")
+            .define('n', OCItems.NetheriteSilicon().get())
+            .define('r', Tags.Items.DUSTS_REDSTONE)
+            .define('C', OCItems.ChipTier4().get())
+            .define('U', OCItems.ControlUnit().get())
+            .define('A', OCItems.Alu().get())
+            .unlockedBy(getHasName(OCItems.Alu()), has(OCItems.Alu()))
+            .function(SetDefaultArchitecture.INSTANCE)
+            .save(output);
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, OCItems.ComponentBusTier1())
             .pattern("iri")
             .pattern("CU ")
@@ -760,6 +879,25 @@ class OCRecipeProvider extends RecipeProvider {
             .unlockedBy(getHasName(OCItems.Card()), has(OCItems.Card()))
             .save(output);
 
+        TransformShapedRecipeBuilder.of(RecipeCategory.MISC, new ItemStack(OCItems.LinkedCard().get(), 2))
+            .pattern("e e")
+            .pattern("LIL")
+            .pattern("C C")
+            .define('e', Items.ENDER_EYE)
+            .define('C', OCItems.ChipTier3())
+            .define('I', OCItems.Interweb())
+            .define('L', OCItems.InternetCard())
+            .unlockedBy(getHasName(OCItems.ChipTier3()), has(OCItems.ChipTier3()))
+            .function(SetUniqueTunnel.INSTANCE)
+            .save(output);
+
+        TransformShapelessRecipeBuilder.of(RecipeCategory.MISC, new ItemStack(OCItems.LinkedCard().get(), 2))
+            .requires(OCItems.LinkedCard())
+            .requires(OCItems.LinkedCard())
+            .unlockedBy(getHasName(OCItems.ChipTier3()), has(OCItems.ChipTier3()))
+            .function(SetUniqueTunnel.INSTANCE)
+            .save(output, ResourceLocation.fromNamespaceAndPath(OpenComputers.ID(), "recrafting/linkedcard"));
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, OCItems.DataCardTier1())
             .pattern("iAC")
             .pattern(" B ")
@@ -1025,6 +1163,26 @@ class OCRecipeProvider extends RecipeProvider {
             .unlockedBy(getHasName(OCItems.PrintedCircuitBoard()), has(OCItems.PrintedCircuitBoard()))
             .save(output);
 
+        TransformShapedRecipeBuilder.of(RecipeCategory.MISC, OCItems.NavigationUpgrade())
+            .pattern("gcg")
+            .pattern("CmC")
+            .pattern("gpg")
+            .define('g', Tags.Items.INGOTS_GOLD)
+            .define('c', Items.COMPASS)
+            .define('m', Items.FILLED_MAP)
+            .define('p', Tags.Items.POTION_BOTTLE)
+            .define('C', OCItems.ChipTier2())
+            .unlockedBy(getHasName(OCItems.PrintedCircuitBoard()), has(OCItems.PrintedCircuitBoard()))
+            .function(new SetSourceMap(Ingredient.of(Items.FILLED_MAP)))
+            .save(output);
+
+        TransformShapelessRecipeBuilder.of(RecipeCategory.MISC, OCItems.NavigationUpgrade())
+            .requires(OCItems.NavigationUpgrade())
+            .requires(Items.FILLED_MAP)
+            .unlockedBy(getHasName(OCItems.NavigationUpgrade()), has(OCItems.NavigationUpgrade()))
+            .function(new SetSourceMap(Ingredient.of(Items.FILLED_MAP)))
+            .save(output, ResourceLocation.fromNamespaceAndPath(OpenComputers.ID(), "recrafting/navigationupgrade"));
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, OCItems.PistonUpgrade())
             .pattern("ipi")
             .pattern("sCs")
@@ -1178,6 +1336,23 @@ class OCRecipeProvider extends RecipeProvider {
             .unlockedBy(getHasName(OCItems.Manual()), has(OCItems.Manual()))
             .save(output);
 
+        var luaBios = new ItemStack(OCItems.EEPROM().get());
+        luaBios.set(OCComponents.READONLY().get(), false);
+        luaBios.set(OCComponents.LABEL().get(), "EEPROM (Lua BIOS)");
+        TransformShapelessRecipeBuilder.of(RecipeCategory.MISC, luaBios)
+            .requires(OCItems.EEPROM())
+            .requires(OCItems.Manual())
+            .unlockedBy(getHasName(OCItems.EEPROM()), has(OCItems.EEPROM()))
+            .function(new SetEEPROMData("bios.lua", Optional.empty()))
+            .save(output, ResourceLocation.fromNamespaceAndPath(OpenComputers.ID(), "eeprom/luabios"));
+
+        TransformShapelessRecipeBuilder.of(RecipeCategory.MISC, new ItemStack(OCItems.EEPROM().get(), 2))
+            .requires(OCItems.EEPROM(), 2)
+            .unlockedBy(getHasName(OCItems.EEPROM()), has(OCItems.EEPROM()))
+            // Erase node address, just in case.
+            .function(CopyComponents.builder(OCItems.EEPROM()).exclude(OCComponents.ADDRESS().get()).build())
+            .save(output, ResourceLocation.fromNamespaceAndPath(OpenComputers.ID(), "eeprom/copying"));
+
         var floppy = new ItemStack(OCItems.Floppy().get());
         floppy.set(OCComponents.DISK_COLOR().get(), DyeColor.LIGHT_GRAY);
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, floppy)
@@ -1190,6 +1365,25 @@ class OCRecipeProvider extends RecipeProvider {
             .define('D', OCItems.Disk())
             .unlockedBy(getHasName(OCItems.Disk()), has(OCItems.Disk()))
             .save(output);
+
+        for (var dye : DYE_TAGS.entrySet()) {
+            var dyedFloppy = new ItemStack(OCItems.Floppy().get());
+            dyedFloppy.set(OCComponents.DISK_COLOR().get(), dye.getKey());
+            TransformShapelessRecipeBuilder.of(RecipeCategory.MISC, dyedFloppy)
+                .requires(OCItems.Floppy())
+                .requires(dye.getValue())
+                .unlockedBy(getHasName(OCItems.Floppy()), has(OCItems.Floppy()))
+                // Copy all components except the color, which we override
+                .function(CopyComponents.builder(OCItems.Floppy().get()).exclude(OCComponents.DISK_COLOR().get()).build())
+                .save(output, ResourceLocation.fromNamespaceAndPath(OpenComputers.ID(), "floppy/coloring/" + dye.getKey().getName()));
+        }
+
+        TransformShapelessRecipeBuilder.of(RecipeCategory.MISC, OCItems.Floppy())
+            .requires(OCItems.Floppy())
+            .unlockedBy(getHasName(OCItems.Floppy()), has(OCItems.Floppy()))
+            // Preserve the color and drop all other components
+            .function(CopyComponents.builder(OCItems.Floppy().get()).include(OCComponents.DISK_COLOR().get()).build())
+            .save(output, ResourceLocation.fromNamespaceAndPath(OpenComputers.ID(), "floppy/formatting"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, OCItems.HDDTier1())
             .pattern("CDi")
@@ -1274,6 +1468,90 @@ class OCRecipeProvider extends RecipeProvider {
             .define('R', OCItems.RAMTier7())
             .unlockedBy(getHasName(OCItems.PrintedCircuitBoard()), has(OCItems.PrintedCircuitBoard()))
             .save(output);
+
+        // Add all formatting recipes.
+        for (var drive : List.of(
+            Pair.of("eeprom/formatting", OCItems.EEPROM().get()),
+            Pair.of("hdd/formatting1", OCItems.HDDTier1().get()),
+            Pair.of("hdd/formatting2", OCItems.HDDTier2().get()),
+            Pair.of("hdd/formatting3", OCItems.HDDTier3().get()),
+            Pair.of("hdd/formatting4", OCItems.HDDTier4().get()),
+            Pair.of("ssd/formatting1", OCItems.SSDTier1().get()),
+            Pair.of("ssd/formatting2", OCItems.SSDTier2().get()),
+            Pair.of("ssd/formatting3", OCItems.SSDTier3().get())
+        )) {
+            ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, drive.second())
+                .requires(drive.second())
+                .unlockedBy(getHasName(drive.second()), has(drive.second()))
+                .save(output, ResourceLocation.fromNamespaceAndPath(OpenComputers.ID(), drive.first()));
+        }
+    }
+
+    private void addRobotFlags(RecipeOutput output) {
+        addRobotFlag(output, "trans_flag", x -> x
+            .requires(Tags.Items.DYES_LIGHT_BLUE)
+            .requires(Tags.Items.DYES_PINK)
+            .requires(Tags.Items.DYES_WHITE)
+            .requires(Items.STICK)
+        );
+
+        addRobotFlag(output, "rainbow_flag", x -> x
+            .requires(Tags.Items.DYES_RED)
+            .requires(Tags.Items.DYES_ORANGE)
+            .requires(Tags.Items.DYES_YELLOW)
+            .requires(Tags.Items.DYES_GREEN)
+            .requires(Tags.Items.DYES_BLUE)
+            .requires(Tags.Items.DYES_PURPLE)
+            .requires(Items.STICK)
+        );
+    }
+
+    private void addRobotFlag(RecipeOutput output, String name, Consumer<TransformShapelessRecipeBuilder> build) {
+        var result = new ItemStack(OCBlocks.Robot().get());
+        result.set(OCComponents.ROBOT_FLAG().get(), ResourceLocation.fromNamespaceAndPath(OpenComputers.ID(), name));
+
+        var builder = TransformShapelessRecipeBuilder.of(RecipeCategory.MISC, result);
+        build.accept(builder);
+        builder
+            .requires(OCBlocks.Robot())
+            .unlockedBy(getHasName(OCBlocks.Robot()), has(OCBlocks.Robot()))
+            .function(CopyComponents.builder(OCBlocks.Robot()).exclude(OCComponents.ROBOT_FLAG().get()).build())
+            .save(output, ResourceLocation.fromNamespaceAndPath(OpenComputers.ID(), "robot/" + name));
+    }
+
+    private void addPrint(RecipeOutput output) {
+        TransformShapelessRecipeBuilder.of(RecipeCategory.MISC, OCBlocks.Print())
+            .requires(OCBlocks.Print())
+            .requires(CompoundIngredient.of(Ingredient.of(Items.GLOWSTONE), Ingredient.of(OCTags.Items.FROGLIGHTS)))
+            .function(new CopyComponents(OCBlocks.Print()))
+            .function(new AddPrintLight(4))
+            .unlockedBy(getHasName(OCBlocks.Print()), has(OCBlocks.Print()))
+            .save(output, ResourceLocation.fromNamespaceAndPath(OpenComputers.ID(), "print/glowstone"));
+
+        TransformShapelessRecipeBuilder.of(RecipeCategory.MISC, OCBlocks.Print())
+            .requires(OCBlocks.Print())
+            .requires(Tags.Items.DUSTS_GLOWSTONE)
+            .function(new CopyComponents(OCBlocks.Print()))
+            .function(new AddPrintLight(1))
+            .unlockedBy(getHasName(OCBlocks.Print()), has(OCBlocks.Print()))
+            .save(output, ResourceLocation.fromNamespaceAndPath(OpenComputers.ID(), "print/glowstone_dust"));
+    }
+
+    private void addEEPROMRecrafting(RecipeOutput output) {
+        for (var item : List.of(
+            OCItems.Drone().asItem(),
+            OCBlocks.Microcontroller().asItem(),
+            OCBlocks.Robot().asItem(),
+            OCItems.Tablet().asItem()
+        )) {
+            TransformShapelessRecipeBuilder.of(RecipeCategory.MISC, item)
+                .requires(item)
+                .requires(OCItems.EEPROM())
+                .function(new CopyComponents(item))
+                .function(ReplaceEEPROM.INSTANCE)
+                .unlockedBy(getHasName(item), has(item))
+                .save(output, BuiltInRegistries.ITEM.getKey(item).withPrefix("recrafting"));
+        }
     }
 
     private void addOpenPrinter(RecipeOutput output) {
@@ -1916,5 +2194,18 @@ class OCRecipeProvider extends RecipeProvider {
             .requires(item)
             .unlockedBy(getHasName(OCItems.Floppy()), has(OCItems.Floppy()))
             .save(output, ResourceLocation.fromNamespaceAndPath(OpenComputers.ID(), "lootdisks/" + id));
+    }
+
+    private void addColorize(RecipeOutput output, ItemLike item) {
+        var itemId = BuiltInRegistries.ITEM.getKey(item.asItem());
+
+        output.accept(itemId.withPrefix("colorize/"), new ColorizeRecipe(item), null);
+        output.accept(itemId.withPrefix("decolorize/"), new DecolorizeRecipe(item), null);
+    }
+
+    private void addSmelting(RecipeOutput output, ItemLike input, ItemLike result, float experience, int time) {
+        SimpleCookingRecipeBuilder.generic(Ingredient.of(input), RecipeCategory.MISC, result, experience, time, RecipeSerializer.SMELTING_RECIPE, SmeltingRecipe::new)
+            .unlockedBy(getHasName(input), has(input))
+            .save(output);
     }
 }

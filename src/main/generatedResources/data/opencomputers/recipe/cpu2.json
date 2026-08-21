@@ -1,0 +1,35 @@
+{
+  "type": "opencomputers:transform_shaped",
+  "category": "misc",
+  "functions": [
+    {
+      "type": "opencomputers:set_default_architecture"
+    }
+  ],
+  "key": {
+    "A": {
+      "item": "opencomputers:alu"
+    },
+    "C": {
+      "item": "opencomputers:chip2"
+    },
+    "U": {
+      "item": "opencomputers:cu"
+    },
+    "g": {
+      "tag": "c:nuggets/gold"
+    },
+    "r": {
+      "tag": "c:dusts/redstone"
+    }
+  },
+  "pattern": [
+    "grg",
+    "CUC",
+    "gAg"
+  ],
+  "result": {
+    "count": 1,
+    "id": "opencomputers:cpu2"
+  }
+}

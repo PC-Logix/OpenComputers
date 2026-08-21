@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_print": {
+      "conditions": {
+        "items": [
+          {
+            "items": "opencomputers:print"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "opencomputers:print/glowstone_dust"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_print"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "opencomputers:print/glowstone_dust"
+    ]
+  }
+}

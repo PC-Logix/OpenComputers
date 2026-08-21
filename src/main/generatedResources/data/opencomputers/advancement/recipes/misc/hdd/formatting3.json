@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_hdd3": {
+      "conditions": {
+        "items": [
+          {
+            "items": "opencomputers:hdd3"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "opencomputers:hdd/formatting3"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_hdd3"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "opencomputers:hdd/formatting3"
+    ]
+  }
+}

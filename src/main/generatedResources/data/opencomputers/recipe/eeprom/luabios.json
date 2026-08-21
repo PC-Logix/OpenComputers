@@ -1,0 +1,26 @@
+{
+  "type": "opencomputers:transform_shapeless",
+  "category": "misc",
+  "functions": [
+    {
+      "type": "opencomputers:set_eeprom_data",
+      "script": "bios.lua"
+    }
+  ],
+  "ingredients": [
+    {
+      "item": "opencomputers:eeprom"
+    },
+    {
+      "item": "opencomputers:manual"
+    }
+  ],
+  "result": {
+    "components": {
+      "opencomputers:label": "EEPROM (Lua BIOS)",
+      "opencomputers:readonly": false
+    },
+    "count": 1,
+    "id": "opencomputers:eeprom"
+  }
+}

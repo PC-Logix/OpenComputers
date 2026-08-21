@@ -1,0 +1,38 @@
+{
+  "type": "opencomputers:transform_shaped",
+  "category": "misc",
+  "functions": [
+    {
+      "type": "opencomputers:set_source_map",
+      "from": {
+        "item": "minecraft:filled_map"
+      }
+    }
+  ],
+  "key": {
+    "C": {
+      "item": "opencomputers:chip2"
+    },
+    "c": {
+      "item": "minecraft:compass"
+    },
+    "g": {
+      "tag": "c:ingots/gold"
+    },
+    "m": {
+      "item": "minecraft:filled_map"
+    },
+    "p": {
+      "tag": "c:potions/bottle"
+    }
+  },
+  "pattern": [
+    "gcg",
+    "CmC",
+    "gpg"
+  ],
+  "result": {
+    "count": 1,
+    "id": "opencomputers:navigationupgrade"
+  }
+}
