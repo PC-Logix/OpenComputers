@@ -57,7 +57,7 @@ object SpawnComputerCommand {
         place(casePos, Constants.BlockName.CaseCreative)
         rotateProperly(casePos)
 
-        place(screenPos, Constants.BlockName.ScreenTier2)
+        place(screenPos, Constants.BlockName.ScreenTier4)
         rotateProperly(screenPos).foreach { rotatable =>
           if (rotatable.pitch == Direction.UP || rotatable.pitch == Direction.DOWN) {
             rotatable.pitch = Direction.NORTH
@@ -80,9 +80,8 @@ object SpawnComputerCommand {
           case computer: CaseBlockEntity =>
             val components = Seq(
               apu,
-              api.Items.get(Constants.ItemName.RAMTier6).createItemStack(1),
-              api.Items.get(Constants.ItemName.RAMTier6).createItemStack(1),
-              api.Items.get(Constants.ItemName.HDDTier3).createItemStack(1),
+              api.Items.get(Constants.ItemName.RAMCreative).createItemStack(1),
+              api.Items.get(Constants.ItemName.SSDTier3).createItemStack(1),
               api.Items.get(Constants.ItemName.LuaBios).createItemStack(1),
               api.Items.get(Constants.ItemName.OpenOS).createItemStack(1)
             )
