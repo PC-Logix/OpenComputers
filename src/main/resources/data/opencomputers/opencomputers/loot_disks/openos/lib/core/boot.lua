@@ -31,7 +31,7 @@ if gpu then
   end
   _G.boot_screen = gpu.getScreen()
   w, h = gpu.maxResolution()
-  gpu.setResolution(w, h)
+  gpu.setResolution(math.min(w, 80), math.min(h, 25))
   gpu.setBackground(0x000000)
   gpu.setForeground(0xFFFFFF)
   gpu.fill(1, 1, w, h, " ")
