@@ -436,6 +436,25 @@ class GraphicsCard(val tier: Int, val vramScreens: Option[Double] = None, val vi
       result(math.min(gmw, smw), math.min(gmh, smh))
     })
 
+  @Callback(direct = true, doc = """function():string or nil -- Return which of GPU or screen is limiting display capabilities, if either""")
+  def capabilityLimiter(context: Context, args: Arguments): Array[AnyRef] =
+    // FIXME: Assumes that GPU/screen tiers do not differ only by color depth,
+    // which is *currently* valid but may not be in the future. It would be
+    // better to just use the tier values directly, but I couldn't figure out
+    // how to access the physical screen from the TextBuffer...
+    screen(s => {
+      val gmw = maxResolution._1
+      val smw = s.getMaximumWidth
+      result(
+        if (gmw > smw)
+          "screen"
+        else if (gmw < smw)
+          "gpu"
+        else // Equal, so neither is limiting
+          null
+      )
+    })
+
   @Callback(direct = true, doc = """function():number, number -- Get the current viewport resolution.""")
   def getViewport(context: Context, args: Arguments): Array[AnyRef] =
     screen(s => result(s.getViewportWidth, s.getViewportHeight))
