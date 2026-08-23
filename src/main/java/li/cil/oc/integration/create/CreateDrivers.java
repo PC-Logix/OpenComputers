@@ -1,6 +1,11 @@
 package li.cil.oc.integration.create;
 
+import com.simibubi.create.content.contraptions.bearing.MechanicalBearingBlockEntity;
 import com.simibubi.create.content.contraptions.chassis.StickerBlockEntity;
+import com.simibubi.create.content.contraptions.elevator.ElevatorPulleyBlockEntity;
+import com.simibubi.create.content.contraptions.piston.MechanicalPistonBlockEntity;
+import com.simibubi.create.content.contraptions.pulley.PulleyBlockEntity;
+import com.simibubi.create.content.fluids.hosePulley.HosePulleyBlockEntity;
 import com.simibubi.create.content.kinetics.gauge.SpeedGaugeBlockEntity;
 import com.simibubi.create.content.kinetics.gauge.StressGaugeBlockEntity;
 import com.simibubi.create.content.kinetics.motor.CreativeMotorBlockEntity;
@@ -32,6 +37,13 @@ public final class CreateDrivers {
         Driver.add(new CreateBlockDriver<>(SpeedGaugeBlockEntity.class, CreateKineticEnvironments.SpeedGauge::new));
         Driver.add(new CreateBlockDriver<>(StressGaugeBlockEntity.class, CreateKineticEnvironments.StressGauge::new));
         Driver.add(new CreateBlockDriver<>(SequencedGearshiftBlockEntity.class, CreateKineticEnvironments.SequencedGearshift::new));
+
+        Driver.add(new CreateBlockDriver<>(ElevatorPulleyBlockEntity.class, CreateContraptionEnvironments.ElevatorPulley::new));
+        Driver.add(new CreateBlockDriver<>(MechanicalBearingBlockEntity.class, CreateContraptionEnvironments.MechanicalBearing::new));
+        Driver.add(new CreateBlockDriver<>(PulleyBlockEntity.class,
+                blockEntity -> !(blockEntity instanceof ElevatorPulleyBlockEntity), CreateContraptionEnvironments.RopePulley::new));
+        Driver.add(new CreateBlockDriver<>(HosePulleyBlockEntity.class, CreateContraptionEnvironments.HosePulley::new));
+        Driver.add(new CreateBlockDriver<>(MechanicalPistonBlockEntity.class, CreateContraptionEnvironments.MechanicalPiston::new));
 
         Driver.add(new CreateBlockDriver<>(StickerBlockEntity.class, CreateControlEnvironments.Sticker::new));
         Driver.add(new CreateBlockDriver<>(SignalBlockEntity.class, CreateControlEnvironments.Signal::new));

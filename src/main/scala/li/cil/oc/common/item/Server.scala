@@ -1,25 +1,19 @@
 package li.cil.oc.common.item
 
-import java.util
-import li.cil.oc.OpenComputers
-import li.cil.oc.client.KeyBindings
-import li.cil.oc.common.menu.MenuTypes
 import li.cil.oc.common.container.ServerInventory
+import li.cil.oc.common.menu.MenuTypes
 import li.cil.oc.util.Tooltip
-import net.minecraft.world.item.Item
-import net.minecraft.world.item.Item.Properties
-import net.minecraft.world.item.ItemStack
-
-import scala.collection.mutable
-import scala.collection.convert.ImplicitConversionsToScala._
-import net.minecraft.world.InteractionResultHolder
-import net.minecraft.world.level.Level
-import net.minecraft.world.InteractionResult
-import net.minecraft.world.InteractionHand
-import net.minecraft.world.entity.player.Player
-import net.minecraft.server.level.ServerPlayer
 import net.minecraft.network.chat.Component
+import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.item.{Item, ItemStack, TooltipFlag}
+import net.minecraft.world.item.Item.Properties
+import net.minecraft.world.level.Level
+import net.minecraft.world.{InteractionHand, InteractionResultHolder}
+import net.minecraft.world.entity.player.Player
 import net.neoforged.neoforge.common.extensions.IItemExtension
+
+import java.util
+import scala.collection.mutable
 
 class Server(props: Properties, val tier: Int) extends Item(props) with traits.SimpleItem with IItemExtension {
   @Deprecated
@@ -31,9 +25,9 @@ class Server(props: Properties, val tier: Int) extends Item(props) with traits.S
     override def rackSlot = -1
   }
 
-  override protected def tooltipExtended(stack: ItemStack, tooltip: util.List[Component]): Unit = {
-    super.tooltipExtended(stack, tooltip)
-    if (KeyBindings.showExtendedTooltips) {
+  override protected def tooltipExtended(stack: ItemStack, tooltip: util.List[Component], flag: TooltipFlag): Unit = {
+    super.tooltipExtended(stack, tooltip, flag)
+    if (Tooltip.showExtendedTooltip(flag)) {
       HelperInventory.container = stack
       HelperInventory.reinitialize()
       val stacks = mutable.Map.empty[String, Int]
@@ -42,9 +36,7 @@ class Server(props: Properties, val tier: Int) extends Item(props) with traits.S
         stacks += displayName -> (if (stacks.contains(displayName)) stacks(displayName) + 1 else 1)
       }
       if (stacks.nonEmpty) {
-        for (curr <- Tooltip.get("server.Components")) {
-          tooltip.add(Component.literal(curr).setStyle(Tooltip.DefaultStyle))
-        }
+        Tooltip.add(tooltip, flag, "server.Components")
         for (itemName <- stacks.keys.toArray.sorted) {
           tooltip.add(Component.literal("- " + stacks(itemName) + "x " + itemName).setStyle(Tooltip.DefaultStyle))
         }

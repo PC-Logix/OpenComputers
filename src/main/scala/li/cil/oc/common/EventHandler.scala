@@ -200,8 +200,7 @@ object EventHandler {
   def clientLoggedIn(e: ClientPlayerNetworkEvent.LoggingIn): Unit = {
     PetRenderer.isInitialized = false
     PetRenderer.hidden.clear()
-    Loot.disksForClient.clear()
-    Loot.disksForClient ++= Loot.globalDisks.map(_._1.copy())
+    Loot.resetDisksForClient()
     Loot.disksForCyclingClient.clear()
     Loot.disksForCyclingClient ++= Loot.disksForCyclingServer.map(_.copy())
     Loot.eepromsForClient.clear()

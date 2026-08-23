@@ -78,7 +78,7 @@ public final class Items {
                                            Callable<li.cil.oc.api.fs.FileSystem> factory, boolean doRecipeCycling) {
 
         if (API.items != null)
-            return API.items.registerFloppy(name, loc, color, factory, doRecipeCycling);
+            return API.items.registerFloppy(name, name, loc, color, factory, doRecipeCycling);
         return ItemStack.EMPTY;
     }
 
@@ -101,6 +101,22 @@ public final class Items {
     public static ItemStack registerEEPROM(String name, byte[] code, byte[] data, boolean readonly) {
         if (API.items != null)
             return API.items.registerEEPROM(name, code, data, readonly);
+        return ItemStack.EMPTY;
+    }
+
+    /**
+     * The stack will be listed in the creative tab of OpenComputers.
+     *
+     * Call this in the init phase or later, <em>not</em> in pre-init.
+     *
+     * @param stack     the stack to add in the creative tab.
+     * @param name      the label of the EEPROM.
+     * @param section_id the section to put the stack in.
+     *
+     */
+    public static ItemStack registerStack(ItemStack stack, String name, String section_id) {
+        if (API.items != null)
+            return API.items.registerStack(stack, name, section_id);
         return ItemStack.EMPTY;
     }
 

@@ -1,23 +1,18 @@
 package li.cil.oc.integration.minecraft
 
-import java.util
-import li.cil.oc.Settings
-import li.cil.oc.api
-import li.cil.oc.integration.Mods
-import li.cil.oc.util.ExtendedNBT._
-import li.cil.oc.util.ExtendedItemStack._
+import li.cil.oc.{api, Settings}
 import li.cil.oc.util.ItemUtils
 import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.BuiltInRegistries
-import net.minecraft.nbt.{CompoundTag, ListTag, StringTag, Tag}
+import net.minecraft.nbt.{CompoundTag, ListTag, Tag}
 import net.minecraft.world.item
 import net.minecraft.world.item.Item
-import net.minecraft.tags.ItemTags
 import net.minecraft.world.item.component.ItemLore
 import net.minecraft.world.item.enchantment.{Enchantment, EnchantmentHelper}
 import net.neoforged.neoforge.capabilities.Capabilities
 import net.neoforged.neoforge.energy.IEnergyStorage
 
+import java.util
 import scala.collection.convert.ImplicitConversionsToScala._
 import scala.collection.mutable
 import scala.jdk.CollectionConverters._

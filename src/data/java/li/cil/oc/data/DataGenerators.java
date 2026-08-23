@@ -37,6 +37,9 @@ public class DataGenerators {
         generator.addProvider(o -> new OCItemTagsProvider(o, registries, blockTags.contentsGetter(), existingFiles));
         generator.addProvider(o -> new OCDamageTypeTagsProvider(o, registries, existingFiles));
 
+        generator.addProvider(o -> new OCEEPROMProvider(o, registries, existingFiles));
+        generator.addProvider(o -> new OCLootDiskProvider(o, registries, existingFiles));
+
         generator.addProvider(o -> new OCRecipeProvider(o, registries));
         generator.addProvider(o -> new AdvancementProvider(o, registries, existingFiles, List.of(new OCAdvancementProvider())));
 

@@ -51,8 +51,9 @@ object ResourceManagerFileSystem {
   }
 
   def fromResource(manager: ResourceManager, root: ResourceLocation): ResourceManagerFileSystem = {
-    val prefix = root.getPath.stripSuffix("/") + "/"
-    val resources = manager.listResources(prefix, location =>
+    val directory = root.getPath.stripSuffix("/")
+    val prefix = directory + "/"
+    val resources = manager.listResources(directory, location =>
       location.getNamespace == root.getNamespace && location.getPath.startsWith(prefix))
     if (resources.isEmpty) return null
 

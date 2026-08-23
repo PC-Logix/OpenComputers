@@ -1,9 +1,8 @@
 package li.cil.oc.util
 
 import net.minecraft.core.component.DataComponents
-import li.cil.oc.util.ExtendedItemStack._
-import net.minecraft.world.item.ItemStack
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.component.CustomData
 
 /**

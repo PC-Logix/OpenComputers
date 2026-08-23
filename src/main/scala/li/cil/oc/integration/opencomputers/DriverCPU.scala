@@ -1,22 +1,14 @@
 package li.cil.oc.integration.opencomputers
 
-import li.cil.oc.Constants
-import li.cil.oc.OpenComputers
-import li.cil.oc.Settings
-import li.cil.oc.api
-import li.cil.oc.common.Slot
-import li.cil.oc.common.Tier
-import li.cil.oc.common.item
+import li.cil.oc.{api, Constants, OpenComputers, Settings}
+import li.cil.oc.common.{item, Slot, Tier}
 import li.cil.oc.server.component
 import li.cil.oc.server.machine.luac.NativeLuaArchitecture
 import li.cil.oc.util.ItemUtils
 import net.minecraft.core.component.DataComponents
-import li.cil.oc.util.ExtendedItemStack._
 import net.minecraft.world.item.ItemStack
-import net.minecraft.nbt.CompoundTag
 import net.minecraft.world.item.component.CustomData
 
-import scala.collection.convert.ImplicitConversionsToJava._
 import scala.collection.convert.ImplicitConversionsToScala._
 
 object DriverCPU extends DriverCPU

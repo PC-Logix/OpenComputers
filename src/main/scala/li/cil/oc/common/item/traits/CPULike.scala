@@ -7,7 +7,7 @@ import li.cil.oc.util.Tooltip
 import net.minecraft.network.chat.Component
 import net.minecraft.world.{InteractionHand, InteractionResultHolder}
 import net.minecraft.world.entity.player.Player
-import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.{ItemStack, TooltipFlag}
 import net.minecraft.world.level.Level
 
 import java.util
@@ -18,10 +18,8 @@ trait CPULike extends SimpleItem {
 
   override protected def tooltipData: Seq[Any] = Seq(Settings.get.cpuComponentSupport(cpuTier))
 
-  override protected def tooltipExtended(stack: ItemStack, tooltip: util.List[Component]): Unit = {
-    for (curr <- Tooltip.get("cpu.Architecture", api.Machine.getArchitectureName(DriverCPU.architecture(stack))).asScala) {
-      tooltip.add(Component.literal(curr).setStyle(Tooltip.DefaultStyle))
-    }
+  override protected def tooltipExtended(stack: ItemStack, tooltip: util.List[Component], flag: TooltipFlag): Unit = {
+    Tooltip.add(tooltip, flag, "cpu.Architecture", api.Machine.getArchitectureName(DriverCPU.architecture(stack)))
   }
 
   override def use(level: Level, player: Player, hand: InteractionHand): InteractionResultHolder[ItemStack] = {

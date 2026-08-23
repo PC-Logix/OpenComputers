@@ -1,0 +1,18 @@
+{
+  "required": false,
+  "minVersion": "0.8",
+  "package": "li.cil.oc.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "CreativeModeInventoryScreenMixin",
+    "ItemPickerMenuMixin",
+    "accessor.CreativeModeInventoryScreenAccess",
+    "accessor.AbstractContainerScreenAccess"
+  ],
+  "mixins": [
+    "CreativeModeTabMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

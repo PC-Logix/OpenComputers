@@ -53,7 +53,8 @@ public interface ItemAPI {
      * <br>
      * Call this in the init phase or later, <em>not</em> in pre-init.
      *
-     * @param name    the label and identifier to use for the loot disk.
+     * @param display_name    the label to use for the loot disk.
+     * @param name    the identifier to use for the loot disk.
      * @param loc     the location where the disk's contents are stored.
      * @param color   the color of the disk, as a Minecraft color.
      * @param factory the callable to call for creating file system instances.
@@ -61,7 +62,7 @@ public interface ItemAPI {
      * @return an item stack representing the registered loot disk, to allow
      * adding a recipe for your loot disk, for example.
      */
-    ItemStack registerFloppy(String name, ResourceLocation loc, DyeColor color,
+    ItemStack registerFloppy(String display_name, String name, ResourceLocation loc, DyeColor color,
         Callable<li.cil.oc.api.fs.FileSystem> factory, boolean doRecipeCycling);
 
     /**
@@ -83,4 +84,16 @@ public interface ItemAPI {
      * adding a recipe for your custom BIOS, for example.
      */
     ItemStack registerEEPROM(String name, byte[] code, byte[] data, boolean readonly);
+
+    /**
+     * The stack will be listed in the creative tab of OpenComputers.
+     *
+     * Call this in the init phase or later, <em>not</em> in pre-init.
+     *
+     * @param stack     the stack to add in the creative tab.
+     * @param name      the label of the EEPROM.
+     * @param sectionId the section to put the stack in.
+     *
+     */
+    ItemStack registerStack(ItemStack stack, String name, String sectionId);
 }

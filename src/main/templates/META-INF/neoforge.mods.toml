@@ -18,6 +18,9 @@ enumExtensions="META-INF/enumextensions.json"
 [[mixins]]
 config="opencomputers.mixins.json"
 
+[[mixins]]
+config="opencomputers.core.mixins.json"
+
 [[dependencies.opencomputers]]
     modId="minecraft"
     mandatory=true

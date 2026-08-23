@@ -4,7 +4,7 @@ import li.cil.oc.Localization
 import li.cil.oc.common.datacomponents.{MFCoords, OCComponents}
 import li.cil.oc.util.Tooltip
 import net.minecraft.network.chat.Component
-import net.minecraft.world.item.{Item, ItemStack}
+import net.minecraft.world.item.{Item, ItemStack, TooltipFlag}
 import net.minecraft.world.item.Item.Properties
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.item.context.UseOnContext
@@ -23,7 +23,7 @@ class UpgradeMF(props: Properties) extends Item(props) with traits.SimpleItem wi
     super.onItemUseFirst(stack, ctx)
   }
 
-  override protected def tooltipExtended(stack: ItemStack, tooltip: util.List[Component]): Unit = {
+  override protected def tooltipExtended(stack: ItemStack, tooltip: util.List[Component], flag: TooltipFlag): Unit = {
     tooltip.add(Component.literal(Localization.Tooltip.MFULinked(stack.has(OCComponents.MF_COORD))).setStyle(Tooltip.DefaultStyle))
   }
 }

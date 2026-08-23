@@ -1,7 +1,6 @@
 package li.cil.oc.client.renderer.block
 
 import java.util
-import li.cil.oc.api
 import li.cil.oc.client.Textures
 import li.cil.oc.common.Tier
 import li.cil.oc.common.block.Screen
@@ -17,6 +16,7 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.core.Direction
 import net.minecraft.util.RandomSource
 import net.minecraft.client.renderer.RenderType
+import net.minecraft.world.level.block.Block
 import net.neoforged.neoforge.client.model.data.{ModelData, ModelProperty}
 
 object ScreenModel extends SmartBlockModelBase {
@@ -77,7 +77,7 @@ object ScreenModel extends SmartBlockModelBase {
   private def xy2part(value: Int, high: Int) = if (value == 0) 2 else if (value == high) 0 else 1
 
   class ItemModel(val stack: ItemStack) extends SmartBlockModelBase {
-    val color = api.Items.get(stack).block() match {
+    val color: Int = Block.byItem(stack.getItem) match {
       case screen: Screen => Color.byTier(screen.tier)
       case _ => Color.byTier(Tier.One)
     }

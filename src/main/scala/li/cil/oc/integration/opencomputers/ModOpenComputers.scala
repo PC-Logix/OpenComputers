@@ -41,7 +41,7 @@ import li.cil.oc.server.machine.luac.NativeLua53Architecture
 import li.cil.oc.server.network.Waypoints
 import li.cil.oc.server.network.WirelessNetwork
 import li.cil.oc.util.Color
-import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.{BlockItem, ItemStack}
 import net.minecraft.core.BlockPos
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.entity.player.Player
@@ -409,7 +409,7 @@ object ModOpenComputers extends ModProxy {
 
     private def checkBlacklisted(info: ItemInfo): String =
       if (info == null || Blacklist.contains(info.name)) null
-      else if (info.block != null) "%LANGUAGE%/block/" + info.name + ".md"
+      else if (info.item().isInstanceOf[BlockItem]) "%LANGUAGE%/block/" + info.name + ".md"
       else "%LANGUAGE%/item/" + info.name + ".md"
   }
 

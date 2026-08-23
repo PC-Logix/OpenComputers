@@ -1,18 +1,13 @@
 package li.cil.oc.integration.opencomputers
 
-import java.io
-import li.cil.oc.Constants
-import li.cil.oc.OpenComputers
-import li.cil.oc.Settings
-import li.cil.oc.api
+import li.cil.oc.{api, Constants, Settings}
 import li.cil.oc.api.network.EnvironmentHost
 import li.cil.oc.common.Slot
 import li.cil.oc.common.datacomponents.OCComponents
-import li.cil.oc.util.ItemUtils
-import li.cil.oc.util.ExtendedItemStack._
 import li.cil.oc.util.ExtendedDataComponentHolder._
-import net.minecraft.world.item.ItemStack
+import li.cil.oc.util.ItemUtils
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.storage.LevelResource
 import net.neoforged.neoforge.server.ServerLifecycleHooks
 

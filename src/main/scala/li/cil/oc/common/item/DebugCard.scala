@@ -6,7 +6,7 @@ import li.cil.oc.common.item.data.DebugCardData
 import li.cil.oc.server.component.{DebugCard => CDebugCard}
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.Item.Properties
-import net.minecraft.world.item.{Item, ItemStack}
+import net.minecraft.world.item.{Item, ItemStack, TooltipFlag}
 import net.minecraft.world.level.Level
 import net.minecraft.world.{InteractionHand, InteractionResult, InteractionResultHolder}
 import net.minecraft.world.entity.player.Player
@@ -16,8 +16,8 @@ import java.util
 
 class DebugCard(props: Properties) extends Item(props) with traits.ComponentItem with IItemExtension {
 
-  override protected def tooltipExtended(stack: ItemStack, tooltip: util.List[Component]): Unit = {
-    super.tooltipExtended(stack, tooltip)
+  override protected def tooltipExtended(stack: ItemStack, tooltip: util.List[Component], flag: TooltipFlag): Unit = {
+    super.tooltipExtended(stack, tooltip, flag)
     val data = new DebugCardData(stack)
     data.access.foreach(access => tooltip.add(Component.literal(s"§8${access.player}§r")))
   }

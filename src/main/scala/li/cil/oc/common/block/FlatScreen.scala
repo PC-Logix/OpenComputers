@@ -1,14 +1,12 @@
 package li.cil.oc.common.block
 
-import java.util
 import li.cil.oc.Settings
 import li.cil.oc.common.block.property.PropertyRotatable
-import li.cil.oc.util.PackedColor
-import li.cil.oc.util.Tooltip
+import li.cil.oc.util.{PackedColor, Tooltip}
 import net.minecraft.core.{BlockPos, Direction}
 import net.minecraft.network.chat.{Component => ITextComponent}
+import net.minecraft.world.item.{ItemStack, TooltipFlag}
 import net.minecraft.world.item.Item.TooltipContext
-import net.minecraft.world.item.{Item, ItemStack, TooltipFlag => ITooltipFlag}
 import net.minecraft.world.item.context.{BlockPlaceContext => BlockItemUseContext}
 import net.minecraft.world.level.{BlockGetter => IBlockReader}
 import net.minecraft.world.level.block.state.{BlockState, StateDefinition => StateContainer}
@@ -16,7 +14,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour.Properties
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.phys.shapes.{VoxelShape, CollisionContext => ISelectionContext, Shapes => VoxelShapes}
 
-import scala.jdk.CollectionConverters._
+import java.util
 
 class FlatScreen(props: Properties, tier: Int, val isBack: Boolean) extends Screen(props, tier) {
   private val NorthShape = VoxelShapes.box(0, 0, 15.0 / 16.0, 1, 1, 1)
@@ -40,12 +38,10 @@ class FlatScreen(props: Properties, tier: Int, val isBack: Boolean) extends Scre
   override def getShape(state: BlockState, world: IBlockReader, pos: BlockPos, ctx: ISelectionContext): VoxelShape =
     shapeFor(mountFace(state))
 
-  override protected def tooltipBody(stack: ItemStack, context: TooltipContext, tooltip: util.List[ITextComponent], advanced: ITooltipFlag): Unit = {
+  override protected def tooltipBody(stack: ItemStack, context: TooltipContext, tooltip: util.List[ITextComponent], flag: TooltipFlag): Unit = {
     val (w, h) = Settings.screenResolutionsByTier(tier)
     val depth = PackedColor.Depth.bits(Settings.screenDepthsByTier(tier))
-    for (curr <- Tooltip.get("screen", w, h, depth).asScala) {
-      tooltip.add(ITextComponent.literal(curr).setStyle(Tooltip.DefaultStyle))
-    }
+    Tooltip.add(tooltip, flag, "screen", w, h, depth)
   }
 
   private def mountFace(state: BlockState): Direction = {

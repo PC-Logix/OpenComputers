@@ -1,23 +1,19 @@
 package li.cil.oc.common.block
 
-import java.util
 import li.cil.oc.common.blockentity
 import li.cil.oc.common.blockentity.BlockEntityTypes
 import li.cil.oc.util.Tooltip
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties
-import net.minecraft.world.level.block.state.BlockState
-import net.minecraft.world.item.{TooltipFlag => ITooltipFlag}
-import net.minecraft.world.item.ItemStack
 import net.minecraft.core.BlockPos
-import net.minecraft.world.phys.shapes.{CollisionContext => ISelectionContext}
-import net.minecraft.world.phys.shapes.VoxelShape
-import net.minecraft.world.phys.shapes.{Shapes => VoxelShapes}
 import net.minecraft.network.chat.{Component => ITextComponent}
 import net.minecraft.world.item.Item.TooltipContext
-import net.minecraft.world.level.block.entity.{BlockEntity, BlockEntityType}
+import net.minecraft.world.item.{ItemStack, TooltipFlag}
 import net.minecraft.world.level.{BlockGetter => IBlockReader}
+import net.minecraft.world.level.block.entity.{BlockEntity, BlockEntityType}
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties
+import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.phys.shapes.{VoxelShape, CollisionContext => ISelectionContext, Shapes => VoxelShapes}
 
-import scala.jdk.CollectionConverters._
+import java.util
 
 class Hologram(props: Properties, val tier: Int) extends SimpleBlock(props) with traits.Tickable {
   val shape = VoxelShapes.box(0, 0, 0, 1, 0.5, 1)
@@ -28,10 +24,8 @@ class Hologram(props: Properties, val tier: Int) extends SimpleBlock(props) with
 
   // ----------------------------------------------------------------------- //
 
-  override protected def tooltipBody(stack: ItemStack, context: TooltipContext, tooltip: util.List[ITextComponent], advanced: ITooltipFlag): Unit = {
-    for (curr <- Tooltip.get(getClass.getSimpleName.toLowerCase() + tier).asScala) {
-      tooltip.add(ITextComponent.literal(curr).setStyle(Tooltip.DefaultStyle))
-    }
+  override protected def tooltipBody(stack: ItemStack, context: TooltipContext, tooltip: util.List[ITextComponent], flag: TooltipFlag): Unit = {
+    Tooltip.add(tooltip, flag, getClass.getSimpleName.toLowerCase() + tier)
   }
 
   // ----------------------------------------------------------------------- //

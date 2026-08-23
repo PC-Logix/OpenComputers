@@ -1,24 +1,24 @@
 package li.cil.oc.common.block
 
-import li.cil.oc.{Constants, Settings, api}
-import li.cil.oc.client.KeyBindings
-import li.cil.oc.common.item.data.RobotData
-import li.cil.oc.common.menu.MenuTypes
+import li.cil.oc.Settings
 import li.cil.oc.common.blockentity
 import li.cil.oc.common.blockentity.BlockEntityTypes
 import li.cil.oc.common.entity.TrainRobot
-import li.cil.oc.server.{PacketSender, agent}
+import li.cil.oc.common.init.OCBlocks
+import li.cil.oc.common.item.data.RobotData
+import li.cil.oc.common.menu.MenuTypes
+import li.cil.oc.server.{agent, PacketSender}
 import li.cil.oc.server.loot.LootFunctions
 import li.cil.oc.util.{BlockPosition, InventoryUtils, Tooltip}
-import net.minecraft.core.component.DataComponents
 import net.minecraft.core.{BlockPos, Direction}
+import net.minecraft.core.component.DataComponents
 import net.minecraft.network.chat.{Component => ITextComponent}
 import net.minecraft.server.level.{ServerPlayer => ServerPlayerEntity}
 import net.minecraft.world.{InteractionHand => Hand}
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.player.{Player => PlayerEntity}
+import net.minecraft.world.item.{ItemStack, TooltipFlag}
 import net.minecraft.world.item.Item.TooltipContext
-import net.minecraft.world.item.{ItemStack, TooltipFlag => ITooltipFlag}
 import net.minecraft.world.level.{LevelReader, BlockGetter => IBlockReader, Level => World}
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.entity.{BlockEntity, BlockEntityType}
@@ -27,11 +27,9 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.material.FluidState
 import net.minecraft.world.level.storage.loot.LootParams
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams
-import net.minecraft.world.phys.{HitResult => RayTraceResult}
 import net.minecraft.world.phys.shapes.{VoxelShape, CollisionContext => ISelectionContext, Shapes => VoxelShapes}
 
 import java.util
-import scala.jdk.CollectionConverters._
 
 class RobotProxy(props: Properties) extends RedstoneAware(props) with traits.StateAware with traits.Tickable {
   val shape = VoxelShapes.box(0.1, 0.1, 0.1, 0.9, 0.9, 0.9)
@@ -68,26 +66,22 @@ class RobotProxy(props: Properties) extends RedstoneAware(props) with traits.Sta
 
   // ----------------------------------------------------------------------- //
 
-  override protected def tooltipHead(stack: ItemStack, context: TooltipContext, tooltip: util.List[ITextComponent], advanced: ITooltipFlag): Unit = {
-    super.tooltipHead(stack, context, tooltip, advanced)
-    addLines(stack, tooltip)
+  override protected def tooltipHead(stack: ItemStack, context: TooltipContext, tooltip: util.List[ITextComponent], flag: TooltipFlag): Unit = {
+    super.tooltipHead(stack, context, tooltip, flag)
+    addLines(stack, tooltip, flag)
   }
 
-  override protected def tooltipBody(stack: ItemStack, context: TooltipContext, tooltip: util.List[ITextComponent], advanced: ITooltipFlag): Unit = {
-    for (curr <- Tooltip.get("robot").asScala) {
-      tooltip.add(ITextComponent.literal(curr).setStyle(Tooltip.DefaultStyle))
-    }
+  override protected def tooltipBody(stack: ItemStack, context: TooltipContext, tooltip: util.List[ITextComponent], flag: TooltipFlag): Unit = {
+    Tooltip.add(tooltip, flag, "robot")
   }
 
-  override protected def tooltipTail(stack: ItemStack, context: TooltipContext, tooltip: util.List[ITextComponent], flag: ITooltipFlag): Unit = {
+  override protected def tooltipTail(stack: ItemStack, context: TooltipContext, tooltip: util.List[ITextComponent], flag: TooltipFlag): Unit = {
     super.tooltipTail(stack, context, tooltip, flag)
-    if (KeyBindings.showExtendedTooltips) {
+    if (Tooltip.showExtendedTooltip(flag)) {
       val info = new RobotData(stack)
       val components = info.containers ++ info.components
       if (components.length > 0) {
-        for (curr <- Tooltip.get("server.Components").asScala) {
-          tooltip.add(ITextComponent.literal(curr).setStyle(Tooltip.DefaultStyle))
-        }
+        Tooltip.add(tooltip, flag, "server.Components")
         for (component <- components if !component.isEmpty) {
           tooltip.add(ITextComponent.literal("- " + component.getHoverName.getString).setStyle(Tooltip.DefaultStyle))
         }
@@ -95,23 +89,19 @@ class RobotProxy(props: Properties) extends RedstoneAware(props) with traits.Sta
     }
   }
 
-  private def addLines(stack: ItemStack, tooltip: util.List[ITextComponent]): Unit = {
+  private def addLines(stack: ItemStack, tooltip: util.List[ITextComponent], flag: TooltipFlag): Unit = {
     if (stack.has(DataComponents.CUSTOM_DATA)) {
       if (stack.get(DataComponents.CUSTOM_DATA).contains(Settings.namespace + "xp")) {
         val xp = stack.get(DataComponents.CUSTOM_DATA).getUnsafe.getDouble(Settings.namespace + "xp")
         val level = Math.min((Math.pow(xp - Settings.get.baseXpToLevel, 1 / Settings.get.exponentialXpGrowth) / Settings.get.constantXpGrowth).toInt, 30)
         if (level > 0) {
-          for (curr <- Tooltip.get(getDescriptionId + "_level", level).asScala) {
-            tooltip.add(ITextComponent.literal(curr).setStyle(Tooltip.DefaultStyle))
-          }
+          Tooltip.add(tooltip, flag, getDescriptionId + "_level", level)
         }
       }
       if (stack.get(DataComponents.CUSTOM_DATA).contains(Settings.namespace + "storedEnergy")) {
         val energy = stack.get(DataComponents.CUSTOM_DATA).copyTag().getInt(Settings.namespace + "storedEnergy")
         if (energy > 0) {
-          for (curr <- Tooltip.get(getDescriptionId + "_storedenergy", energy).asScala) {
-            tooltip.add(ITextComponent.literal(curr).setStyle(Tooltip.DefaultStyle))
-          }
+          Tooltip.add(tooltip, flag, getDescriptionId + "_storedenergy", energy)
         }
       }
     }
@@ -223,9 +213,9 @@ class RobotProxy(props: Properties) extends RedstoneAware(props) with traits.Sta
 
   override def onDestroyedByPlayer(
                                 state: BlockState,
-                                world: World,    
+                                world: World,
                                 pos: BlockPos,
-                                player: PlayerEntity, 
+                                player: PlayerEntity,
                                 willHarvest: Boolean,
                                 fluid: FluidState
                               ): Boolean = {
@@ -250,7 +240,7 @@ class RobotProxy(props: Properties) extends RedstoneAware(props) with traits.Sta
 
       robot.moveFrom.foreach(fromPos => {
         val targetState = world.getBlockState(fromPos)
-        if (targetState.getBlock == api.Items.get(Constants.BlockName.RobotAfterimage).block) {
+        if (targetState.is(OCBlocks.RobotAfterimage.get())) {
           world.setBlock(fromPos, Blocks.AIR.defaultBlockState, 3)
         }
       })

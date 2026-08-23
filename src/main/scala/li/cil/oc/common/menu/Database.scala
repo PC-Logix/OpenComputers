@@ -26,11 +26,12 @@ class Database(id: Int, playerInventory: Inventory, val container: ItemStack, da
 
   override def stillValid(player: Player) = player == playerInventory.player
 
-  override def clicked(slot: Int, dragType: Int, clickType: ClickType, player: Player) = {
+  override def clicked(slot: Int, dragType: Int, clickType: ClickType, player: Player): Unit = {
     if (slot >= databaseInventory.getContainerSize() || slot < 0) {
       // if the slot interaction is with the user inventory use
       // default behavior
       super.clicked(slot, dragType, clickType, player)
+      return
     }
     // remove the ghost item
     val ghostSlot = this.slots.get(slot);

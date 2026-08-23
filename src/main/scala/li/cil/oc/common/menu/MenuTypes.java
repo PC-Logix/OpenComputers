@@ -142,10 +142,6 @@ public final class MenuTypes {
         player.openMenu(diskDrive);
     }
 
-    public static void openDiskDriveGui(ServerPlayer player, li.cil.oc.common.container.DiskDriveMountableInventory diskDrive) {
-        player.openMenu(diskDrive);
-    }
-
     public static void openHoloScreenGui(ServerPlayer player, li.cil.oc.common.blockentity.HoloScreen screen) {
         player.openMenu(screen);
     }

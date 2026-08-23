@@ -3,6 +3,13 @@ package li.cil.oc
 import li.cil.oc.util.ItemUtils
 
 object Constants {
+  object  SectionName {
+    final val Component = "25_components"
+    final val Tools = "49_tools"
+    final val Materials = "50_materials"
+    final val Upgrade = "80_upgrade"
+    final val Misc = "99_misc"
+  }
 
   object BlockName {
     final val Adapter = "adapter"

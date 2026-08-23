@@ -2,11 +2,11 @@ package li.cil.oc.common.recipe
 
 import java.util.UUID
 import li.cil.oc.Constants
-import li.cil.oc.OpenComputers
 import li.cil.oc.Settings
 import li.cil.oc.api
 import li.cil.oc.api.ImmutableItemStack
 import li.cil.oc.api.detail.ItemInfo
+import li.cil.oc.common.Loot
 import li.cil.oc.common.datacomponents.OCComponents
 import li.cil.oc.common.item.data.DroneData
 import li.cil.oc.common.item.data.MicrocontrollerData
@@ -28,14 +28,12 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.{BlockTags, ItemTags}
 import net.minecraft.world.item.crafting.{CraftingInput, Recipe}
 
-import java.nio.ByteBuffer
 import scala.collection.convert.ImplicitConversionsToScala._
 import scala.util.control.Breaks._
 
 object ExtendedRecipe {
   private lazy val drone = api.Items.get(Constants.ItemName.Drone)
   private lazy val eeprom = api.Items.get(Constants.ItemName.EEPROM)
-  private lazy val luaBios = api.Items.get(Constants.ItemName.LuaBios)
   private lazy val mcu = api.Items.get(Constants.BlockName.Microcontroller)
   private lazy val navigationUpgrade = api.Items.get(Constants.ItemName.NavigationUpgrade)
   private lazy val linkedCard = api.Items.get(Constants.ItemName.LinkedCard)
@@ -83,28 +81,18 @@ object ExtendedRecipe {
       val codeNbt = nbt.get(Settings.namespace + "eeprom")
       if (codeNbt != null && codeNbt.getType == StringTag.TYPE) {
         val codePath = codeNbt.asInstanceOf[StringTag].getAsString
-        val code = new Array[Byte](Settings.get.eepromSize)
-        val stream = OpenComputers.getClass.getResourceAsStream(Settings.scriptPath + codePath)
-        if (stream != null) {
-          try {
-            val count = stream.read(code)
-            if (count >= 0) resultStack.set(OCComponents.EEPROM_CODE, ByteBuffer.wrap(code.take(count)))
-          }
-          finally stream.close()
+        val defaultEEPROM = if (codePath == "bios.lua") Loot.defaultEEPROM else ItemStack.EMPTY
+        if (!defaultEEPROM.isEmpty && defaultEEPROM.has(OCComponents.EEPROM_CODE.get())) {
+          resultStack.set(OCComponents.EEPROM_CODE, defaultEEPROM.get(OCComponents.EEPROM_CODE.get()))
         }
       }
 
       val dataNbt = nbt.get(Settings.namespace + "userdata")
       if (dataNbt != null && dataNbt.getType == StringTag.TYPE) {
         val dataPath = dataNbt.asInstanceOf[StringTag].getAsString
-        val data = new Array[Byte](Settings.get.eepromDataSize)
-        val stream = OpenComputers.getClass.getResourceAsStream(Settings.scriptPath + dataPath)
-        if (stream != null) {
-          try {
-            val count = stream.read(data)
-            if (count >= 0) resultStack.set(OCComponents.EEPROM_DATA, ByteBuffer.wrap(data.take(count)))
-          }
-          finally stream.close()
+        val defaultEEPROM = if (dataPath == "bios.lua") Loot.defaultEEPROM else ItemStack.EMPTY
+        if (!defaultEEPROM.isEmpty && defaultEEPROM.has(OCComponents.EEPROM_DATA.get())) {
+          resultStack.set(OCComponents.EEPROM_DATA, defaultEEPROM.get(OCComponents.EEPROM_DATA.get()))
         }
       }
 

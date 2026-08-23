@@ -13,7 +13,6 @@ import li.cil.oc.common.openprinter.printer.PrinterBlockEntity;
 import li.cil.oc.common.openprinter.printer.PrinterConfig;
 import li.cil.oc.common.openprinter.printer.PrinterClientConfig;
 
-import li.cil.oc.api.FileSystem;
 import li.cil.oc.api.manual.PathProvider;
 import li.cil.oc.api.network.Environment;
 import net.minecraft.core.BlockPos;
@@ -21,7 +20,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -47,6 +45,8 @@ import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.function.Consumer;
+
 /**
  * OpenPrinter, integrated directly into OpenComputers.
  *
@@ -64,8 +64,6 @@ public final class OpenPrinter {
             "print", "printercopypage", "printerstatus", "xerox", "printmap"
     };
     private static final String[] LUA_ARCHITECTURES = {"Lua 5.2", "Lua 5.3", "LuaJ"};
-    private static ItemStack toolsDisk = ItemStack.EMPTY;
-
     public static final Blocks BLOCKS = DeferredRegister.createBlocks(MOD_ID);
     public static final Items ITEMS = DeferredRegister.createItems(MOD_ID);
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES =
@@ -155,29 +153,25 @@ public final class OpenPrinter {
 
     private static void registerOpenComputersIntegration() {
         try {
-            ResourceLocation location = id("loot/printer/printercopy");
-            toolsDisk = li.cil.oc.api.Items.registerFloppy(TOOLS_DISK_LABEL, location, DyeColor.GREEN,
-                    () -> FileSystem.asReadOnly(FileSystem.fromResource(location)), true);
             for (String program : TOOLS_DISK_PROGRAMS) {
                 li.cil.oc.api.IMC.registerProgramDiskLabel(program, TOOLS_DISK_LABEL, LUA_ARCHITECTURES);
             }
         } catch (RuntimeException exception) {
             LOGGER.warn("Could not register the OpenPrinter tools disk", exception);
         }
-    }
 
-    public static void addCreativeItems(BuildCreativeModeTabContentsEvent event) {
-        event.accept(PRINTER.get());
-        event.accept(SHREDDER.get());
-        event.accept(FILE_CABINET.get());
-        event.accept(BRIEFCASE.get());
-        event.accept(PRINTED_PAGE.get());
-        event.accept(BLACK_INK.get());
-        event.accept(COLOR_INK.get());
-        event.accept(PAPER_SHREDS.get());
-        event.accept(FOLDER.get());
-        // The tools disk is registered through OpenComputers' public floppy API,
-        // which already adds it to the OpenComputers creative tab.
+
+        li.cil.oc.api.Items.registerStack(PRINTER.toStack(), PRINTER.getRegisteredName(), "25_components");
+
+        li.cil.oc.api.Items.registerStack(SHREDDER.toStack(), SHREDDER.getRegisteredName(), "49_tools");
+        li.cil.oc.api.Items.registerStack(FILE_CABINET.toStack(), FILE_CABINET.getRegisteredName(), "49_tools");
+        li.cil.oc.api.Items.registerStack(BRIEFCASE.toStack(), BRIEFCASE.getRegisteredName(), "49_tools");
+        li.cil.oc.api.Items.registerStack(PRINTED_PAGE.toStack(), PRINTED_PAGE.getRegisteredName(), "49_tools");
+        li.cil.oc.api.Items.registerStack(FOLDER.toStack(), PRINTED_PAGE.getRegisteredName(), "49_tools");
+
+        li.cil.oc.api.Items.registerStack(BLACK_INK.toStack(), BLACK_INK.getRegisteredName(), "50_materials");
+        li.cil.oc.api.Items.registerStack(COLOR_INK.toStack(), COLOR_INK.getRegisteredName(), "50_materials");
+        li.cil.oc.api.Items.registerStack(PAPER_SHREDS.toStack(), PAPER_SHREDS.getRegisteredName(), "50_materials");
     }
 
     /**

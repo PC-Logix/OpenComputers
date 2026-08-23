@@ -1,18 +1,13 @@
 package li.cil.oc.common.container
 
 import li.cil.oc.api.Driver
-import li.cil.oc.common.Slot
-import li.cil.oc.common.menu.MenuTypes
-import li.cil.oc.common.menu.{DiskDrive => DiskDriveContainer}
-import li.cil.oc.common.blockentity
+import li.cil.oc.common.{blockentity, Slot}
 import net.minecraft.world.item.ItemStack
-import net.minecraft.world.MenuProvider
-import net.minecraft.world.entity.player.Inventory
+import net.minecraft.world.InteractionHand
 import net.minecraft.world.entity.player.Player
-import net.minecraft.network.chat.Component
 
-trait DiskDriveMountableInventory extends ItemStackInventory with MenuProvider {
-  def tier: Int = 1
+class DiskDriveMountableInventory private(private val player: Player, private val hand: InteractionHand, private val stack: ItemStack) extends ItemStackInventory {
+  def this(player: Player, hand: InteractionHand) = this(player, hand, player.getItemInHand(hand))
 
   override def getContainerSize = 1
 
@@ -25,8 +20,9 @@ trait DiskDriveMountableInventory extends ItemStackInventory with MenuProvider {
     case _ => false
   }
 
-  override def getDisplayName = Component.empty()
+  // The container is just the stack the player is currently holding. This is read in ItemStackInventory's constructor,
+  // so we have to make sure this is initialised before then, hence the funny constructor dance.
+  override def container: ItemStack = stack
 
-  override def createMenu(id: Int, playerInventory: Inventory, player: Player) =
-    new DiskDriveContainer(id, playerInventory, this)
+  override def stillValid(player: Player): Boolean = player == this.player && player.getItemInHand(hand) == stack
 }

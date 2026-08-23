@@ -1,4 +1,4 @@
-![OpenComputers](assets/misc/banner_new.png)
+![OpenComputers](assets/misc/banner.png)
 
 # OpenComputers for Minecraft 1.21.1
 

@@ -7,7 +7,7 @@ import li.cil.oc.api.{internal, Driver, Machine}
 import li.cil.oc.api.driver.item.Container
 import li.cil.oc.api.machine.MachineHost
 import li.cil.oc.api.network.{Connector, Message, Node}
-import li.cil.oc.client.{gui, KeyBindings}
+import li.cil.oc.client.gui
 import li.cil.oc.common.{menu, Slot, Tier}
 import li.cil.oc.common.container.ComponentInventory
 import li.cil.oc.common.item.data.TabletData
@@ -27,7 +27,7 @@ import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world._
 import net.minecraft.world.entity.{Entity, LivingEntity}
 import net.minecraft.world.entity.player.{Inventory, Player}
-import net.minecraft.world.item.{Item, ItemStack}
+import net.minecraft.world.item.{Item, ItemStack, TooltipFlag}
 import net.minecraft.world.item.Item.Properties
 import net.minecraft.world.item.component.CustomData
 import net.minecraft.world.item.context.UseOnContext
@@ -54,15 +54,13 @@ class Tablet(props: Properties) extends Item(props) with traits.SimpleItem with 
 
   // ----------------------------------------------------------------------- //
 
-  override protected def tooltipExtended(stack: ItemStack, tooltip: util.List[Component]): Unit = {
-    if (KeyBindings.showExtendedTooltips) {
+  override protected def tooltipExtended(stack: ItemStack, tooltip: util.List[Component], flag: TooltipFlag): Unit = {
+    if (Tooltip.showExtendedTooltip(flag)) {
       val info = new TabletData(stack)
       // Ignore/hide the screen.
       val components = info.items.drop(1)
       if (components.length > 1) {
-        for (curr <- Tooltip.get("server.Components")) {
-          tooltip.add(Component.literal(curr).setStyle(Tooltip.DefaultStyle))
-        }
+        Tooltip.add(tooltip, flag, "server.Components")
         components.collect {
           case component if !component.isEmpty => tooltip.add(Component.literal("- " + component.getHoverName.getString).setStyle(Tooltip.DefaultStyle))
         }

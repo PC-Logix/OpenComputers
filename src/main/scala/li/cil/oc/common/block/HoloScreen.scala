@@ -1,22 +1,18 @@
 package li.cil.oc.common.block
 
-import java.util
-import li.cil.oc.Settings
-import li.cil.oc.api
-import li.cil.oc.Constants
+import li.cil.oc.{api, Constants, Settings}
 import li.cil.oc.common.block.property.PropertyRotatable
 import li.cil.oc.common.blockentity
 import li.cil.oc.common.menu.MenuTypes
 import li.cil.oc.integration.util.Wrench
-import li.cil.oc.util.PackedColor
-import li.cil.oc.util.Tooltip
+import li.cil.oc.util.{PackedColor, Tooltip}
 import net.minecraft.core.{BlockPos, Direction}
 import net.minecraft.network.chat.{Component => ITextComponent}
+import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.{InteractionHand => Hand}
 import net.minecraft.world.entity.player.{Player => PlayerEntity}
+import net.minecraft.world.item.{ItemStack, TooltipFlag}
 import net.minecraft.world.item.Item.TooltipContext
-import net.minecraft.server.level.ServerPlayer
-import net.minecraft.world.item.{ItemStack, TooltipFlag => ITooltipFlag}
 import net.minecraft.world.item.context.{BlockPlaceContext => BlockItemUseContext}
 import net.minecraft.world.level.{BlockGetter => IBlockReader, Level => World}
 import net.minecraft.world.level.block.Block
@@ -24,7 +20,7 @@ import net.minecraft.world.level.block.state.{BlockState, StateDefinition => Sta
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties
 import net.minecraft.world.phys.shapes.{VoxelShape, CollisionContext => ISelectionContext, Shapes => VoxelShapes}
 
-import scala.jdk.CollectionConverters._
+import java.util
 
 class HoloScreen(props: Properties, tier: Int) extends Screen(props, tier) {
   private val FloorShape = VoxelShapes.box(0, 0, 0, 1, 0.5, 1)
@@ -88,14 +84,10 @@ class HoloScreen(props: Properties, tier: Int) extends Screen(props, tier) {
   private def isResizeModifierDown(player: PlayerEntity): Boolean =
     player.isCrouching || player.isShiftKeyDown
 
-  override protected def tooltipBody(stack: ItemStack, context: TooltipContext, tooltip: util.List[ITextComponent], advanced: ITooltipFlag): Unit = {
+  override protected def tooltipBody(stack: ItemStack, context: TooltipContext, tooltip: util.List[ITextComponent], flag: TooltipFlag): Unit = {
     val (w, h) = Settings.screenResolutionsByTier(tier)
     val depth = PackedColor.Depth.bits(Settings.screenDepthsByTier(tier))
-    for (curr <- Tooltip.get("screen", w, h, depth).asScala) {
-      tooltip.add(ITextComponent.literal(curr).setStyle(Tooltip.DefaultStyle))
-    }
-    for (curr <- Tooltip.extended("holoscreen").asScala) {
-      tooltip.add(ITextComponent.literal(curr).setStyle(Tooltip.DefaultStyle))
-    }
+    Tooltip.add(tooltip, flag, "screen", w, h, depth)
+    Tooltip.addExtended(tooltip, flag, "holoscreen")
   }
 }

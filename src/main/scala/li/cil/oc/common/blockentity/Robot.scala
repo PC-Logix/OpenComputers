@@ -3,7 +3,7 @@ package li.cil.oc.common.blockentity
 import java.util.UUID
 import java.util.function.Consumer
 import li.cil.oc._
-import li.cil.oc.api.{Driver, Persistable, internal}
+import li.cil.oc.api.{internal, Driver}
 import li.cil.oc.api.driver.item
 import li.cil.oc.api.driver.item.Container
 import li.cil.oc.api.event.RobotAnalyzeEvent
@@ -19,6 +19,7 @@ import li.cil.oc.common.container.InventorySelection
 import li.cil.oc.common.container.TankSelection
 import li.cil.oc.common.datacomponents.{OCComponents, Owner, RobotCurrentAnimation}
 import li.cil.oc.common.RobotFlags
+import li.cil.oc.common.init.OCBlocks
 import li.cil.oc.common.item.data.RobotData
 import li.cil.oc.integration.opencomputers.DriverKeyboard
 import li.cil.oc.integration.opencomputers.DriverRedstoneCard
@@ -27,7 +28,6 @@ import li.cil.oc.server.agent
 import li.cil.oc.server.component.{Robot => RobotComponent}
 import li.cil.oc.server.{PacketSender => ServerPacketSender}
 import li.cil.oc.util.{BlockPosHelper, BlockPosition, InventoryUtils, StackOption}
-import li.cil.oc.util.ExtendedNBT._
 import li.cil.oc.util.ExtendedLevel._
 import li.cil.oc.util.ExtendedDataComponentHolder._
 import li.cil.oc.util.StackOption._
@@ -35,12 +35,10 @@ import net.minecraft.client.Minecraft
 import net.minecraft.core.component.{DataComponentHolder, DataComponents}
 import net.minecraft.network.chat.{Component => TextComponent}
 import net.minecraft.world.item.ItemStack
-import net.neoforged.api.distmarker.Dist
-import net.neoforged.api.distmarker.OnlyIn
 
 import scala.collection.mutable
 import net.minecraft.world.MenuProvider
-import net.minecraft.core.{BlockPos, Direction, HolderLookup}
+import net.minecraft.core.{BlockPos, Direction}
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.entity
@@ -49,7 +47,6 @@ import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.Block
 import net.minecraft.sounds.SoundEvents
 import net.minecraft.sounds.SoundSource
-import net.minecraft.nbt.CompoundTag
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.entity.EquipmentSlot
 import net.minecraft.network.chat
@@ -66,7 +63,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction
 // robot moves we only create a new proxy tile entity, hook the instance of this
 // class that was held by the old proxy to it and can then safely forget the
 // old proxy, which will be cleaned up by Minecraft like any other tile entity.
-class Robot(pos: BlockPos, state: BlockState) 
+class Robot(pos: BlockPos, state: BlockState)
   extends BlockEntity(BlockEntityTypes.ROBOT.get(), pos, state) with traits.Computer with traits.PowerInformation with traits.RotatableBaseBlock
   with IFluidHandler with internal.Robot with InventorySelection with TankSelection with MenuProvider
     with IBlockEntityExtension {
@@ -232,8 +229,8 @@ class Robot(pos: BlockPos, state: BlockState)
       if (event.isCanceled) return false
     }
 
-    val blockRobotProxy = api.Items.get(Constants.BlockName.Robot).block.asInstanceOf[common.block.RobotProxy]
-    val blockRobotAfterImage = api.Items.get(Constants.BlockName.RobotAfterimage).block.asInstanceOf[common.block.RobotAfterimage]
+    val blockRobotProxy = OCBlocks.Robot.get()
+    val blockRobotAfterImage = OCBlocks.RobotAfterimage.get()
     val wasAir = getLevel.isEmptyBlock(newPosition)
     val state = getLevel.getBlockState(newPosition)
     val block = state.getBlock

@@ -1,41 +1,29 @@
 package li.cil.oc.common.block
 
-import java.util
-import li.cil.oc.Constants
-import li.cil.oc.OpenComputers
-import li.cil.oc.Settings
-import li.cil.oc.api
+import li.cil.oc.{api, Constants, Settings}
 import li.cil.oc.client.gui
 import li.cil.oc.common.block.property.PropertyRotatable
 import li.cil.oc.common.blockentity
 import li.cil.oc.common.blockentity.BlockEntityTypes
 import li.cil.oc.integration.util.Wrench
-import li.cil.oc.util.PackedColor
-import li.cil.oc.util.RotationHelper
-import li.cil.oc.util.Tooltip
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties
-import net.minecraft.world.level.block.Block
-import net.minecraft.world.level.block.state.BlockState
+import li.cil.oc.util.{PackedColor, Tooltip}
 import net.minecraft.client.Minecraft
-import net.minecraft.world.item.{TooltipFlag => ITooltipFlag}
-import net.minecraft.world.entity.Entity
-import net.minecraft.world.entity.LivingEntity
+import net.minecraft.core.{BlockPos, Direction}
+import net.minecraft.network.chat.{Component => ITextComponent}
+import net.minecraft.world.{InteractionHand => Hand}
+import net.minecraft.world.entity.{Entity, LivingEntity}
 import net.minecraft.world.entity.player.{Player => PlayerEntity}
 import net.minecraft.world.entity.projectile.{Arrow => ArrowEntity}
-import net.minecraft.world.item.ItemStack
-import net.minecraft.world.level.block.state.{StateDefinition => StateContainer}
-import net.minecraft.core.Direction
-import net.minecraft.world.{InteractionHand => Hand}
-import net.minecraft.core.BlockPos
-import net.minecraft.network.chat.{Component => ITextComponent}
 import net.minecraft.world.item.Item.TooltipContext
-import net.minecraft.world.level.block.entity.{BlockEntity, BlockEntityType}
-import net.minecraft.world.level.{BlockGetter => IBlockReader}
+import net.minecraft.world.item.{ItemStack, TooltipFlag}
 import net.minecraft.world.level.{Level => World}
-import net.neoforged.api.distmarker.Dist
-import net.neoforged.api.distmarker.OnlyIn
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties
+import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.entity.{BlockEntity, BlockEntityType}
+import net.minecraft.world.level.block.state.{BlockState, StateDefinition => StateContainer}
+import net.neoforged.api.distmarker.{Dist, OnlyIn}
 
-import scala.jdk.CollectionConverters._
+import java.util
 
 class Screen(props: Properties, val tier: Int) extends RedstoneAware(props) with traits.Tickable {
   protected override def createBlockStateDefinition(builder: StateContainer.Builder[Block, BlockState]) =
@@ -43,12 +31,10 @@ class Screen(props: Properties, val tier: Int) extends RedstoneAware(props) with
 
   // ----------------------------------------------------------------------- //
 
-  override protected def tooltipBody(stack: ItemStack, context: TooltipContext, tooltip: util.List[ITextComponent], advanced: ITooltipFlag): Unit = {
+  override protected def tooltipBody(stack: ItemStack, context: TooltipContext, tooltip: util.List[ITextComponent], flag: TooltipFlag): Unit = {
     val (w, h) = Settings.screenResolutionsByTier(tier)
     val depth = PackedColor.Depth.bits(Settings.screenDepthsByTier(tier))
-    for (curr <- Tooltip.get(getClass.getSimpleName.toLowerCase, w, h, depth).asScala) {
-      tooltip.add(ITextComponent.literal(curr).setStyle(Tooltip.DefaultStyle))
-    }
+    Tooltip.add(tooltip, flag, getClass.getSimpleName.toLowerCase, w, h, depth)
   }
 
   // ----------------------------------------------------------------------- //

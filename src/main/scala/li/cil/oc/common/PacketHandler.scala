@@ -1,7 +1,7 @@
 package li.cil.oc.common
 
-import li.cil.oc.{Constants, OpenComputers, api}
-import li.cil.oc.common.block.RobotAfterimage
+import li.cil.oc.OpenComputers
+import li.cil.oc.common.init.OCBlocks
 import li.cil.oc.util.BlockPosition
 import li.cil.oc.util.ExtendedLevel._
 import net.minecraft.core.{BlockPos, Direction, Registry}
@@ -84,12 +84,9 @@ abstract class PacketHandler {
           // In case a robot moved away before the packet arrived. This is
           // mostly used when the robot *starts* moving while the client sends
           // a request to the server.
-          api.Items.get(Constants.BlockName.RobotAfterimage).block match {
-            case afterimage: RobotAfterimage => afterimage.findMovingRobot(world, new BlockPos(x, y, z)) match {
-              case Some(robot) if classTag[T].runtimeClass.isAssignableFrom(robot.proxy.getClass) =>
-                return Some(robot.proxy.asInstanceOf[T])
-              case _ =>
-            }
+          OCBlocks.RobotAfterimage.get().findMovingRobot(world, new BlockPos(x, y, z)) match {
+            case Some(robot) if classTag[T].runtimeClass.isAssignableFrom(robot.proxy.getClass) =>
+              return Some(robot.proxy.asInstanceOf[T])
             case _ =>
           }
         case _ => // Invalid dimension.
@@ -150,7 +147,7 @@ abstract class PacketHandler {
       val c2 = readUnsignedByte()
       (c0) | (c1 << 8) | (c2 << 16)
     }
-    
+
     def readBlockPosCoords(): BlockPosition = {
       val x = readInt()
       val y = readInt()

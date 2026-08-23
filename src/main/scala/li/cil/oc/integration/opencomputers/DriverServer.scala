@@ -1,21 +1,12 @@
 package li.cil.oc.integration.opencomputers
 
-import li.cil.oc.Constants
-import li.cil.oc.api
+import li.cil.oc.{api, Constants}
 import li.cil.oc.api.driver.item.HostAware
-import li.cil.oc.api.network.EnvironmentHost
-import li.cil.oc.api.network.ManagedEnvironment
+import li.cil.oc.api.network.{EnvironmentHost, ManagedEnvironment}
 import li.cil.oc.common.Slot
 import li.cil.oc.server.component
 import li.cil.oc.util.ExtendedInventory._
-import li.cil.oc.util.ItemUtils
-import net.minecraft.core.component.DataComponents
-import li.cil.oc.util.ExtendedItemStack._
 import net.minecraft.world.item.ItemStack
-import net.minecraft.nbt.CompoundTag
-import net.minecraft.world.item.component.CustomData
-
-import java.util.function.Consumer
 
 object DriverServer extends Item with HostAware {
   override def worksWith(stack: ItemStack): Boolean = isOneOf(stack,

@@ -1,58 +1,47 @@
 package li.cil.oc.util
 
-import li.cil.oc.Localization
-import li.cil.oc.Settings
-import li.cil.oc.client.KeyBindings
-import net.minecraft.client.Minecraft
-import scala.collection.convert.ImplicitConversionsToJava._
-import scala.collection.convert.ImplicitConversionsToScala._
-import net.minecraft.client.gui.Font
-import net.minecraft.network.chat.Style
+import li.cil.oc.{Localization, Settings}
+import net.minecraft.network.chat.{Component, Style}
 import net.minecraft.ChatFormatting
-import net.minecraft.util.FormattedCharSink
-import net.minecraft.client.StringSplitter
+import net.minecraft.locale.Language
+import net.minecraft.world.item.TooltipFlag
+
+import java.util
 
 object Tooltip {
-  private val maxWidth = 220
+  private val maxWidth = 20
 
-  private def font = Minecraft.getInstance.font
+  val DefaultStyle: Style = Style.EMPTY.withColor(ChatFormatting.GRAY)
 
-  val DefaultStyle = Style.EMPTY.applyFormat(ChatFormatting.GRAY)
+  def showExtendedTooltip(flag: TooltipFlag): Boolean = flag.hasShiftDown || flag.shouldDisplayAllInformation
 
-  def get(name: String, args: Any*): java.util.List[String] = {
-    if (!Localization.canLocalize(Settings.namespace + "tooltip." + name)) return Seq.empty[String]
-    val tooltip = Localization.localizeImmediately("tooltip." + name).
-      format(args.map(_.toString): _*)
-    if (font == null) return tooltip.lines.toList // Some mods request tooltips before font renderer is available.
-    val isSubTooltip = name.contains(".")
-    val shouldShorten = (isSubTooltip || font.width(tooltip) > maxWidth) && !KeyBindings.showExtendedTooltips
-    if (shouldShorten) {
-      if (isSubTooltip) Seq.empty[String]
-      else Seq(Localization.localizeImmediately("tooltip.toolong", KeyBindings.getKeyBindingName(KeyBindings.extendedTooltip)))
+  private def format(key: String, args: Any*): Component = {
+    val component = if (args.isEmpty) {
+      Component.translatable(key)
+    } else {
+      // Really we should use Component.translatable(Escaped) here. However, this doesn't correctly handle mixing
+      // formatting codes and arguments (e.g. "§f%s§7"). Instead, we manually translate, and then return a literal
+      Component.literal(String.format(Language.getInstance.getOrDefault(key), args.map(_.toString): _*))
     }
-    else tooltip.
-      linesIterator.
-      map(wrap(font, _, maxWidth).map(_.asInstanceOf[String].trim() + " ")).
-      flatten.
-      toList
+    component.withStyle(DefaultStyle)
   }
 
-  def extended(name: String, args: Any*): java.util.List[String] =
-    if (KeyBindings.showExtendedTooltips) {
-      Localization.localizeImmediately("tooltip." + name).
-        format(args.map(_.toString): _*).
-        linesIterator.flatMap(wrap(font, _, maxWidth).map(_.trim() + " ")).
-        toList
-    }
-    else Seq.empty[String]
+  def add(tooltip: util.List[Component], flag: TooltipFlag, name: String, args: Any*): Unit = {
+    if (!Localization.canLocalize(Settings.namespace + "tooltip." + name)) return
 
-  private def wrap(font: Font, line: String, width: Int): java.util.List[String] = {
-    val list = new java.util.ArrayList[String]
-    font.getSplitter.splitLines(line, width, Style.EMPTY, true, new StringSplitter.LinePosConsumer {
-      override def accept(style: Style, start: Int, end: Int): Unit = {
-        list.add(line.substring(start, end))
-      }
-    })
-    list
+    val contents = format(Settings.namespace + "tooltip." + name, args: _*)
+    val isSubTooltip = name.contains(".")
+
+    val shouldShorten = !showExtendedTooltip(flag) && (isSubTooltip || contents.getString(maxWidth + 1).length > maxWidth)
+    if (shouldShorten) {
+      if (!isSubTooltip) tooltip.add(format(Settings.namespace + "tooltip.toolong", "SHIFT"))
+    }
+    else tooltip.add(contents)
+  }
+
+  def addExtended(tooltip: util.List[Component], flag: TooltipFlag, name: String, args: Any*): Unit = {
+    if (showExtendedTooltip(flag)) {
+      tooltip.add(format(Settings.namespace + "tooltip." + name, args: _*))
+    }
   }
 }

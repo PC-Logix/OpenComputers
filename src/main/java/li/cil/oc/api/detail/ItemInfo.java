@@ -26,6 +26,7 @@ public interface ItemInfo {
      *
      * @return the block type of the represented block.
      */
+    @Deprecated
     Block block();
 
     /**

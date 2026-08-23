@@ -1,39 +1,28 @@
 package li.cil.oc.common.block
 
-import com.mojang.serialization.MapCodec
-
-import java.util
-import li.cil.oc.common.blockentity
-import li.cil.oc.common.blockentity.traits.Colored
-import li.cil.oc.common.blockentity.traits.Inventory
-import li.cil.oc.common.blockentity.traits.Rotatable
 import li.cil.oc.common.block.property.PropertyRotatable
+import li.cil.oc.common.blockentity
+import li.cil.oc.common.blockentity.traits.{Colored, Inventory, Rotatable}
 import li.cil.oc.server.loot.LootFunctions
-import li.cil.oc.util.Color
-import li.cil.oc.util.Tooltip
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties
-import net.minecraft.world.level.block.state.BlockState
-import net.minecraft.world.level.block.{Block, BaseEntityBlock => ContainerBlock, Mirror, RenderShape => BlockRenderType, Rotation}
-import net.minecraft.world.item.{TooltipFlag => ITooltipFlag, Item}
+import li.cil.oc.util.{Color, Tooltip}
+import net.minecraft.core.{BlockPos, Direction}
+import net.minecraft.network.chat.Component
+import net.minecraft.world.{InteractionHand, InteractionResult, ItemInteractionResult}
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.player.{Player => PlayerEntity}
-import net.minecraft.world.item.ItemStack
-import net.minecraft.world.level.storage.loot.LootParams
-import net.minecraft.world.level.storage.loot.parameters.LootContextParams
-import net.minecraft.world.level.block.entity.{BlockEntity => TileEntity}
-import net.minecraft.core.Direction
-import net.minecraft.world.{InteractionHand, InteractionResult, ItemInteractionResult}
-import net.minecraft.core.BlockPos
-import net.minecraft.world.phys.BlockHitResult
-import net.minecraft.network.chat.Component
+import net.minecraft.world.item.{ItemStack, TooltipFlag}
 import net.minecraft.world.item.Item.TooltipContext
 import net.minecraft.world.item.context.BlockPlaceContext
-import net.minecraft.world.level.BlockGetter
-import net.minecraft.world.level.{Level => World}
-import net.neoforged.api.distmarker.Dist
-import net.neoforged.api.distmarker.OnlyIn
+import net.minecraft.world.level.{BlockGetter, Level => World}
+import net.minecraft.world.level.block.{Mirror, Rotation, BaseEntityBlock => ContainerBlock, RenderShape => BlockRenderType}
+import net.minecraft.world.level.block.entity.{BlockEntity => TileEntity}
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties
+import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.level.storage.loot.LootParams
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams
+import net.minecraft.world.phys.BlockHitResult
 
-import scala.jdk.CollectionConverters._
+import java.util
 
 abstract class SimpleBlock(props: Properties) extends ContainerBlock(props) {
   override protected def codec(): com.mojang.serialization.MapCodec[_ <: SimpleBlock] = com.mojang.serialization.MapCodec.unit(this)
@@ -59,23 +48,20 @@ abstract class SimpleBlock(props: Properties) extends ContainerBlock(props) {
   // BlockItem
   // ----------------------------------------------------------------------- //
 
-  @OnlyIn(Dist.CLIENT)
-  override def appendHoverText(stack: ItemStack, context: TooltipContext, tooltip: util.List[Component], flag: ITooltipFlag): Unit = {
+  override def appendHoverText(stack: ItemStack, context: TooltipContext, tooltip: util.List[Component], flag: TooltipFlag): Unit = {
     tooltipHead(stack, context, tooltip, flag)
     tooltipBody(stack, context, tooltip, flag)
     tooltipTail(stack, context, tooltip, flag)
   }
 
-  protected def tooltipHead(stack: ItemStack, context: TooltipContext, tooltip: util.List[Component], flag: ITooltipFlag): Unit = {
+  protected def tooltipHead(stack: ItemStack, context: TooltipContext, tooltip: util.List[Component], flag: TooltipFlag): Unit = {
   }
 
-  protected def tooltipBody(stack: ItemStack, context: TooltipContext, tooltip: util.List[Component], flag: ITooltipFlag): Unit = {
-    for (curr <- Tooltip.get(getClass.getSimpleName.toLowerCase).asScala) {
-      tooltip.add(Component.literal(curr).setStyle(Tooltip.DefaultStyle))
-    }
+  protected def tooltipBody(stack: ItemStack, context: TooltipContext, tooltip: util.List[Component], flag: TooltipFlag): Unit = {
+    Tooltip.add(tooltip, flag, getClass.getSimpleName.toLowerCase)
   }
 
-  protected def tooltipTail(stack: ItemStack, context: TooltipContext, tooltip: util.List[Component], flag: ITooltipFlag): Unit = {
+  protected def tooltipTail(stack: ItemStack, context: TooltipContext, tooltip: util.List[Component], flag: TooltipFlag): Unit = {
   }
 
   // ----------------------------------------------------------------------- //
@@ -141,7 +127,7 @@ abstract class SimpleBlock(props: Properties) extends ContainerBlock(props) {
     }
     result
   }
-  
+
   def getValidRotations(world: World, pos: BlockPos): Array[Direction] = validRotations_
 
   override def getDrops(state: BlockState, ctx: LootParams.Builder): util.List[ItemStack] = {

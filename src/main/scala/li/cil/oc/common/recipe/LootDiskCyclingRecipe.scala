@@ -25,7 +25,7 @@ class LootDiskCyclingRecipe(val bookCategory: CraftingBookCategory) extends Craf
     stacks.length == 2 && stacks.exists(Loot.isLootDisk) && stacks.exists(Wrench.isWrench)
   }
 
-  override def getType: RecipeType[_] = Recipes.LOOTDISK_CYCLING.getRecipeType
+  override def getType: RecipeType[_] = RecipeType.CRAFTING
   override def getSerializer: RecipeSerializer[_] = Recipes.LOOTDISK_CYCLING.getSerializer
 
   override def assemble(crafting: CraftingInput, provider: HolderLookup.Provider): ItemStack = {

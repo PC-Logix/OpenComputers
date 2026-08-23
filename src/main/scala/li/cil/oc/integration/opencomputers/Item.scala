@@ -1,18 +1,15 @@
 package li.cil.oc.integration.opencomputers
 
-import li.cil.oc.Settings
-import li.cil.oc.api
+import li.cil.oc.{api, Settings}
 import li.cil.oc.api.driver.DriverItem
-import li.cil.oc.api.network.EnvironmentHost
 import li.cil.oc.api.internal
+import li.cil.oc.api.network.EnvironmentHost
 import li.cil.oc.common.Tier
 import li.cil.oc.server.driver.Registry
-import li.cil.oc.util.ExtendedItemStack._
 import li.cil.oc.util.ItemUtils
 import net.minecraft.core.component.DataComponents
-import net.minecraft.world.item.ItemStack
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.world.item
+import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.component.CustomData
 
 import java.util.function.Consumer

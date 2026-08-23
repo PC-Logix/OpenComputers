@@ -1,28 +1,23 @@
 package li.cil.oc.common.block
 
-import java.util
-import li.cil.oc.common.menu.MenuTypes
 import li.cil.oc.common.block.property.PropertyRotatable
 import li.cil.oc.common.blockentity
+import li.cil.oc.common.menu.MenuTypes
 import li.cil.oc.integration.Mods
 import li.cil.oc.util.Tooltip
+import net.minecraft.core.{BlockPos, Direction}
+import net.minecraft.network.chat.{Component => ITextComponent}
+import net.minecraft.server.level.{ServerPlayer => ServerPlayerEntity}
+import net.minecraft.world.{InteractionHand => Hand}
+import net.minecraft.world.entity.player.{Player => PlayerEntity}
+import net.minecraft.world.item.Item.TooltipContext
+import net.minecraft.world.item.{ItemStack, TooltipFlag}
+import net.minecraft.world.level.{Level => World}
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties
 import net.minecraft.world.level.block.Block
-import net.minecraft.world.level.block.state.BlockState
-import net.minecraft.world.item.{TooltipFlag => ITooltipFlag}
-import net.minecraft.world.entity.player.{Player => PlayerEntity}
-import net.minecraft.server.level.{ServerPlayer => ServerPlayerEntity}
-import net.minecraft.world.item.ItemStack
-import net.minecraft.world.level.block.state.{StateDefinition => StateContainer}
-import net.minecraft.core.Direction
-import net.minecraft.world.{InteractionHand => Hand}
-import net.minecraft.core.BlockPos
-import net.minecraft.network.chat.{Component => ITextComponent}
-import net.minecraft.world.item.Item.TooltipContext
-import net.minecraft.world.level.{BlockGetter => IBlockReader}
-import net.minecraft.world.level.{Level => World}
+import net.minecraft.world.level.block.state.{BlockState, StateDefinition => StateContainer}
 
-import scala.jdk.CollectionConverters._
+import java.util
 
 class DiskDrive(props: Properties) extends SimpleBlock(props) with traits.GUI {
   protected override def createBlockStateDefinition(builder: StateContainer.Builder[Block, BlockState]) =
@@ -30,10 +25,10 @@ class DiskDrive(props: Properties) extends SimpleBlock(props) with traits.GUI {
 
   // ----------------------------------------------------------------------- //
 
-  override protected def tooltipTail(stack: ItemStack, context: TooltipContext, tooltip: util.List[ITextComponent], flag: ITooltipFlag): Unit = {
+  override protected def tooltipTail(stack: ItemStack, context: TooltipContext, tooltip: util.List[ITextComponent], flag: TooltipFlag): Unit = {
     super.tooltipTail(stack, context, tooltip, flag)
     if (Mods.ComputerCraft.isModAvailable) {
-      for (curr <- Tooltip.get(getClass.getSimpleName + ".CC").asScala) tooltip.add(ITextComponent.literal(curr).setStyle(Tooltip.DefaultStyle))
+      Tooltip.add(tooltip, flag, getClass.getSimpleName + ".CC")
     }
   }
 

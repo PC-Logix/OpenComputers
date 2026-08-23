@@ -36,8 +36,6 @@ object KeyBindings {
 
   def isAnalyzeCopyingAddress: Boolean = analyzeCopyAddr.isDown
 
-  def getKeyBindingName(keyBinding: KeyMapping) = keyBinding.getTranslatedKeyMessage.getString
-
   val textInputConflict = new IKeyConflictContext {
     override def isActive: Boolean = Minecraft.getInstance.screen.isInstanceOf[InputBuffer]
 

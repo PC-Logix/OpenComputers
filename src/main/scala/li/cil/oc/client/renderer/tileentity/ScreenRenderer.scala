@@ -2,10 +2,7 @@ package li.cil.oc.client.renderer.tileentity
 
 import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.vertex.VertexConsumer
-import li.cil.oc.Constants
 import li.cil.oc.Settings
-import li.cil.oc.api
-import li.cil.oc.api.detail.ItemInfo
 import li.cil.oc.client.Textures
 import li.cil.oc.client.PacketSender
 import li.cil.oc.client.renderer.RenderTypes
@@ -23,6 +20,7 @@ import com.mojang.blaze3d.vertex.PoseStack
 import net.minecraft.client.renderer.blockentity.{BlockEntityRenderer => TileEntityRenderer}
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider
 import net.minecraft.world.entity.ai.attributes.Attributes
+import net.minecraft.world.level.block.Block
 import net.neoforged.api.distmarker.{Dist, OnlyIn}
 import net.minecraft.world.phys.{AABB, Vec3}
 import net.neoforged.bus.api.SubscribeEvent
@@ -294,12 +292,9 @@ class ScreenRenderer extends TileEntityRenderer[Screen] {
     else Direction.UP
   }
 
-  private def isScreen(stack: ItemStack): Boolean = api.Items.get(stack) match {
-    case i: ItemInfo => i.block() match {
-      case _: li.cil.oc.common.block.Screen => true
-      case _                                => false
-    }
-    case _ => false
+  private def isScreen(stack: ItemStack): Boolean = Block.byItem(stack.getItem) match {
+    case _: li.cil.oc.common.block.Screen => true
+    case _                                => false
   }
 
   private def isFlatScreen: Boolean =

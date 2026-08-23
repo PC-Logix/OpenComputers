@@ -14,14 +14,14 @@ import net.minecraft.network.chat.{Component => ITextComponent}
 import net.minecraft.server.level.{ServerPlayer => ServerPlayerEntity}
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.player.{Player => PlayerEntity}
+import net.minecraft.world.item.{ItemStack, TooltipFlag}
 import net.minecraft.world.item.Item.TooltipContext
-import net.minecraft.world.item.{ItemStack, TooltipFlag => ITooltipFlag}
+import net.minecraft.world.level.{Level => World}
 import net.minecraft.world.level.block.Block
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties
 import net.minecraft.world.level.block.state.{BlockState, StateDefinition => StateContainer}
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties
 import net.minecraft.world.level.storage.loot.LootParams
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams
-import net.minecraft.world.level.{Level => World}
 
 import java.util
 
@@ -31,9 +31,9 @@ class Raid(props: Properties) extends SimpleBlock(props) with traits.GUI {
   protected override def createBlockStateDefinition(builder: StateContainer.Builder[Block, BlockState]) =
     builder.add(PropertyRotatable.Facing)
 
-  override protected def tooltipTail(stack: ItemStack, context: TooltipContext, tooltip: util.List[ITextComponent], advanced: ITooltipFlag): Unit = {
-    super.tooltipTail(stack, context, tooltip, advanced)
-    if (KeyBindings.showExtendedTooltips) {
+  override protected def tooltipTail(stack: ItemStack, context: TooltipContext, tooltip: util.List[ITextComponent], flag: TooltipFlag): Unit = {
+    super.tooltipTail(stack, context, tooltip, flag)
+    if (Tooltip.showExtendedTooltip(flag)) {
       val data = new RaidData(stack)
       for (disk <- data.disks if !disk.isEmpty) {
         tooltip.add(ITextComponent.literal("- " + disk.getHoverName.getString).setStyle(Tooltip.DefaultStyle))
@@ -69,7 +69,7 @@ class Raid(props: Properties) extends SimpleBlock(props) with traits.GUI {
           tileEntity.setItem(i, data.disks(i))
         }
         data.label.foreach(tileEntity.label.setLabel)
-        for(address <- stack.getComponent(OCComponents.ADDRESS)) {
+        for (address <- stack.getComponent(OCComponents.ADDRESS)) {
           tileEntity.tryCreateRaid(address)
           tileEntity.filesystem.foreach(_.loadData(stack))
         }

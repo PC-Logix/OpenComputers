@@ -62,8 +62,6 @@ class Proxy(val modBus: IEventBus) {
     e.enqueueWork((() => {
       CommonPacketHandler.serverHandler = server.PacketHandler
 
-      Loot.init()
-
       OpenComputers.log.debug("Initializing mod integration.")
       Mods.init()
 
