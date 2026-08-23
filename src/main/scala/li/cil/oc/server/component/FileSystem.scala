@@ -348,6 +348,7 @@ class FileSystem(val fileSystem: IFileSystem, var label: Label, val host: Option
   private def diskActivity(): Unit = {
     (sound, host) match {
       case (Some(s), Some(h)) => ServerPacketSender.sendFileSystemActivity(node, h, s)
+      case (None, Some(h)) => ServerPacketSender.sendFileSystemActivity(node, h)
       case _ =>
     }
   }
