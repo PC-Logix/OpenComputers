@@ -1,8 +1,20 @@
 local shell = require("shell")
 local tty = require("tty")
 
-local args = shell.parse(...)
+local args, ops = shell.parse(...)
 local gpu = tty.gpu()
+
+if ops["max"] then
+  local w, h = gpu.maxResolution()
+  io.write(w," ",h,"\n")
+  -- Give a diagnostic for whether or not the capabilities of the screen and GPU
+  -- are mismatched
+  local limiter = gpu.capabilityLimiter()
+  if limiter then
+    io.write("(Limited by ",limiter,")\n")
+  end
+  return
+end
 
 if #args == 0 then
   local w, h = gpu.getViewport()
@@ -11,7 +23,7 @@ if #args == 0 then
 end
 
 if #args ~= 2 then
-  print("Usage: resolution [<width> <height>]")
+  print("Usage: resolution [<width> <height>] or resolution --max")
   return
 end
 
