@@ -7,8 +7,6 @@ local gpu = tty.gpu()
 if ops["max"] then
   local w, h = gpu.maxResolution()
   io.write(w," ",h,"\n")
-  -- Give a diagnostic for whether or not the capabilities of the screen and GPU
-  -- are mismatched
   local limiter = gpu.capabilityLimiter()
   if limiter then
     io.write("(Limited by ",limiter,")\n")
