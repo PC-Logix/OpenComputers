@@ -1,6 +1,8 @@
 package li.cil.oc.server.command
 
 import com.mojang.brigadier.CommandDispatcher
+import com.mojang.brigadier.arguments.IntegerArgumentType
+import com.mojang.brigadier.context.CommandContext
 import li.cil.oc.{Constants, api}
 import li.cil.oc.common.blockentity.{Case => CaseBlockEntity}
 import li.cil.oc.common.blockentity.traits.Rotatable
@@ -17,14 +19,20 @@ object SpawnComputerCommand {
   def register(dispatcher: CommandDispatcher[CommandSourceStack]): Unit = {
     def command(name: String) = Commands.literal(name)
       .requires(CommandHandler.canUse(_, 2))
-      .executes(context => execute(context.getSource))
+      .then(
+        Commands.argument("TierScreen (1-4)", IntegerArgumentType.integer(1, 4))
+          .executes(context => execute(context))
+      )
 
     dispatcher.register(command("oc_spawnComputer"))
     dispatcher.register(command("oc_spawncomputer"))
     dispatcher.register(command("oc_sc"))
   }
 
-  private def execute(source: CommandSourceStack): Int = {
+  private def execute(context: CommandContext[CommandSourceStack]): Int = {
+    val TierScreen = IntegerArgumentType.getInteger(context, "TierScreen (1-4)")
+
+    val source = context.getSource
     val player = source.getPlayerOrException
     val level = player.serverLevel()
 
@@ -57,7 +65,16 @@ object SpawnComputerCommand {
         place(casePos, Constants.BlockName.CaseCreative)
         rotateProperly(casePos)
 
-        place(screenPos, Constants.BlockName.ScreenTier4)
+        if (TierScreen == 1) {
+          place(screenPos, Constants.BlockName.ScreenTier1)
+        } else if (TierScreen == 2) {
+          place(screenPos, Constants.BlockName.ScreenTier2)
+        } else if (TierScreen == 3) {
+          place(screenPos, Constants.BlockName.ScreenTier3)
+        } else if (TierScreen == 4) {
+          place(screenPos, Constants.BlockName.ScreenTier4)
+        }
+
         rotateProperly(screenPos).foreach { rotatable =>
           if (rotatable.pitch == Direction.UP || rotatable.pitch == Direction.DOWN) {
             rotatable.pitch = Direction.NORTH
