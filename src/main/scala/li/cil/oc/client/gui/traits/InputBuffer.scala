@@ -51,13 +51,6 @@ trait InputBuffer extends DisplayBuffer {
       // Flush either way as the next code point will be unrelated.
       flushQueuedKey()
     }
-    // text_input happens independent of key events
-    if (Character.isSurrogate(char)) {
-      // Convert two successive surrogates back into a code point.
-      if (Character.isHighSurrogate(char)) highSurrogate = char
-      else buffer.textInput(Character.toCodePoint(highSurrogate, char), null)
-    }
-    else buffer.textInput(char, null)
   }
 
   protected def flushQueuedKey(): Unit = {

@@ -69,7 +69,6 @@ class GpuTextBuffer(val owner: String, val id: Int, val data: li.cil.oc.util.Tex
   override def isRenderingEnabled: Boolean = false
   override def keyDown(character: Char, code: Int, player: Player): Unit = {}
   override def keyUp(character: Char, code: Int, player: Player): Unit = {}
-  override def textInput(codePt: Int, player: Player): Unit = {}
   override def clipboard(value: String, player: Player): Unit = {}
   override def mouseDown(x: Double, y: Double, button: Int, player: Player): Unit = {}
   override def mouseDrag(x: Double, y: Double, button: Int, player: Player): Unit = {}

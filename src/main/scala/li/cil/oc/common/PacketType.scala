@@ -89,7 +89,6 @@ object PacketType extends Enumeration {
   DronePower,
   KeyDown,
   KeyUp,
-  TextInput,
   Clipboard,
   MachineItemStateRequest,
   MachineItemStateResponse,

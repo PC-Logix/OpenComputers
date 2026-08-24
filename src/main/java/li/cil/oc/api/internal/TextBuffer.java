@@ -571,18 +571,6 @@ public interface TextBuffer extends ManagedEnvironment, Persistable {
     void keyUp(char character, int code, Player player);
 
     /**
-     * Signals a code-point (text) event for the buffer.
-     * <br>
-     * On the client side this causes a packet to be sent to the server. On the
-     * server side this will trigger a message that will be picked up by
-     * keyboards, which will then cause a signal in attached machines.
-     *
-     * @param codePoint     the code point being typed.
-     * @param player        the player that typed the code point. Pass {@code null} on the client side.
-     */
-    void textInput(int codePoint, Player player);
-
-    /**
      * Signals a clipboard paste event for the buffer.
      * <br>
      * On the client side this causes a packet to be sent to the server. On the
@@ -667,7 +655,7 @@ public interface TextBuffer extends ManagedEnvironment, Persistable {
          */
         EightBit,
 
-        /** 
+        /**
          * 65536 colors (16-bit high color).
          */
         SixteenBit
