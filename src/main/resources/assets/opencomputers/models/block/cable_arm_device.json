@@ -1,0 +1,34 @@
+{
+    "textures": {
+        "particle": "opencomputers:block/cable",
+        "cable": "opencomputers:block/cable",
+        "cablecap": "opencomputers:block/cablecap"
+    },
+    "elements": [
+        {
+            "from": [6, 6, 1],
+            "to": [10, 10, 6],
+            "rotation": {"angle": 0, "axis": "y", "origin": [0, 4, 0]},
+            "faces": {
+                "north": {"uv": [6, 6, 10, 10], "texture": "#cable", "tintindex": 0},
+                "east": {"uv": [10, 6, 15, 10], "texture": "#cable", "tintindex": 0},
+                "south": {"uv": [6, 6, 10, 10], "texture": "#cable", "tintindex": 0},
+                "west": {"uv": [1, 6, 6, 10], "texture": "#cable", "tintindex": 0},
+                "up": {"uv": [6, 1, 10, 6], "texture": "#cable", "tintindex": 0},
+                "down": {"uv": [6, 10, 10, 15], "texture": "#cable", "tintindex": 0}
+            }
+        },
+        {
+            "from": [5, 5, 0],
+            "to": [11, 11, 1],
+            "faces": {
+                "north": {"uv": [5, 5, 11, 11], "texture": "#cablecap"},
+                "east": {"uv": [11, 5, 12, 11], "texture": "#cablecap"},
+                "south": {"uv": [5, 5, 11, 11], "texture": "#cablecap"},
+                "west": {"uv": [4, 5, 5, 11], "texture": "#cablecap"},
+                "up": {"uv": [5, 4, 11, 5], "texture": "#cablecap"},
+                "down": {"uv": [5, 11, 11, 12], "texture": "#cablecap"}
+            }
+        }
+    ]
+}

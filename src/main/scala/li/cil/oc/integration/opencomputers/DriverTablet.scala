@@ -15,7 +15,7 @@ object DriverTablet extends Item {
   override def createEnvironment(stack: ItemStack, host: EnvironmentHost): ManagedEnvironment =
     if (host.getEnvironmentLevel != null && host.getEnvironmentLevel.isClientSide) null
     else {
-      Tablet.Server.cache.invalidate(Tablet.getOrCreateId(stack))
+      Tablet.Server.invalidate(stack)
       val data = new TabletData(stack)
       val index = fileSystemIndex(data)
       if (index < 0) null

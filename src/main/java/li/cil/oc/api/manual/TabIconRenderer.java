@@ -14,6 +14,7 @@ import net.neoforged.api.distmarker.OnlyIn;
  *
  * @see li.cil.oc.api.prefab.ItemStackTabIconRenderer
  * @see li.cil.oc.api.prefab.TextureTabIconRenderer
+ * @see li.cil.oc.api.prefab.SpriteTabIconRenderer
  */
 public interface TabIconRenderer {
     /**

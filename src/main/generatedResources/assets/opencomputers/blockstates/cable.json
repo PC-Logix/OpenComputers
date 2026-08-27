@@ -1,7 +1,276 @@
 {
-  "variants": {
-    "": {
-      "model": "minecraft:block/air"
+  "multipart": [
+    {
+      "apply": {
+        "model": "opencomputers:block/cable_core"
+      }
+    },
+    {
+      "apply": {
+        "model": "opencomputers:block/cable_arm_cable",
+        "x": 90,
+        "y": 90
+      },
+      "when": {
+        "conn_down": "cable"
+      }
+    },
+    {
+      "apply": {
+        "model": "opencomputers:block/cable_arm_device",
+        "x": 90,
+        "y": 90
+      },
+      "when": {
+        "conn_down": "device"
+      }
+    },
+    {
+      "apply": {
+        "model": "opencomputers:block/cable_disconnected",
+        "x": 90,
+        "y": 90
+      },
+      "when": {
+        "OR": [
+          {
+            "conn_down": "none",
+            "conn_east": "none",
+            "conn_north": "none",
+            "conn_south": "none",
+            "conn_up": "none",
+            "conn_west": "none"
+          },
+          {
+            "conn_down": "none",
+            "conn_east": "none",
+            "conn_north": "none",
+            "conn_south": "none",
+            "conn_up": "cable|device",
+            "conn_west": "none"
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "opencomputers:block/cable_arm_cable",
+        "x": -90,
+        "y": 90
+      },
+      "when": {
+        "conn_up": "cable"
+      }
+    },
+    {
+      "apply": {
+        "model": "opencomputers:block/cable_arm_device",
+        "x": -90,
+        "y": 90
+      },
+      "when": {
+        "conn_up": "device"
+      }
+    },
+    {
+      "apply": {
+        "model": "opencomputers:block/cable_disconnected",
+        "x": -90,
+        "y": 90
+      },
+      "when": {
+        "OR": [
+          {
+            "conn_down": "none",
+            "conn_east": "none",
+            "conn_north": "none",
+            "conn_south": "none",
+            "conn_up": "none",
+            "conn_west": "none"
+          },
+          {
+            "conn_down": "cable|device",
+            "conn_east": "none",
+            "conn_north": "none",
+            "conn_south": "none",
+            "conn_up": "none",
+            "conn_west": "none"
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "opencomputers:block/cable_arm_cable"
+      },
+      "when": {
+        "conn_north": "cable"
+      }
+    },
+    {
+      "apply": {
+        "model": "opencomputers:block/cable_arm_device"
+      },
+      "when": {
+        "conn_north": "device"
+      }
+    },
+    {
+      "apply": {
+        "model": "opencomputers:block/cable_disconnected"
+      },
+      "when": {
+        "OR": [
+          {
+            "conn_down": "none",
+            "conn_east": "none",
+            "conn_north": "none",
+            "conn_south": "none",
+            "conn_up": "none",
+            "conn_west": "none"
+          },
+          {
+            "conn_down": "none",
+            "conn_east": "none",
+            "conn_north": "none",
+            "conn_south": "cable|device",
+            "conn_up": "none",
+            "conn_west": "none"
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "opencomputers:block/cable_arm_cable",
+        "y": 180
+      },
+      "when": {
+        "conn_south": "cable"
+      }
+    },
+    {
+      "apply": {
+        "model": "opencomputers:block/cable_arm_device",
+        "y": 180
+      },
+      "when": {
+        "conn_south": "device"
+      }
+    },
+    {
+      "apply": {
+        "model": "opencomputers:block/cable_disconnected",
+        "y": 180
+      },
+      "when": {
+        "OR": [
+          {
+            "conn_down": "none",
+            "conn_east": "none",
+            "conn_north": "none",
+            "conn_south": "none",
+            "conn_up": "none",
+            "conn_west": "none"
+          },
+          {
+            "conn_down": "none",
+            "conn_east": "none",
+            "conn_north": "cable|device",
+            "conn_south": "none",
+            "conn_up": "none",
+            "conn_west": "none"
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "opencomputers:block/cable_arm_cable",
+        "y": 270
+      },
+      "when": {
+        "conn_west": "cable"
+      }
+    },
+    {
+      "apply": {
+        "model": "opencomputers:block/cable_arm_device",
+        "y": 270
+      },
+      "when": {
+        "conn_west": "device"
+      }
+    },
+    {
+      "apply": {
+        "model": "opencomputers:block/cable_disconnected",
+        "y": 270
+      },
+      "when": {
+        "OR": [
+          {
+            "conn_down": "none",
+            "conn_east": "none",
+            "conn_north": "none",
+            "conn_south": "none",
+            "conn_up": "none",
+            "conn_west": "none"
+          },
+          {
+            "conn_down": "none",
+            "conn_east": "cable|device",
+            "conn_north": "none",
+            "conn_south": "none",
+            "conn_up": "none",
+            "conn_west": "none"
+          }
+        ]
+      }
+    },
+    {
+      "apply": {
+        "model": "opencomputers:block/cable_arm_cable",
+        "y": 90
+      },
+      "when": {
+        "conn_east": "cable"
+      }
+    },
+    {
+      "apply": {
+        "model": "opencomputers:block/cable_arm_device",
+        "y": 90
+      },
+      "when": {
+        "conn_east": "device"
+      }
+    },
+    {
+      "apply": {
+        "model": "opencomputers:block/cable_disconnected",
+        "y": 90
+      },
+      "when": {
+        "OR": [
+          {
+            "conn_down": "none",
+            "conn_east": "none",
+            "conn_north": "none",
+            "conn_south": "none",
+            "conn_up": "none",
+            "conn_west": "none"
+          },
+          {
+            "conn_down": "none",
+            "conn_east": "none",
+            "conn_north": "none",
+            "conn_south": "none",
+            "conn_up": "none",
+            "conn_west": "cable|device"
+          }
+        ]
+      }
     }
-  }
+  ]
 }

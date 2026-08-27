@@ -1,29 +1,20 @@
 package li.cil.oc.common.blockentity
 
-import li.cil.oc.{Constants, api}
+import li.cil.oc.{api, Constants}
 import li.cil.oc.api.network.Visibility
-import li.cil.oc.client.renderer.block.CableModel
 import li.cil.oc.util.{Color, ItemColorizer}
 import net.minecraft.core.BlockPos
 import net.minecraft.world.item.{DyeColor, ItemStack}
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
-import net.neoforged.api.distmarker.{Dist, OnlyIn}
-import net.neoforged.neoforge.client.model.data.ModelData
 import net.neoforged.neoforge.common.extensions.IBlockEntityExtension
 
-class Cable(pos: BlockPos, state: BlockState) 
+class Cable(pos: BlockPos, state: BlockState)
   extends BlockEntity(BlockEntityTypes.CABLE.get(), pos, state)
     with traits.Environment with traits.NotAnalyzable with traits.Colored with IBlockEntityExtension {
   val node = api.Network.newNode(this, Visibility.None).create()
 
   setColor(Color.rgbValues(DyeColor.LIGHT_GRAY))
-
-  @OnlyIn(Dist.CLIENT)
-  override def getModelData: ModelData =
-    ModelData.builder()
-      .`with`(CableModel.CABLE_PROPERTY, this)
-      .build()
 
   def createItemStack() = {
     val stack = api.Items.get(Constants.BlockName.Cable).createItemStack(1)

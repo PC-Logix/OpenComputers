@@ -483,6 +483,13 @@ class Settings(val config: Config) {
 
   val bitbltCost: Double = if (config.hasPath("gpu.bitbltCost")) config.getDouble("gpu.bitbltCost") else 0.5
 
+  val defaultResolution: (Int, Int) = config.getIntList("gpu.defaultResolution").asScala.map(_.intValue()).toArray match {
+    case Array(width, height) if width >= 0 && height >= 0 => (width, height)
+    case _ =>
+      OpenComputers.log.warn("Bad default resolution (expected two non-negative integers), ignoring.")
+      (0, 0)
+  }
+
   // >= 1.8.2
   val diskActivitySoundDelay: Int = config.getInt("misc.diskActivitySoundDelay") max -1
   val maxNetworkClientPacketDistance: Double = config.getDouble("misc.maxNetworkClientPacketDistance") max 0

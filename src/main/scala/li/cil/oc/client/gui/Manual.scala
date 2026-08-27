@@ -89,11 +89,11 @@ class Manual extends screens.Screen(Component.empty()) with traits.Window {
       val x = leftPos + tabPosX
       val y = topPos + tabPosY + i * (tabHeight - 1)
       addRenderableWidget(new ImageButton(x, y, tabWidth, tabHeight, (_: Button) =>
-        api.Manual.navigate(tab.path), Textures.GUI.ManualTab))
+        api.Manual.navigate(tab.path), Textures.GUISprites.ManualTab))
     }
 
     scrollButton = new ImageButton(leftPos + scrollPosX, topPos + scrollPosY, 6, 13, (_: Button) => (),
-      Textures.GUI.ButtonScroll)
+      Textures.GUISprites.ButtonScroll)
     addRenderableWidget(scrollButton)
 
     refreshPage()

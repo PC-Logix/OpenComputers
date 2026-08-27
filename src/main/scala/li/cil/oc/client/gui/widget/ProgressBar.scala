@@ -1,42 +1,23 @@
 package li.cil.oc.client.gui.widget
 
-import com.mojang.blaze3d.systems.RenderSystem
-import com.mojang.blaze3d.vertex._
 import li.cil.oc.client.Textures
 import net.minecraft.client.gui.GuiGraphics
-import net.minecraft.client.renderer.GameRenderer
+import net.minecraft.client.gui.components.AbstractWidget
+import net.minecraft.client.gui.narration.NarrationElementOutput
+import net.minecraft.network.chat.CommonComponents
+import net.minecraft.resources.ResourceLocation
 
-class ProgressBar(val x: Int, val y: Int) extends Widget {
-  override def width = 140
-  override def height = 12
-
-  def barTexture = Textures.GUI.Bar
+class ProgressBar(x: Int, y: Int, width: Int = 140, height: Int = 12,
+                  val sprite: ResourceLocation = Textures.GUISprites.Bar)
+  extends AbstractWidget(x, y, width, height, CommonComponents.EMPTY) {
   var level = 0.0
 
-  def draw(graphics: GuiGraphics): Unit = {
+  override def renderWidget(graphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float): Unit = {
     if (level > 0) {
-      val u0 = 0f
-      val u1 = level.toFloat
-      val v0 = 0f
-      val v1 = 1f
-      val tx = owner.windowX + x
-      val ty = owner.windowY + y
-      val w = (width * level).toFloat
-
-      RenderSystem.setShader(() => GameRenderer.getPositionTexShader)
-      RenderSystem.setShaderTexture(0, barTexture)
-      RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F)
-
-      val t = Tesselator.getInstance
-      val r = t.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX)
-
-      val matrix = graphics.pose.last.pose
-      r.addVertex(matrix, tx.toFloat, ty.toFloat, owner.windowZ).setUv(u0, v0)
-      r.addVertex(matrix, tx.toFloat, (ty + height).toFloat, owner.windowZ).setUv(u0, v1)
-      r.addVertex(matrix, (tx + w).toFloat, (ty + height).toFloat, owner.windowZ).setUv(u1, v1)
-      r.addVertex(matrix, (tx + w).toFloat, ty.toFloat, owner.windowZ).setUv(u1, v0)
-
-      BufferUploader.drawWithShader(r.buildOrThrow())
+      val w = (width.toFloat * level).toInt
+      graphics.blitSprite(sprite, width, height, 0, 0, x, y, w, height)
     }
   }
+
+  override def updateWidgetNarration(narrationElementOutput: NarrationElementOutput): Unit = {}
 }

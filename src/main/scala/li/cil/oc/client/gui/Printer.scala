@@ -1,15 +1,13 @@
 package li.cil.oc.client.gui
 
-import com.mojang.blaze3d.systems.RenderSystem
 import li.cil.oc.client.Textures
 import li.cil.oc.client.gui.widget.ProgressBar
 import li.cil.oc.common.menu
 import li.cil.oc.common.menu.ComponentSlot
-import li.cil.oc.util.RenderState
+import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.components.Tooltip
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Inventory
-import com.mojang.blaze3d.vertex.PoseStack
-import net.minecraft.client.gui.GuiGraphics
 
 class Printer(state: menu.Printer, playerInventory: Inventory, name: Component)
   extends DynamicGuiContainer(state, playerInventory, name) {
@@ -17,49 +15,31 @@ class Printer(state: menu.Printer, playerInventory: Inventory, name: Component)
   imageWidth = 176
   imageHeight = 166
 
-  private val materialBar = addCustomWidget(new ProgressBar(40, 21) {
-    override def width = 62
+  private var materialBar: ProgressBar = _
+  private var inkBar: ProgressBar = _
+  private var progressBar: ProgressBar = _
 
-    override def height = 12
+  override protected def init(): Unit = {
+    super.init()
+    materialBar = addRenderableWidget(new ProgressBar(leftPos + 40, topPos + 21, width = 62, height = 12, sprite = Textures.GUISprites.PrinterMaterial))
+    inkBar = addRenderableWidget(new ProgressBar(leftPos + 40, topPos + 53, width = 62, height = 12, sprite = Textures.GUISprites.PrinterInk))
+    progressBar = addRenderableOnly(new ProgressBar(leftPos + 105, topPos + 20, width = 46, height = 46, sprite = Textures.GUISprites.PrinterProgress))
+  }
 
-    override def barTexture = Textures.GUI.PrinterMaterial
-  })
+  override def render(graphics: GuiGraphics, mouseX: Int, mouseY: Int, dt: Float): Unit = {
+    materialBar.level = inventoryContainer.amountMaterial / inventoryContainer.maxAmountMaterial.toDouble
+    materialBar.setTooltip(Tooltip.create(Component.literal(s"${inventoryContainer.amountMaterial}/${inventoryContainer.maxAmountMaterial}")))
 
-  private val inkBar = addCustomWidget(new ProgressBar(40, 53) {
-    override def width = 62
+    inkBar.level = inventoryContainer.amountInk / inventoryContainer.maxAmountInk.toDouble
+    inkBar.setTooltip(Tooltip.create(Component.literal(s"${inventoryContainer.amountInk}/${inventoryContainer.maxAmountInk}")))
 
-    override def height = 12
+    progressBar.level = inventoryContainer.progress
 
-    override def barTexture = Textures.GUI.PrinterInk
-  })
-
-  private val progressBar = addCustomWidget(new ProgressBar(105, 20) {
-    override def width = 46
-
-    override def height = 46
-
-    override def barTexture = Textures.GUI.PrinterProgress
-  })
-
-  override def drawSecondaryForegroundLayer(graphics: GuiGraphics, mouseX: Int, mouseY: Int) = {
-    super.drawSecondaryForegroundLayer(graphics, mouseX, mouseY)
-    if (isHovering(materialBar.x, materialBar.y, materialBar.width, materialBar.height, mouseX - leftPos, mouseY - topPos)) {
-      val tooltip: java.util.List[Component] = java.util.List.of(Component.literal(s"${inventoryContainer.amountMaterial}/${inventoryContainer.maxAmountMaterial}"))
-      graphics.renderComponentTooltip(font, tooltip, mouseX - leftPos, mouseY - topPos)
-    }
-    if (isHovering(inkBar.x, inkBar.y, inkBar.width, inkBar.height, mouseX - leftPos, mouseY - topPos)) {
-      val tooltip: java.util.List[Component] = java.util.List.of(Component.literal(s"${inventoryContainer.amountInk}/${inventoryContainer.maxAmountInk}"))
-      graphics.renderComponentTooltip(font, tooltip, mouseX - leftPos, mouseY - topPos)
-    }
+    super.render(graphics, mouseX, mouseY, dt)
   }
 
   override def renderBg(graphics: GuiGraphics, dt: Float, mouseX: Int, mouseY: Int): Unit = {
-    RenderSystem.setShaderColor(1, 1, 1, 1)
     graphics.blit(Textures.GUI.Printer, leftPos, topPos, 0, 0, imageWidth, imageHeight)
-    materialBar.level = inventoryContainer.amountMaterial / inventoryContainer.maxAmountMaterial.toDouble
-    inkBar.level = inventoryContainer.amountInk / inventoryContainer.maxAmountInk.toDouble
-    progressBar.level = inventoryContainer.progress
-    drawWidgets(graphics)
     drawInventorySlots(graphics)
   }
 

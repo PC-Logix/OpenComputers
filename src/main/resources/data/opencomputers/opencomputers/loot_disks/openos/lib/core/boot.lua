@@ -31,6 +31,10 @@ if gpu then
   end
   _G.boot_screen = gpu.getScreen()
   w, h = gpu.maxResolution()
+  if gpu.getDefaultResolution then
+    local defaultW, defaultH = gpu.getDefaultResolution()
+    w, h = math.min(w, defaultW), math.min(h, defaultH)
+  end
   gpu.setResolution(w, h)
   gpu.setBackground(0x000000)
   gpu.setForeground(0xFFFFFF)

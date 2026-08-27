@@ -39,5 +39,11 @@
       {"name": "opencomputers:hdd_access6", "preload": true},
       {"name": "opencomputers:hdd_access7", "preload": true}
     ]
+  },
+  "ssd_access": {
+    "category": "block",
+    "sounds": [
+      {"name": "opencomputers:ssd_access", "preload": true}
+    ]
   }
 }

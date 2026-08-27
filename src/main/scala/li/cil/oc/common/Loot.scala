@@ -62,12 +62,21 @@ object Loot {
   private val datapackPreviousFactories = mutable.Map.empty[ResourceLocation, Option[Callable[FileSystem]]]
 
   private val defaultEEPROMId = ResourceLocation.fromNamespaceAndPath(Settings.resourceDomain, Constants.ItemName.LuaBios)
+  private val defaultOpenOSId = ResourceLocation.fromNamespaceAndPath(Settings.resourceDomain, Constants.ItemName.OpenOS)
 
   def defaultEEPROM: ItemStack = synchronized {
     datapackEEPROMs.collectFirst {
       case (id, stack) if id == defaultEEPROMId => stack.copy()
     }.orElse {
       eepromsForClient.find(_.get(OCComponents.LABEL.get()) == "EEPROM (Lua BIOS)").map(_.copy())
+    }.getOrElse(ItemStack.EMPTY)
+  }
+
+  def defaultOpenOS: ItemStack = synchronized {
+    datapackDisks.collectFirst {
+      case (stack, _) if stack.get(OCComponents.LOOT_DISK.get()) == defaultOpenOSId => stack.copy()
+    }.orElse {
+      Option(OCItems.get(Constants.ItemName.OpenOS)).map(_.createItemStack(1))
     }.getOrElse(ItemStack.EMPTY)
   }
 
@@ -193,7 +202,10 @@ object Loot {
         datapackPreviousFactories.getOrElseUpdate(id, factories.get(id))
         datapackFactories += id -> factory
         val hadCyclingDisk = disksForCyclingServer.exists(_.get(OCComponents.LOOT_DISK.get()) == id)
-        val stack = registerLootDisk(data.label, data.label, id, data.color, factory, data.recipeCycling)
+        // Keep the API descriptor key compatible with the legacy loot.properties
+        // path (for example, api.Items.get("openos")), while retaining the
+        // datapack label as the visible/custom disk name.
+        val stack = registerLootDisk(data.label, id.getPath, id, data.color, factory, data.recipeCycling)
         datapackDisks += ((stack, data.weight))
         if (!disksForClient.exists(ItemStack.isSameItemSameComponents(_, stack))) disksForClient += stack.copy()
         if (data.recipeCycling && !hadCyclingDisk) datapackCyclingDisks += stack

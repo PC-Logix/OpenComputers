@@ -1,0 +1,893 @@
+{
+  "type": "minecraft:empty",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:arrowkeys"
+            }
+          ],
+          "name": "opencomputers:arrowkeys",
+          "weight": 520
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:buttongroup"
+            }
+          ],
+          "name": "opencomputers:buttongroup",
+          "weight": 460
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:numpad"
+            }
+          ],
+          "name": "opencomputers:numpad",
+          "weight": 410
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:disk"
+            }
+          ],
+          "name": "opencomputers:disk",
+          "weight": 370
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:transistor"
+            }
+          ],
+          "name": "opencomputers:transistor",
+          "weight": 350
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:floppy"
+            }
+          ],
+          "name": "opencomputers:floppy",
+          "weight": 340
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:printedcircuitboard"
+            }
+          ],
+          "name": "opencomputers:printedcircuitboard",
+          "weight": 320
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:chip1"
+            }
+          ],
+          "name": "opencomputers:chip1",
+          "weight": 290
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:eeprom"
+            }
+          ],
+          "name": "opencomputers:eeprom",
+          "weight": 250
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:interweb"
+            }
+          ],
+          "name": "opencomputers:interweb",
+          "weight": 220
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:card"
+            }
+          ],
+          "name": "opencomputers:card",
+          "weight": 190
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:analyzer"
+            }
+          ],
+          "name": "opencomputers:analyzer",
+          "weight": 170
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:signupgrade"
+            }
+          ],
+          "name": "opencomputers:signupgrade",
+          "quality": 1,
+          "weight": 150
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:inventoryupgrade"
+            }
+          ],
+          "name": "opencomputers:inventoryupgrade",
+          "weight": 130
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:craftingupgrade"
+            }
+          ],
+          "name": "opencomputers:craftingupgrade",
+          "quality": 1,
+          "weight": 110
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:tankupgrade"
+            }
+          ],
+          "name": "opencomputers:tankupgrade",
+          "weight": 90
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:pistonupgrade"
+            }
+          ],
+          "name": "opencomputers:pistonupgrade",
+          "quality": 1,
+          "weight": 80
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:leashupgrade"
+            }
+          ],
+          "name": "opencomputers:leashupgrade",
+          "weight": 70
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:angelupgrade"
+            }
+          ],
+          "name": "opencomputers:angelupgrade",
+          "quality": 1,
+          "weight": 55
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:redstonecard1"
+            }
+          ],
+          "name": "opencomputers:redstonecard1",
+          "weight": 50
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:ram1"
+            }
+          ],
+          "name": "opencomputers:ram1",
+          "weight": 48
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:cu"
+            }
+          ],
+          "name": "opencomputers:cu",
+          "weight": 46
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:alu"
+            }
+          ],
+          "name": "opencomputers:alu",
+          "weight": 45
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:batteryupgrade1"
+            }
+          ],
+          "name": "opencomputers:batteryupgrade1",
+          "weight": 43
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:lancard"
+            }
+          ],
+          "name": "opencomputers:lancard",
+          "weight": 38
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:wlancard1"
+            }
+          ],
+          "name": "opencomputers:wlancard1",
+          "weight": 37
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:hdd1"
+            }
+          ],
+          "name": "opencomputers:hdd1",
+          "weight": 36
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:generatorupgrade"
+            }
+          ],
+          "name": "opencomputers:generatorupgrade",
+          "quality": 1,
+          "weight": 35
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:cpu1"
+            }
+          ],
+          "name": "opencomputers:cpu1",
+          "weight": 31
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:microcontrollercase1"
+            }
+          ],
+          "name": "opencomputers:microcontrollercase1",
+          "weight": 30
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:dronecase1"
+            }
+          ],
+          "name": "opencomputers:dronecase1",
+          "weight": 25
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:upgradecontainer1"
+            }
+          ],
+          "name": "opencomputers:upgradecontainer1",
+          "weight": 23
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:cardcontainer1"
+            }
+          ],
+          "name": "opencomputers:cardcontainer1",
+          "weight": 23
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:graphicscard1"
+            }
+          ],
+          "name": "opencomputers:graphicscard1",
+          "weight": 19
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:redstonecard2"
+            }
+          ],
+          "name": "opencomputers:redstonecard2",
+          "quality": 1,
+          "weight": 17
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:ram2"
+            }
+          ],
+          "name": "opencomputers:ram2",
+          "weight": 15
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:databaseupgrade1"
+            }
+          ],
+          "name": "opencomputers:databaseupgrade1",
+          "weight": 15
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:chip2"
+            }
+          ],
+          "name": "opencomputers:chip2",
+          "quality": 1,
+          "weight": 15
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:componentbus1"
+            }
+          ],
+          "name": "opencomputers:componentbus1",
+          "weight": 13
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:batteryupgrade2"
+            }
+          ],
+          "name": "opencomputers:batteryupgrade2",
+          "quality": 1,
+          "weight": 12
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:wlancard2"
+            }
+          ],
+          "name": "opencomputers:wlancard2",
+          "quality": 1,
+          "weight": 11
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:ram3"
+            }
+          ],
+          "name": "opencomputers:ram3",
+          "quality": 1,
+          "weight": 10
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:server1"
+            }
+          ],
+          "name": "opencomputers:server1",
+          "weight": 10
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:internetcard"
+            }
+          ],
+          "name": "opencomputers:internetcard",
+          "quality": 1,
+          "weight": 9
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:terminal"
+            }
+          ],
+          "name": "opencomputers:terminal",
+          "weight": 9
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:solargeneratorupgrade"
+            }
+          ],
+          "name": "opencomputers:solargeneratorupgrade",
+          "quality": 1,
+          "weight": 9
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:hdd2"
+            }
+          ],
+          "name": "opencomputers:hdd2",
+          "quality": 1,
+          "weight": 7
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:navigationupgrade"
+            }
+          ],
+          "name": "opencomputers:navigationupgrade",
+          "quality": 1,
+          "weight": 7
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:inventorycontrollerupgrade"
+            }
+          ],
+          "name": "opencomputers:inventorycontrollerupgrade",
+          "quality": 1,
+          "weight": 7
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:tankcontrollerupgrade"
+            }
+          ],
+          "name": "opencomputers:tankcontrollerupgrade",
+          "quality": 1,
+          "weight": 7
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:cpu2"
+            }
+          ],
+          "name": "opencomputers:cpu2",
+          "quality": 1,
+          "weight": 6
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:microcontrollercase2"
+            }
+          ],
+          "name": "opencomputers:microcontrollercase2",
+          "quality": 1,
+          "weight": 6
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:componentbus2"
+            }
+          ],
+          "name": "opencomputers:componentbus2",
+          "quality": 1,
+          "weight": 6
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:tabletcase1"
+            }
+          ],
+          "name": "opencomputers:tabletcase1",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:upgradecontainer2"
+            }
+          ],
+          "name": "opencomputers:upgradecontainer2",
+          "quality": 1,
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:cardcontainer2"
+            }
+          ],
+          "name": "opencomputers:cardcontainer2",
+          "quality": 1,
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:graphicscard2"
+            }
+          ],
+          "name": "opencomputers:graphicscard2",
+          "quality": 1,
+          "weight": 4
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:ram4"
+            }
+          ],
+          "name": "opencomputers:ram4",
+          "quality": 1,
+          "weight": 4
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:dronecase2"
+            }
+          ],
+          "name": "opencomputers:dronecase2",
+          "quality": 1,
+          "weight": 4
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:databaseupgrade2"
+            }
+          ],
+          "name": "opencomputers:databaseupgrade2",
+          "quality": 1,
+          "weight": 4
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:server2"
+            }
+          ],
+          "name": "opencomputers:server2",
+          "quality": 1,
+          "weight": 4
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:chip3"
+            }
+          ],
+          "name": "opencomputers:chip3",
+          "quality": 2,
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:componentbus3"
+            }
+          ],
+          "name": "opencomputers:componentbus3",
+          "quality": 2,
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:tractorbeamupgrade"
+            }
+          ],
+          "name": "opencomputers:tractorbeamupgrade",
+          "quality": 2,
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:batteryupgrade3"
+            }
+          ],
+          "name": "opencomputers:batteryupgrade3",
+          "quality": 2,
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:experienceupgrade"
+            }
+          ],
+          "name": "opencomputers:experienceupgrade",
+          "quality": 2,
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:ram5"
+            }
+          ],
+          "name": "opencomputers:ram5",
+          "quality": 2,
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:upgradecontainer3"
+            }
+          ],
+          "name": "opencomputers:upgradecontainer3",
+          "quality": 2,
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:cardcontainer3"
+            }
+          ],
+          "name": "opencomputers:cardcontainer3",
+          "quality": 2,
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:tabletcase2"
+            }
+          ],
+          "name": "opencomputers:tabletcase2",
+          "quality": 1
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:hdd3"
+            }
+          ],
+          "name": "opencomputers:hdd3",
+          "quality": 2
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:chunkloaderupgrade"
+            }
+          ],
+          "name": "opencomputers:chunkloaderupgrade",
+          "quality": 2
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:cpu3"
+            }
+          ],
+          "name": "opencomputers:cpu3",
+          "quality": 2
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:graphicscard3"
+            }
+          ],
+          "name": "opencomputers:graphicscard3",
+          "quality": 2
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:server3"
+            }
+          ],
+          "name": "opencomputers:server3",
+          "quality": 2
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:databaseupgrade3"
+            }
+          ],
+          "name": "opencomputers:databaseupgrade3",
+          "quality": 2
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "opencomputers:is_craftable",
+              "item": "opencomputers:ram6"
+            }
+          ],
+          "name": "opencomputers:ram6",
+          "quality": 2
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "opencomputers:presents"
+}

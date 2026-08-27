@@ -1,7 +1,7 @@
 package li.cil.oc.client
 
 import li.cil.oc.api.internal.Colored
-import li.cil.oc.common.block
+import li.cil.oc.common.{block, blockentity}
 import li.cil.oc.common.block.ChameliumBlock
 import li.cil.oc.common.datacomponents.OCComponents
 import li.cil.oc.common.init.{OCBlocks, OCItems}
@@ -14,11 +14,10 @@ import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent
 object ColorHandler {
   @SubscribeEvent
   def onRegisterBlocks(event: RegisterColorHandlersEvent.Block): Unit = {
-    event.register((state, world, pos, tintIndex) => state.getBlock match {
-      case block: block.Cable => block.colorMultiplierOverride.getOrElse(0xFFFFFFFF)
+    event.register((state, world, pos, tintIndex) => if (pos == null) 0xFFFFFFFF else world.getBlockEntity(pos) match {
+      case block: blockentity.Cable => FastColor.ARGB32.opaque(block.getColor)
       case _ => 0xFFFFFFFF
-    },
-      OCBlocks.Cable.get())
+    }, OCBlocks.Cable.get())
 
     event.register((state, world, pos, tintIndex) => if (pos == null) 0xFFFFFFFF else world.getBlockEntity(pos) match {
       case colored: Colored => colored.getColor
@@ -51,7 +50,7 @@ object ColorHandler {
   @SubscribeEvent
   def onRegisterItems(event: RegisterColorHandlersEvent.Item): Unit = {
     event.register((stack, tintIndex) =>
-      if (ItemColorizer.hasColor(stack)) FastColor.ARGB32.opaque(ItemColorizer.getColor(stack)) else 0xFFFFFFFF,
+      FastColor.ARGB32.opaque(if (ItemColorizer.hasColor(stack)) ItemColorizer.getColor(stack) else Color.rgbValues(DyeColor.LIGHT_GRAY)),
       OCBlocks.Cable.get())
 
     event.register((stack, tintIndex) =>

@@ -11,7 +11,6 @@ import li.cil.oc.common.openprinter.menu.DeviceMenu;
 import li.cil.oc.common.openprinter.menu.PortableStorageMenu;
 import li.cil.oc.common.openprinter.printer.PrinterBlockEntity;
 import li.cil.oc.common.openprinter.printer.PrinterConfig;
-import li.cil.oc.common.openprinter.printer.PrinterClientConfig;
 
 import li.cil.oc.api.manual.PathProvider;
 import li.cil.oc.api.network.Environment;
@@ -116,7 +115,6 @@ public final class OpenPrinter {
         MENUS.register(modBus);
         modBus.addListener(OpenPrinter::registerCapabilities);
         container.registerConfig(ModConfig.Type.SERVER, PrinterConfig.SPEC, "opencomputers-openprinter.toml");
-        container.registerConfig(ModConfig.Type.CLIENT, PrinterClientConfig.SPEC, "opencomputers-openprinter-client.toml");
         modBus.addListener((net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent event) ->
                 event.enqueueWork(OpenPrinter::registerOpenComputersIntegration));
     }

@@ -80,8 +80,8 @@ object DriverFileSystem extends Item {
       var label: api.fs.Label = new ReadWriteItemLabel(stack)
       val isFloppy = api.Items.get(stack) == api.Items.get(Constants.ItemName.Floppy)
       val isSSD = stack.getItem.isInstanceOf[SolidStateDrive]
-      val sound = if (isSSD) None
-      else Some(Settings.resourceDomain + ":" + (if (isFloppy) "floppy_access" else "hdd_access"))
+      // ssd_access sound event is intentionally not provided, so they're silent
+      val sound = Some(Settings.resourceDomain + ":" + (if (isFloppy) "floppy_access" else if (isSSD) "ssd_access" else "hdd_access"))
       val drive = new DriveData(stack)
       val environment = if (drive.isUnmanaged) {
         new Drive(capacity max 0, platterCount, label, Option(host), sound, speed, drive.isLocked, isSSD)

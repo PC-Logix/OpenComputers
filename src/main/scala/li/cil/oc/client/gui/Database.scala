@@ -1,10 +1,7 @@
 package li.cil.oc.client.gui
 
-import com.mojang.blaze3d.systems.RenderSystem
 import li.cil.oc.client.Textures
-import li.cil.oc.common.Tier
-import li.cil.oc.common.menu
-import com.mojang.blaze3d.vertex.PoseStack
+import li.cil.oc.common.{menu, Tier}
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Inventory
@@ -23,7 +20,6 @@ class Database(state: menu.Database, playerInventory: Inventory, name: Component
   override def drawSecondaryForegroundLayer(graphics: GuiGraphics, mouseX: Int, mouseY: Int): Unit = {}
 
   override protected def renderBg(graphics: GuiGraphics, dt: Float, mouseX: Int, mouseY: Int): Unit = {
-    RenderSystem.setShaderColor(1, 1, 1, 1)
     graphics.blit(Textures.GUI.Database, leftPos, topPos, 0, 0, imageWidth, imageHeight)
 
     if (inventoryContainer.tier > Tier.One) {

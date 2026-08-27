@@ -1,6 +1,6 @@
 package li.cil.oc.common.item.traits
 
-import li.cil.oc.{Localization, Settings}
+import li.cil.oc.Localization
 import li.cil.oc.client.gui
 import li.cil.oc.common.datacomponents.OCComponents
 import li.cil.oc.common.item.data.DriveData
@@ -22,27 +22,22 @@ trait FileSystemLike extends SimpleItem {
   def kiloBytes: Int
 
   override def appendHoverText(stack: ItemStack, context: TooltipContext, tooltip: util.List[Component], flag: TooltipFlag): Unit = {
-    super.appendHoverText(stack, context, tooltip, flag)
-    val nbt = ItemUtils.getTag(stack)
-    if (nbt != null) {
-      if (nbt.contains(Settings.namespace + "data")) {
-        val data = nbt.getCompound(Settings.namespace + "data")
-        if (data.contains(Settings.namespace + "fs.label")) {
-          tooltip.add(Component.literal(data.getString(Settings.namespace + "fs.label")).setStyle(Tooltip.DefaultStyle))
-        }
-        if (flag.isAdvanced && data.contains("fs")) {
-          val fsNbt = data.getCompound("fs")
-          if (fsNbt.contains("capacity.used")) {
-            val used = fsNbt.getLong("capacity.used")
-            tooltip.add(Component.literal(Localization.Tooltip.DiskUsage(used, kiloBytes * 1024)).setStyle(Tooltip.DefaultStyle))
-          }
-        }
-      }
+    val label = stack.get(OCComponents.LABEL)
+    if (label != null) tooltip.add(Component.literal(label).setStyle(Tooltip.DefaultStyle))
 
-      val data = new DriveData(stack)
-      tooltip.add(Component.literal(Localization.Tooltip.DiskMode(data.isUnmanaged)).setStyle(Tooltip.DefaultStyle))
-      tooltip.add(Component.literal(Localization.Tooltip.DiskLock(data.lockInfo)).setStyle(Tooltip.DefaultStyle))
+    if (flag.isAdvanced) {
+      val fsNbt = stack.get(OCComponents.FILESYSTEM_DATA)
+      if (fsNbt != null && fsNbt.contains("capacity.used")) {
+        val used = fsNbt.getLong("capacity.used")
+        tooltip.add(Component.literal(Localization.Tooltip.DiskUsage(used, kiloBytes * 1024)).setStyle(Tooltip.DefaultStyle))
+      }
     }
+
+    val data = new DriveData(stack)
+    tooltip.add(Component.literal(Localization.Tooltip.DiskMode(data.isUnmanaged)).setStyle(Tooltip.DefaultStyle))
+    if (data.isLocked) tooltip.add(Component.literal(Localization.Tooltip.DiskLock(data.lockInfo)).setStyle(Tooltip.DefaultStyle))
+
+    super.appendHoverText(stack, context, tooltip, flag)
   }
 
   override def use(level: Level, player: Player, hand: InteractionHand): InteractionResultHolder[ItemStack] = {

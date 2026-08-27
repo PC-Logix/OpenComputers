@@ -1,3 +1,48 @@
 {
-    "parent": "minecraft:block/air"
+    "parent": "minecraft:block/block",
+    "textures": {
+        "particle": "opencomputers:block/cablecap",
+        "cablecap": "opencomputers:block/cablecap",
+        "cable": "opencomputers:block/cable"
+    },
+    "elements": [
+        {
+            "from": [6, 1, 6],
+            "to": [10, 15, 10],
+            "rotation": {"angle": 0, "axis": "y", "origin": [0, 4, 0]},
+            "faces": {
+                "north": {"uv": [6, 1, 10, 15], "texture": "#cable", "tintindex": 0},
+                "east": {"uv": [6, 1, 10, 15], "texture": "#cable", "tintindex": 0},
+                "south": {"uv": [6, 1, 10, 15], "texture": "#cable", "tintindex": 0},
+                "west": {"uv": [6, 1, 10, 15], "texture": "#cable", "tintindex": 0},
+                "up": {"uv": [2, 1, 6, 5], "texture": "#cable", "tintindex": 0},
+                "down": {"uv": [10, 11, 14, 15], "texture": "#cable", "tintindex": 0}
+            }
+        },
+        {
+            "from": [5, 0, 5],
+            "to": [11, 1, 11],
+            "faces": {
+                "north": {"uv": [5, 4, 11, 5], "texture": "#cablecap"},
+                "east": {"uv": [5, 4, 11, 5], "texture": "#cablecap"},
+                "south": {"uv": [5, 11, 11, 12], "texture": "#cablecap"},
+                "west": {"uv": [5, 11, 11, 12], "texture": "#cablecap"},
+                "up": {"uv": [5, 5, 11, 11], "texture": "#cablecap"},
+                "down": {"uv": [5, 5, 11, 11], "texture": "#cablecap"}
+            }
+        },
+        {
+            "from": [5, 15, 5],
+            "to": [11, 16, 11],
+            "rotation": {"angle": 0, "axis": "y", "origin": [0, 15, 0]},
+            "faces": {
+                "north": {"uv": [5, 4, 11, 5], "texture": "#cablecap"},
+                "east": {"uv": [5, 4, 11, 5], "texture": "#cablecap"},
+                "south": {"uv": [5, 11, 11, 12], "texture": "#cablecap"},
+                "west": {"uv": [5, 11, 11, 12], "texture": "#cablecap"},
+                "up": {"uv": [5, 5, 11, 11], "texture": "#cablecap"},
+                "down": {"uv": [5, 5, 11, 11], "texture": "#cablecap"}
+            }
+        }
+    ]
 }

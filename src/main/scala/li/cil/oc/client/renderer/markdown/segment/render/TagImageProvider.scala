@@ -1,10 +1,7 @@
 package li.cil.oc.client.renderer.markdown.segment.render
 
-import li.cil.oc.api.manual.{
-  ImageProvider,
-  ImageRenderer,
-  InteractiveImageRenderer
-}
+import li.cil.oc.api.manual.{ImageProvider, ImageRenderer, InteractiveImageRenderer}
+import li.cil.oc.client.Textures
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.TagKey
@@ -34,8 +31,9 @@ object TagImageProvider extends ImageProvider {
     }
 
     if (stacks.nonEmpty) new ItemStackImageRenderer(stacks.toArray)
-    else new TextureImageRenderer(TextureImageProvider.ManualMissingItem) with InteractiveImageRenderer {
+    else new SpriteImageRenderer(Textures.GUISprites.ManualMissingItem) with InteractiveImageRenderer {
       override def getTooltip(tooltip: String): String = "oc:gui.Manual.Warning.OreDictMissing"
+
       override def onMouseClick(mouseX: Int, mouseY: Int): Boolean = false
     }
   }

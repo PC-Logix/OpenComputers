@@ -1,6 +1,5 @@
 package li.cil.oc.client.gui
 
-import com.mojang.blaze3d.systems.RenderSystem
 import li.cil.oc.client.{PacketSender, Textures}
 import li.cil.oc.common.blockentity
 import net.minecraft.client.KeyMapping
@@ -64,7 +63,6 @@ class Waypoint(val waypoint: blockentity.Waypoint) extends Screen(Component.empt
 
   override def render(graphics: GuiGraphics, mouseX: Int, mouseY: Int, dt: Float): Unit = {
     super.render(graphics, mouseX, mouseY, dt)
-    RenderSystem.setShaderColor(1, 1, 1, 1)
     graphics.blit(Textures.GUI.Waypoint, leftPos, topPos, 0, 0, imageWidth, imageHeight)
     textField.render(graphics, mouseX, mouseY, dt)
   }

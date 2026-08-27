@@ -65,7 +65,7 @@ class Screen(pos: BlockPos, state: BlockState, var tier: Int) extends BlockEntit
 
   var width, height = 1
 
-  var cachedBounds: Option[AABB] = None
+  var cachedBounds: Option[(Boolean, Int, Int, AABB)] = None
 
   var origin = this
 
@@ -92,10 +92,15 @@ class Screen(pos: BlockPos, state: BlockState, var tier: Int) extends BlockEntit
   def isOrigin = origin == this
 
   def getRenderBoundingBox: AABB = {
-    cachedBounds.getOrElse {
-      val bb = new AABB(getBlockPos).expandTowards(width - 1, height - 1, 0)
-      cachedBounds = Some(bb)
-      bb
+    cachedBounds match {
+      case Some((o, w, h, b)) if o == isOrigin && w == width && h == height => b
+      case _ =>
+        val bb = if ((width == 1 && height == 1) || !isOrigin) new AABB(getBlockPos) else {
+          val size = unproject(width - 1, height - 1, 0)
+          new AABB(getBlockPos).expandTowards(size.x, size.y, size.z)
+        }
+        cachedBounds = Some((isOrigin, width, height, bb))
+        bb
     }
   }
 

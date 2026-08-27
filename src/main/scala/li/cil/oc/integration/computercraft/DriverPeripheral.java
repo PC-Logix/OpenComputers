@@ -29,6 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.TimeUnit;
 
 public final class DriverPeripheral implements li.cil.oc.api.driver.DriverBlock {
@@ -95,6 +96,7 @@ public final class DriverPeripheral implements li.cil.oc.api.driver.DriverBlock 
         protected final String[] methodNames;
         protected final Map<String, FakeComputerAccess> accesses = new HashMap<>();
         protected final Map<String, Method> reflectedMethods = new HashMap<>();
+        protected final AtomicLong nextTaskId = new AtomicLong();
 
         public Environment(final IPeripheral peripheral) {
             this.peripheral = peripheral;
@@ -133,6 +135,7 @@ public final class DriverPeripheral implements li.cil.oc.api.driver.DriverBlock 
             }
 
             final Object[] argArray = CallableHelper.convertArguments(args);
+            final ILuaContext luaContext = new SynchronousLuaContext(context, nextTaskId);
 
             if (peripheral instanceof IDynamicPeripheral dynamic) {
                 final String[] names = dynamic.getMethodNames();
@@ -152,7 +155,7 @@ public final class DriverPeripheral implements li.cil.oc.api.driver.DriverBlock 
 
                 return dynamic.callMethod(
                         access,
-                        UnsupportedLuaContext.instance(),
+                        luaContext,
                         index,
                         new ObjectArguments(argArray)
                 ).getResult();
@@ -164,14 +167,14 @@ public final class DriverPeripheral implements li.cil.oc.api.driver.DriverBlock 
                 throw new NoSuchMethodException();
             }
 
-            final Object[] invokeArgs = buildInvokeArguments(method, argArray);
+            final Object[] invokeArgs = buildInvokeArguments(method, argArray, luaContext);
 
             final Object result = method.invoke(peripheral, invokeArgs);
 
             return wrapResult(result);
         }
 
-        private Object[] buildInvokeArguments(final Method method, final Object[] args) {
+        private Object[] buildInvokeArguments(final Method method, final Object[] args, final ILuaContext luaContext) {
             final Class<?>[] parameterTypes = method.getParameterTypes();
             final Object[] invokeArgs = new Object[parameterTypes.length];
 
@@ -183,7 +186,7 @@ public final class DriverPeripheral implements li.cil.oc.api.driver.DriverBlock 
                 if (type == IComputerAccess.class) {
                     invokeArgs[i] = null;
                 } else if (type == ILuaContext.class) {
-                    invokeArgs[i] = UnsupportedLuaContext.instance();
+                    invokeArgs[i] = luaContext;
                 } else if (type == ObjectArguments.class) {
                     invokeArgs[i] = new ObjectArguments(args);
                 } else {
@@ -444,19 +447,49 @@ public final class DriverPeripheral implements li.cil.oc.api.driver.DriverBlock 
             }
         }
 
-        public static final class UnsupportedLuaContext implements ILuaContext {
-            private static final UnsupportedLuaContext Instance = new UnsupportedLuaContext();
+        /**
+         * The enclosing ManagedPeripheral callback is non-direct, so OC has
+         * already moved execution to the server thread before this context is
+         * used. CC:T main-thread tasks can therefore run synchronously here.
+         */
+        public static final class SynchronousLuaContext implements ILuaContext {
+            private final Context context;
+            private final AtomicLong nextTaskId;
 
-            private UnsupportedLuaContext() {
-            }
-
-            public static UnsupportedLuaContext instance() {
-                return Instance;
+            public SynchronousLuaContext(final Context context, final AtomicLong nextTaskId) {
+                this.context = context;
+                this.nextTaskId = nextTaskId;
             }
 
             @Override
-            public long issueMainThreadTask(@NotNull LuaTask luaTask) throws LuaException {
-                return 0;
+            public long issueMainThreadTask(@NotNull final LuaTask task) throws LuaException {
+                final long taskId = nextTaskId.getAndIncrement();
+
+                try {
+                    signalTaskCompleted(taskId, true, task.execute());
+                } catch (final LuaException | RuntimeException e) {
+                    signalTaskCompleted(taskId, false, new Object[]{e.getMessage()});
+                }
+
+                return taskId;
+            }
+
+            @Override
+            public MethodResult executeMainThreadTask(@NotNull final LuaTask task) throws LuaException {
+                final Object[] result = task.execute();
+                return MethodResult.of(result == null ? new Object[0] : result);
+            }
+
+            private void signalTaskCompleted(final long taskId, final boolean success, final Object[] result) {
+                final Object[] signal = new Object[2 + (result == null ? 0 : result.length)];
+                signal[0] = taskId;
+                signal[1] = success;
+
+                if (result != null) {
+                    System.arraycopy(result, 0, signal, 2, result.length);
+                }
+
+                context.signal("task_completed", signal);
             }
         }
     }

@@ -163,9 +163,13 @@ object DroneTemplate extends Template {
   }
 
   override protected def maxComplexity(inventory: Container) =
-    if (caseTier(inventory) == Tier.Two) 8
-    else if (caseTier(inventory) == Tier.Five) 9001 // Creative
-    else 5
+    caseTier(inventory) match {
+      case Tier.One => 5
+      case Tier.Two => 8
+      case Tier.Three => 10
+      case Tier.Five => 9001 // Creative
+      case _ => throw new IllegalStateException("Given drone tier does not have defined complexity")
+    }
 
   override protected def caseTier(inventory: Container) = ItemUtils.caseTier(inventory.getItem(0))
 }

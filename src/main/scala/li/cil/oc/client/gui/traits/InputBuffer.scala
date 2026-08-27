@@ -1,20 +1,13 @@
 package li.cil.oc.client.gui.traits
 
 import com.mojang.blaze3d.platform.InputConstants
-import com.mojang.blaze3d.systems.RenderSystem
-
-import java.util.Arrays
-import com.mojang.blaze3d.vertex.{BufferUploader, DefaultVertexFormat, PoseStack, Tesselator, VertexFormat}
 import li.cil.oc.api
-import li.cil.oc.client.KeyBindings
-import li.cil.oc.client.Textures
+import li.cil.oc.client.{KeyBindings, Textures}
 import li.cil.oc.integration.util.ItemSearch
-import li.cil.oc.util.RenderState
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
-import net.minecraft.client.renderer.GameRenderer
+import net.minecraft.client.gui.GuiGraphics
 import org.lwjgl.glfw.GLFW
-import org.lwjgl.opengl.GL11
 
 import java.util
 import scala.collection.mutable
@@ -35,13 +28,14 @@ trait InputBuffer extends DisplayBuffer {
   private var hasQueuedKey = false
   private var queuedKey = 0
   private var queuedChar = '\u0000'
+  private var queuedCharMods = 0
   private var highSurrogate = '\u0000'
 
-  protected def pushQueuedKey(keyCode: Int): Unit = {
+  protected def pushQueuedKey(keyCode: Int, mods: Int): Unit = {
     flushQueuedKey()
     hasQueuedKey = true
     queuedKey = keyCode
-    queuedChar = GLFWTranslator.keyToChar(keyCode)
+    queuedChar = GLFWTranslator.keyToChar(keyCode, mods)
   }
 
   protected def pushQueuedChar(char: Char): Unit = {
@@ -82,26 +76,13 @@ trait InputBuffer extends DisplayBuffer {
     super.init()
   }
 
-  override protected def drawBufferLayer(stack: PoseStack): Unit = {
-    super.drawBufferLayer(stack)
+  override protected def drawBufferLayer(graphics: GuiGraphics): Unit = {
+    super.drawBufferLayer(graphics)
 
     if (System.currentTimeMillis() - showKeyboardMissing < 1000) {
-      RenderSystem.setShader(() => GameRenderer.getPositionTexShader)
-      RenderSystem.setShaderTexture(0, Textures.GUI.KeyboardMissing)
-      RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
-
       val x = bufferX + buffer.renderWidth - 16
       val y = bufferY + buffer.renderHeight - 16
-
-      val t = Tesselator.getInstance
-      val r = t.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX)
-      r.addVertex(stack.last.pose, x.toFloat, (y + 16).toFloat, 0f).setUv(0, 1)
-      r.addVertex(stack.last.pose, (x + 16).toFloat, (y + 16).toFloat, 0f).setUv(1, 1)
-      r.addVertex(stack.last.pose, (x + 16).toFloat, y.toFloat, 0f).setUv(1, 0)
-      r.addVertex(stack.last.pose, x.toFloat, y.toFloat, 0f).setUv(0, 0)
-      BufferUploader.drawWithShader(r.buildOrThrow())
-
-      RenderState.checkError(getClass.getName + ".drawBufferLayer: keyboard icon")
+      graphics.blitSprite(Textures.GUISprites.KeyboardMissing, x, y, 16, 16)
     }
   }
 
@@ -151,7 +132,7 @@ trait InputBuffer extends DisplayBuffer {
       }
       if (onInput(InputConstants.getKey(keyCode, scanCode))) return true
       if (buffer != null && keyCode != GLFW.GLFW_KEY_UNKNOWN) {
-        if (hasKeyboard) pushQueuedKey(keyCode)
+        if (hasKeyboard) pushQueuedKey(keyCode, mods)
         else showKeyboardMissing = System.currentTimeMillis()
         return true
       }
@@ -334,12 +315,17 @@ object GLFWTranslator {
 
   def glfwToLWJGL(keyCode: Int): Int = if (keyCode >= 0 && keyCode < toLWJGL.size) toLWJGL(keyCode) else -1
 
-  def keyToChar(keyCode: Int): Char = {
+  def keyToChar(keyCode: Int, mods: Int): Char = {
     if (keyCode == GLFW.GLFW_KEY_ESCAPE) '\u001B'
     else if (keyCode == GLFW.GLFW_KEY_ENTER) '\r'
     else if (keyCode == GLFW.GLFW_KEY_TAB) '\t'
     else if (keyCode == GLFW.GLFW_KEY_BACKSPACE) '\b'
     else if (keyCode == GLFW.GLFW_KEY_KP_ENTER) '\r'
+    else if ((mods & GLFW.GLFW_MOD_CONTROL) != 0) {
+      var c = (keyCode-64).max(0).toChar
+      if (c > 32) 0
+      else c
+    }
     else '\u0000'
   }
 }

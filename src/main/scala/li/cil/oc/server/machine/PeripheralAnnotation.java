@@ -20,7 +20,7 @@ public class PeripheralAnnotation implements Callback {
 
     @Override
     public boolean direct() {
-        return true;
+        return false;
     }
 
     @Override

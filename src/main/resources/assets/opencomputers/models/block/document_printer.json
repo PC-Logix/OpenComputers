@@ -1,10 +1,10 @@
 {
-  "loader": "neoforge:obj",
-  "model": "opencomputers:models/block/printer/printer.obj",
-  "flip_v": true,
-  "automatic_culling": true,
-  "shade_quads": true,
+  "parent": "block/orientable_with_bottom",
   "textures": {
-    "particle": "opencomputers:block/document_printer"
+    "side": "opencomputers:block/document_printer_side",
+    "front": "opencomputers:block/document_printer_front",
+    "top": "opencomputers:block/document_printer_top",
+    "bottom": "opencomputers:block/document_printer_bottom",
+    "particle": "opencomputers:block/document_printer_front"
   }
 }

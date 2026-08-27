@@ -10,7 +10,7 @@ class SolidStateDrive(props: Properties, val tier: Int) extends Item(props) with
   @Deprecated
   override def getDescriptionId = super.getDescriptionId + tier
 
-  val kiloBytes: Int = Settings.get.ssdSizes(tier)
+  val kiloBytes: Int = Settings.get.ssdSizes(tier - 1)
 
   override def getName(stack: ItemStack): Component = {
     val localizedName = super.getName(stack).copy()

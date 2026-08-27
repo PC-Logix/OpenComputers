@@ -1,18 +1,16 @@
 package li.cil.oc.client.gui
 
-import com.mojang.blaze3d.systems.RenderSystem
 import li.cil.oc.Localization
 import li.cil.oc.client.{Textures, PacketSender => ClientPacketSender}
 import li.cil.oc.client.gui.widget.ProgressBar
 import li.cil.oc.common.menu
 import li.cil.oc.common.menu.ComponentSlot
 import li.cil.oc.common.template.AssemblerTemplates
-import li.cil.oc.util.RenderState
-import net.minecraft.world.entity.player.Inventory
-import net.minecraft.network.chat.Component
-import net.minecraft.world.inventory.Slot
-import net.minecraft.client.gui.components.Button
+import net.minecraft.client.gui.components.{Button, Tooltip}
 import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.network.chat.Component
+import net.minecraft.world.entity.player.Inventory
+import net.minecraft.world.inventory.Slot
 
 import scala.jdk.CollectionConverters._
 
@@ -29,7 +27,6 @@ class Assembler(val state: menu.Assembler, playerInventory: Inventory, name: Com
 
   private def onSlotChanged(slot: Slot): Unit = {
     runButton.active = canBuild
-    runButton.toggled = !runButton.active
     info = validate
   }
 
@@ -37,7 +34,7 @@ class Assembler(val state: menu.Assembler, playerInventory: Inventory, name: Com
 
   protected var runButton: ImageButton = _
 
-  private val progress = addCustomWidget(new ProgressBar(28, 92))
+  private var progress: ProgressBar = _
 
   private def validate = AssemblerTemplates.select(inventoryContainer.getSlot(0).getItem).map(_.validate(inventoryContainer.otherInventory))
 
@@ -45,8 +42,23 @@ class Assembler(val state: menu.Assembler, playerInventory: Inventory, name: Com
 
   override protected def init(): Unit = {
     super.init()
-    runButton = new ImageButton(leftPos + 7, topPos + 89, 18, 18, (b: Button) => if (canBuild) ClientPacketSender.sendRobotAssemblerStart(inventoryContainer), Textures.GUI.ButtonRun, canToggle = true)
-    addRenderableWidget(runButton)
+    runButton = addRenderableWidget(new ImageButton(leftPos + 7, topPos + 89, 18, 18, (b: Button) => if (canBuild) ClientPacketSender.sendRobotAssemblerStart(inventoryContainer), Textures.GUISprites.ButtonRun))
+    progress = addRenderableWidget(new ProgressBar(leftPos + 28, topPos + 92))
+  }
+
+  override def render(graphics: GuiGraphics, mouseX: Int, mouseY: Int, dt: Float): Unit = {
+    if (inventoryContainer.isAssembling) {
+      val timeRemaining = formatTime(inventoryContainer.assemblyRemainingTime)
+      progress.level = inventoryContainer.assemblyProgress / 100.0
+      progress.setTooltip(
+        Tooltip.create(Component.literal(Localization.Assembler.Progress(inventoryContainer.assemblyProgress, timeRemaining)))
+      )
+    } else {
+      progress.level = 0
+      progress.setTooltip(null)
+    }
+
+    super.render(graphics, mouseX, mouseY, dt)
   }
 
   override protected def renderLabels(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int): Unit = {
@@ -80,12 +92,6 @@ class Assembler(val state: menu.Assembler, playerInventory: Inventory, name: Com
         guiGraphics.renderComponentTooltip(font, tooltip, mouseX - leftPos, mouseY - topPos)
       }
     }
-    else if (isHovering(progress.x, progress.y, progress.width, progress.height, mouseX - leftPos, mouseY - topPos)) {
-      val tooltip = new java.util.ArrayList[Component]
-      val timeRemaining = formatTime(inventoryContainer.assemblyRemainingTime)
-      tooltip.add(Component.literal(Localization.Assembler.Progress(inventoryContainer.assemblyProgress, timeRemaining)))
-      guiGraphics.renderComponentTooltip(font, tooltip, mouseX - leftPos, mouseY - topPos)
-    }
   }
 
   private def formatTime(seconds: Int) = {
@@ -94,11 +100,7 @@ class Assembler(val state: menu.Assembler, playerInventory: Inventory, name: Com
   }
 
   override protected def renderBg(guiGraphics: GuiGraphics, dt: Float, mouseX: Int, mouseY: Int): Unit = {
-    RenderSystem.setShaderColor(1, 1, 1, 1)
     guiGraphics.blit(Textures.GUI.RobotAssembler, leftPos, topPos, 0, 0, imageWidth, imageHeight)
-    if (inventoryContainer.isAssembling) progress.level = inventoryContainer.assemblyProgress / 100.0
-    else progress.level = 0
-    drawWidgets(guiGraphics)
     drawInventorySlots(guiGraphics)
   }
 

@@ -239,6 +239,16 @@ class TextBuffer(val host: EnvironmentHost) extends AbstractManagedEnvironment w
     else result((), "unsupported operation")
   }
 
+  @Callback(doc = """function():number -- Get the maximum resolution supported by the screen.""")
+  def hardwareResolution(context: Context, args: Arguments): Array[AnyRef] = {
+    val (smw, smh) = maxResolution
+    result(smw, smh)
+  }
+
+  @Callback(direct = true, doc = """function():number -- Get the maximum color depth supported by the screen.""")
+  def hardwareDepth(context: Context, args: Arguments): Array[AnyRef] =
+    result(PackedColor.Depth.bits(maxDepth))
+
   // ----------------------------------------------------------------------- //
 
   override def setEnergyCostPerTick(value: Double): Unit = {

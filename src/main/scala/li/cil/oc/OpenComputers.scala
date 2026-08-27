@@ -11,7 +11,7 @@ import li.cil.oc.common.recipe.Recipes
 import li.cil.oc.common.{IMC, Proxy}
 import li.cil.oc.integration.Mods
 import li.cil.oc.server.command.CommandHandler
-import li.cil.oc.server.loot.LootFunctions
+import li.cil.oc.server.loot.{LootConditions, LootFunctions}
 import li.cil.oc.util.ThreadPoolFactory
 import net.neoforged.api.distmarker.Dist
 import net.neoforged.bus.api.{IEventBus, SubscribeEvent}
@@ -21,7 +21,7 @@ import net.neoforged.fml.loading.FMLPaths
 import net.neoforged.fml.{InterModComms, ModContainer}
 import net.neoforged.neoforge.common.NeoForge
 import net.neoforged.neoforgespi.Environment
-import org.apache.logging.log4j.{LogManager, Logger}
+import org.apache.logging.log4j.{Logger, LogManager}
 
 import java.nio.file.Paths
 import scala.jdk.CollectionConverters._
@@ -68,6 +68,7 @@ class OpenComputers(modBus: IEventBus, modContainer: ModContainer) {
   CreativeTab.CREATIVE_TABS.register(modBus)
   BlockEntityTypes.init(modBus)
   Recipes.init(modBus)
+  LootConditions.init(modBus)
   LootFunctions.init(modBus)
   EntityTypes.ENTITY_TYPES.register(modBus)
   modBus.addListener(EntityTypes.onAttributeCreation)

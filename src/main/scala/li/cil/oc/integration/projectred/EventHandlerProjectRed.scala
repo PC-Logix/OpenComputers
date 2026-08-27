@@ -1,10 +1,10 @@
 package li.cil.oc.integration.projectred
 
-import li.cil.oc.server.agent.Player
 import mrtjp.projectred.api.IScrewdriver
 import net.minecraft.world.item.ItemStack
 import net.minecraft.core.BlockPos
 import net.minecraft.world.InteractionHand
+import net.minecraft.world.entity.player.Player
 
 object EventHandlerProjectRed {
   def useWrench(player: Player, pos: BlockPos, changeDurability: Boolean): Boolean = {

@@ -3,10 +3,8 @@ package li.cil.oc.client.gui
 import com.mojang.blaze3d.systems.RenderSystem
 import li.cil.oc.client.Textures
 import li.cil.oc.common
-import li.cil.oc.common.menu.AbstractMenu
-import li.cil.oc.common.menu.ComponentSlot
+import li.cil.oc.common.menu.{AbstractMenu, ComponentSlot}
 import li.cil.oc.integration.util.ItemSearch
-import li.cil.oc.util.RenderState
 import li.cil.oc.util.StackOption
 import li.cil.oc.util.StackOption._
 import net.minecraft.client.gui.GuiGraphics
@@ -37,7 +35,6 @@ abstract class DynamicGuiContainer[C <: AbstractContainerMenu](container: C, inv
   protected def drawSecondaryBackgroundLayer(graphics: GuiGraphics): Unit = {}
 
   override protected def renderBg(graphics: GuiGraphics, dt: Float, mouseX: Int, mouseY: Int): Unit = {
-    RenderSystem.setShaderColor(1, 1, 1, 1)
     graphics.blit(Textures.GUI.Background, leftPos, topPos, 0, 0, imageWidth, imageHeight)
     drawSecondaryBackgroundLayer(graphics)
     drawInventorySlots(graphics)
@@ -118,12 +115,10 @@ abstract class DynamicGuiContainer[C <: AbstractContainerMenu](container: C, inv
   }
 
   protected def drawDisabledSlot(graphics: GuiGraphics, slot: ComponentSlot): Unit = {
-    RenderSystem.setShaderColor(1, 1, 1, 1)
     graphics.blit(slot.tierIcon, slot.x, slot.y, 0, 0, 16, 16, 16, 16)
   }
 
   protected def drawSlotBackground(graphics: GuiGraphics, x: Int, y: Int): Unit = {
-    RenderSystem.setShaderColor(1, 1, 1, 1)
     graphics.blit(Textures.GUI.Slot, x, y, 0, 0, 18, 18, 18, 18)
   }
 

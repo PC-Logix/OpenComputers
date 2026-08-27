@@ -1,9 +1,8 @@
 package li.cil.oc.server.command
 
 import com.mojang.brigadier.CommandDispatcher
-import com.mojang.brigadier.arguments.IntegerArgumentType
-import com.mojang.brigadier.context.CommandContext
 import li.cil.oc.{Constants, api}
+import li.cil.oc.common.Loot
 import li.cil.oc.common.blockentity.{Case => CaseBlockEntity}
 import li.cil.oc.common.blockentity.traits.Rotatable
 import li.cil.oc.common.init.{OCBlocks, OCItems}
@@ -13,6 +12,8 @@ import net.minecraft.core.Direction
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.phys.{BlockHitResult, HitResult}
+import com.mojang.brigadier.arguments.IntegerArgumentType
+import com.mojang.brigadier.context.CommandContext
 
 object SpawnComputerCommand {
   final val MaxDistance = 16.0
@@ -47,6 +48,23 @@ object SpawnComputerCommand {
           source.sendFailure(Component.literal("Target position obstructed."))
           return 0
         }
+
+        val apu = Option(api.Items.get(Constants.ItemName.APUCreative)).map(_.createItemStack(1))
+        val components = Seq(
+          apu,
+          Option(api.Items.get(Constants.ItemName.RAMCreative)).map(_.createItemStack(1)),
+          Option(api.Items.get(Constants.ItemName.RAMCreative)).map(_.createItemStack(1)),
+          Option(api.Items.get(Constants.ItemName.SSDTier3)).map(_.createItemStack(1)),
+          Option(Loot.defaultEEPROM).filter(stack => !stack.isEmpty),
+          Option(Loot.defaultOpenOS).filter(stack => !stack.isEmpty)
+        ).flatten
+
+        if (components.size != 6 || components.exists(_.isEmpty)) {
+          source.sendFailure(Component.literal("OpenComputers default EEPROM/OpenOS data is not loaded; reload the server resources and try again."))
+          return 0
+        }
+
+        val apuStack = components.head
 
         def rotateProperly(pos: net.minecraft.core.BlockPos): Option[Rotatable] =
           level.getBlockEntity(pos) match {
@@ -89,18 +107,9 @@ object SpawnComputerCommand {
 
         api.Network.joinOrCreateNetwork(level.getBlockEntity(casePos))
 
-        val apu = api.Items.get(Constants.ItemName.APUCreative).createItemStack(1)
-        LuaStateFactory.setDefaultArch(apu)
+        LuaStateFactory.setDefaultArch(apuStack)
         level.getBlockEntity(casePos) match {
           case computer: CaseBlockEntity =>
-            val components = Seq(
-              apu,
-              api.Items.get(Constants.ItemName.RAMCreative).createItemStack(1),
-              api.Items.get(Constants.ItemName.SSDTier3).createItemStack(1),
-              api.Items.get(Constants.ItemName.LuaBios).createItemStack(1),
-              api.Items.get(Constants.ItemName.OpenOS).createItemStack(1)
-            )
-
             for (component <- components) {
               val slot = (0 until computer.getContainerSize)
                 .find(i => computer.getItem(i).isEmpty && computer.canPlaceItem(i, component))

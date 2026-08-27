@@ -1,17 +1,14 @@
 package li.cil.oc.client.gui
 
-import java.text.DecimalFormat
-import com.mojang.blaze3d.systems.RenderSystem
 import li.cil.oc.Localization
 import li.cil.oc.client.Textures
 import li.cil.oc.common.menu
-import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.renderer.Rect2i
-import org.lwjgl.opengl.GL11
-import com.mojang.blaze3d.vertex.{BufferUploader, DefaultVertexFormat, PoseStack, Tesselator, VertexFormat}
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Inventory
-import net.minecraft.client.gui.GuiGraphics
+
+import java.text.DecimalFormat
 
 class Relay(state: menu.Relay, playerInventory: Inventory, name: Component)
   extends DynamicGuiContainer(state, playerInventory, name) {
@@ -23,20 +20,9 @@ class Relay(state: menu.Relay, playerInventory: Inventory, name: Component)
   override protected def drawSecondaryBackgroundLayer(graphics: GuiGraphics): Unit = {
     super.drawSecondaryBackgroundLayer(graphics)
 
-    RenderSystem.setShaderColor(1, 1, 1, 1)
-    RenderSystem.setShaderTexture(0, Textures.GUI.UpgradeTab)
-    val stack = graphics.pose()
-    val x = windowX + tabPosition.getX
-    val y = windowY + tabPosition.getY
-    val w = tabPosition.getWidth
-    val h = tabPosition.getHeight
-    val t = Tesselator.getInstance
-    val r = t.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX)
-    r.addVertex(stack.last.pose(), x.toFloat, (y + h).toFloat, 0f).setUv(0f, 1f)
-    r.addVertex(stack.last.pose(), (x + w).toFloat, (y + h).toFloat, 0f).setUv(1f, 1f)
-    r.addVertex(stack.last.pose(), (x + w).toFloat, y.toFloat, 0f).setUv(1f, 0f)
-    r.addVertex(stack.last.pose(), x.toFloat, y.toFloat, 0f).setUv(0f, 0f)
-    BufferUploader.drawWithShader(r.buildOrThrow())
+    graphics.blitSprite(
+      Textures.GUISprites.UpgradeTab, leftPos + tabPosition.getX, topPos + tabPosition.getY, tabPosition.getWidth, tabPosition.getHeight
+    )
   }
 
   override def mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean = {
@@ -68,23 +54,23 @@ class Relay(state: menu.Relay, playerInventory: Inventory, name: Component)
 
     graphics.drawString(font,
       Localization.Switch.TransferRate,
-      14, 20, 0x404040)
+      14, 20, 0x404040, false)
     graphics.drawString(font,
       Localization.Switch.PacketsPerCycle,
-      14, 39, 0x404040)
+      14, 39, 0x404040, false)
     graphics.drawString(font,
       Localization.Switch.QueueSize,
-      14, 58, 0x404040)
+      14, 58, 0x404040, false)
 
     graphics.drawString(font,
       format.format(20f / inventoryContainer.relayDelay),
-      108, 20, 0x404040)
+      108, 20, 0x404040, false)
     graphics.drawString(font,
       s"${inventoryContainer.packetsPerCycleAvg} / ${inventoryContainer.relayAmount}",
-      108, 39, thresholdBasedColor(inventoryContainer.packetsPerCycleAvg, math.ceil(inventoryContainer.relayAmount / 2f).toInt, inventoryContainer.relayAmount))
+      108, 39, thresholdBasedColor(inventoryContainer.packetsPerCycleAvg, math.ceil(inventoryContainer.relayAmount / 2f).toInt, inventoryContainer.relayAmount), false)
     graphics.drawString(font,
       s"${inventoryContainer.queueSize} / ${inventoryContainer.maxQueueSize}",
-      108, 58, thresholdBasedColor(inventoryContainer.queueSize, inventoryContainer.maxQueueSize / 2, inventoryContainer.maxQueueSize))
+      108, 58, thresholdBasedColor(inventoryContainer.queueSize, inventoryContainer.maxQueueSize / 2, inventoryContainer.maxQueueSize), false)
   }
 
   private def thresholdBasedColor(value: Int, yellow: Int, red: Int) = {

@@ -510,9 +510,9 @@ object OCItems extends ItemAPI {
   val HDDTier3: DeferredItem[item.HardDiskDrive] = registerItem(new item.HardDiskDrive(defaultProps.rarity(Rarity.RARE), Tier.Three), Constants.ItemName.HDDTier3, Constants.SectionName.Component)
   val HDDTier4: DeferredItem[item.HardDiskDrive] = registerItem(new item.HardDiskDrive(defaultProps.rarity(OCRarity.LEGENDARY), Tier.Four), Constants.ItemName.HDDTier4, Constants.SectionName.Component)
 
-  val SSDTier1: DeferredItem[item.SolidStateDrive] = registerItem(new item.SolidStateDrive(defaultProps.rarity(Rarity.UNCOMMON), Tier.One), Constants.ItemName.SSDTier1, Constants.SectionName.Component)
-  val SSDTier2: DeferredItem[item.SolidStateDrive] = registerItem(new item.SolidStateDrive(defaultProps.rarity(Rarity.RARE), Tier.Two), Constants.ItemName.SSDTier2, Constants.SectionName.Component)
-  val SSDTier3: DeferredItem[item.SolidStateDrive] = registerItem(new item.SolidStateDrive(defaultProps.rarity(OCRarity.LEGENDARY), Tier.Three), Constants.ItemName.SSDTier3, Constants.SectionName.Component)
+  val SSDTier1: DeferredItem[item.SolidStateDrive] = registerItem(new item.SolidStateDrive(defaultProps.rarity(Rarity.UNCOMMON), Tier.Two), Constants.ItemName.SSDTier1, Constants.SectionName.Component)
+  val SSDTier2: DeferredItem[item.SolidStateDrive] = registerItem(new item.SolidStateDrive(defaultProps.rarity(Rarity.RARE), Tier.Three), Constants.ItemName.SSDTier2, Constants.SectionName.Component)
+  val SSDTier3: DeferredItem[item.SolidStateDrive] = registerItem(new item.SolidStateDrive(defaultProps.rarity(OCRarity.LEGENDARY), Tier.Four), Constants.ItemName.SSDTier3, Constants.SectionName.Component)
 
 
   /////////////////////////////////////////////////////////////////

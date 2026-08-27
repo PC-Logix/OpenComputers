@@ -42,6 +42,15 @@ class GraphicsCard(val tier: Int, val vramScreens: Option[Double] = None, val vi
 
   private val maxResolution = Settings.screenResolutionsByTier(tier)
 
+  private val defaultResolution = {
+    val (width, height) = Settings.screenResolutionsByTier(tier)
+    val (configuredWidth, configuredHeight) = Settings.get.defaultResolution
+    (
+      if (configuredWidth > 0) width min configuredWidth else width,
+      if (configuredHeight > 0) height min configuredHeight else height
+    )
+  }
+
   private val maxDepth = Settings.screenDepthsByTier(tier)
 
   private var screenAddress: Option[String] = None
@@ -407,9 +416,13 @@ class GraphicsCard(val tier: Int, val vramScreens: Option[Double] = None, val vi
     })
   }
 
-  @Callback(direct = true, doc = """function():number -- Get the maximum supported color depth.""")
+  @Callback(direct = true, doc = """function():number -- Get the maximum supported color depth by the current GPU+screen combo.""")
   def maxDepth(context: Context, args: Arguments): Array[AnyRef] =
     screen(s => result(PackedColor.Depth.bits(api.internal.TextBuffer.ColorDepth.values.apply(math.min(maxDepth.ordinal, s.getMaximumColorDepth.ordinal)))))
+
+  @Callback(direct = true, doc = """function():number -- Get the maximum color depth supported by the GPU.""")
+  def hardwareDepth(context: Context, args: Arguments): Array[AnyRef] =
+    result(PackedColor.Depth.bits(maxDepth))
 
   @Callback(direct = true, doc = """function():number, number -- Get the current screen resolution.""")
   def getResolution(context: Context, args: Arguments): Array[AnyRef] =
@@ -427,7 +440,7 @@ class GraphicsCard(val tier: Int, val vramScreens: Option[Double] = None, val vi
     screen(s => result(s.setResolution(w, h)))
   }
 
-  @Callback(direct = true, doc = """function():number, number -- Get the maximum screen resolution.""")
+  @Callback(direct = true, doc = """function():number, number -- Get the maximum screen resolution supported by the current GPU+screen combo.""")
   def maxResolution(context: Context, args: Arguments): Array[AnyRef] =
     screen(s => {
       val (gmw, gmh) = maxResolution
@@ -435,6 +448,21 @@ class GraphicsCard(val tier: Int, val vramScreens: Option[Double] = None, val vi
       val smh = s.getMaximumHeight
       result(math.min(gmw, smw), math.min(gmh, smh))
     })
+
+  @Callback(direct = true, doc = """function():number, number -- Get the default screen resolution.""")
+  def getDefaultResolution(context: Context, args: Arguments): Array[AnyRef] =
+    screen(s => {
+      val (gdw, gdh) = defaultResolution
+      val smw = s.getMaximumWidth
+      val smh = s.getMaximumHeight
+      result(math.min(gdw, smw), math.min(gdh, smh))
+    })
+
+    @Callback(direct = true, doc = """function():number, number -- Get the maximum screen resolution supported by the GPU.""")
+  def hardwareResolution(context: Context, args: Arguments): Array[AnyRef] = {
+    val (gmw, gmh) = maxResolution
+    result(gmw, gmh)
+  }
 
   @Callback(direct = true, doc = """function():number, number -- Get the current viewport resolution.""")
   def getViewport(context: Context, args: Arguments): Array[AnyRef] =

@@ -1,14 +1,13 @@
 package li.cil.oc.client.gui
 
-import com.mojang.blaze3d.vertex.PoseStack
 import li.cil.oc.api
 import li.cil.oc.client.renderer.TextBufferRenderCache
 import li.cil.oc.client.renderer.gui.BufferRenderer
-import net.minecraft.client.gui.{GuiGraphics, screens}
+import net.minecraft.client.gui.{screens, GuiGraphics}
 import net.minecraft.client.KeyMapping
-import org.lwjgl.glfw.GLFW
 import net.minecraft.client.gui.components.events.ContainerEventHandler
 import net.minecraft.network.chat.Component
+import org.lwjgl.glfw.GLFW
 
 class Screen(initialBuffer: api.internal.TextBuffer, val hasMouse: Boolean, val hasKeyboardCallback: () => Boolean, val hasPower: () => Boolean)
   extends screens.Screen(Component.empty()) with traits.InputBuffer with ContainerEventHandler {
@@ -89,7 +88,7 @@ class Screen(initialBuffer: api.internal.TextBuffer, val hasMouse: Boolean, val 
         else buffer.mouseDown(bx, by, button, null)
         didClick = true
         mx = bx.toInt
-        my = (by*2).toInt 
+        my = (by*2).toInt
       case _ =>
     }
   }
@@ -111,10 +110,11 @@ class Screen(initialBuffer: api.internal.TextBuffer, val hasMouse: Boolean, val 
 
   override def render(graphics: GuiGraphics, mouseX: Int, mouseY: Int, dt: Float): Unit = {
     super.render(graphics, mouseX, mouseY, dt)
-    drawBufferLayer(graphics.pose)
+    drawBufferLayer(graphics)
   }
 
-  override def drawBuffer(stack: PoseStack) = {
+  override def drawBuffer(graphics: GuiGraphics) = {
+    val stack = graphics.pose()
     stack.translate(x.toFloat, y.toFloat, 0f)
     BufferRenderer.drawBackground(stack, innerWidth, innerHeight)
     if (hasPower()) {

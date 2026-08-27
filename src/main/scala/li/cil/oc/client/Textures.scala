@@ -2,17 +2,16 @@ package li.cil.oc.client
 
 import com.mojang.blaze3d.systems.RenderSystem
 import li.cil.oc.{Constants, OpenComputers, Settings}
-import li.cil.oc.common.Slot
-import li.cil.oc.common.Tier
+import li.cil.oc.common.{Slot, Tier}
 import net.minecraft.client.Minecraft
-import net.minecraft.client.renderer.texture.SimpleTexture
-import net.minecraft.client.renderer.texture.TextureAtlasSprite
+import net.minecraft.client.gui.components.WidgetSprites
+import net.minecraft.client.renderer.texture.{SimpleTexture, TextureAtlasSprite}
 import net.minecraft.client.resources.model.ModelResourceLocation
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.resources.{ResourceManager, ResourceManagerReloadListener}
 import net.minecraft.world.inventory.InventoryMenu
-import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent
 import net.neoforged.bus.api.SubscribeEvent
+import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent
 
 import scala.collection.mutable
 
@@ -24,17 +23,11 @@ object Textures {
     override protected def basePath = "font/%s"
   }
 
-  object GUI extends SimpleTextureBundle {
+  object GUI {
+    private def L(name: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath(OpenComputers.ID, "textures/gui/" + name + ".png")
+
     val Background = L("background")
-    val Bar = L("bar")
     val Borders = L("borders")
-    val ButtonDriveMode = L("button_drive_mode")
-    val ButtonPower = L("button_power")
-    val ButtonRange = L("button_range")
-    val ButtonRun = L("button_run")
-    val ButtonScroll = L("button_scroll")
-    val ButtonSide = L("button_side")
-    val ButtonRelay = L("button_relay")
     val Computer = L("computer")
     val Database = L("database")
     val Database1 = L("database1")
@@ -42,30 +35,44 @@ object Textures {
     val Disassembler = L("disassembler")
     val Drive = L("drive")
     val Drone = L("drone")
-    val KeyboardMissing = L("keyboard_missing")
     val Manual = L("manual")
-    val ManualHome = L("manual_home")
-    val ManualMissingItem = L("manual_missing_item")
-    val ManualTab = L("manual_tab")
     val Nanomachines = L("nanomachines_power")
     val NanomachinesBar = L("nanomachines_power_bar")
     val Printer = L("printer")
-    val PrinterInk = L("printer_ink")
-    val PrinterMaterial = L("printer_material")
-    val PrinterProgress = L("printer_progress")
     val Rack = L("rack")
     val Raid = L("raid")
     val Range = L("range")
     val Robot = L("robot")
     val RobotAssembler = L("robot_assembler")
     val RobotNoScreen = L("robot_noscreen")
-    val RobotSelection = L("robot_selection")
     val Server = L("server")
     val Slot = L("slot")
-    val UpgradeTab = L("upgrade_tab")
     val Waypoint = L("waypoint")
+  }
 
-    override protected def basePath = "gui/%s"
+  object GUISprites {
+    private def L(name: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath(OpenComputers.ID, name)
+
+    private def simpleButton(name: String): WidgetSprites = new WidgetSprites(L(name), L(name).withSuffix("_highlight"))
+
+    val Bar: ResourceLocation = L("bar")
+    val KeyboardMissing: ResourceLocation = L("keyboard_missing")
+    val ManualMissingItem = L("manual_missing_item")
+    val PrinterInk: ResourceLocation = L("printer_ink")
+    val PrinterMaterial: ResourceLocation = L("printer_material")
+    val PrinterProgress: ResourceLocation = L("printer_progress")
+    val RobotSelection: ResourceLocation = L("robot_selection")
+    val UpgradeTab: ResourceLocation = L("upgrade_tab")
+
+    val ButtonDriveMode: WidgetSprites = new WidgetSprites(L("button_drive_mode"), L("button_drive_mode_disabled"), L("button_drive_mode_highlight"))
+    val ButtonPower: WidgetSprites = new WidgetSprites(
+      L("button_power_on"), L("button_power_off"), L("button_power_on_highlight"), L("button_power_off_highlight")
+    )
+    val ButtonRelay: WidgetSprites = simpleButton("button_relay")
+    val ButtonRun: WidgetSprites = new WidgetSprites(L("button_run"), L("button_run_disabled"), L("button_run_highlight"))
+    val ButtonScroll: WidgetSprites = simpleButton("button_scroll")
+    val ManualHome: ResourceLocation = L("manual_home")
+    val ManualTab: WidgetSprites = simpleButton("manual_tab")
   }
 
   object Icons extends SimpleTextureBundle {
@@ -145,8 +152,6 @@ object Textures {
     val ScreenUpIndicator = L("overlay/screen_up_indicator")
     val SwitchSideOn = L("overlay/switch_side_on")
     val TransposerOn = L("overlay/transposer_on")
-    val Cable = L("cable")
-    val CableCap = L("cablecap")
     val GenericTop = L("generic_top")
     val NetSplitterSide = L("netsplitter_side")
     val NetSplitterTop = L("netsplitter_top")
@@ -198,7 +203,6 @@ object Textures {
           }
         }
         register(Font)
-        register(GUI)
         register(Icons)
         register(Model)
       }
