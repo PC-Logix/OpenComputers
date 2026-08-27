@@ -64,13 +64,13 @@ object SpawnComputerCommand {
         rotateProperly(casePos)
 
         if (TierScreen == 1) {
-          place(screenPos, Constants.BlockName.ScreenTier1)
+          level.setBlockAndUpdate(screenPos, OCBlocks.ScreenTier1.get().defaultBlockState())
         } else if (TierScreen == 2) {
-          place(screenPos, Constants.BlockName.ScreenTier2)
+          level.setBlockAndUpdate(screenPos, OCBlocks.ScreenTier2.get().defaultBlockState())
         } else if (TierScreen == 3) {
-          place(screenPos, Constants.BlockName.ScreenTier3)
+          level.setBlockAndUpdate(screenPos, OCBlocks.ScreenTier3.get().defaultBlockState())
         } else if (TierScreen == 4) {
-          place(screenPos, Constants.BlockName.ScreenTier4)
+          level.setBlockAndUpdate(screenPos, OCBlocks.ScreenTier4.get().defaultBlockState())
         }
 
         rotateProperly(screenPos).foreach { rotatable =>
