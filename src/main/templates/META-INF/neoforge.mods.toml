@@ -11,7 +11,7 @@ displayName="OpenComputers: Rebooted"
 displayURL="https://github.com/PC-Logix/OpenComputers"
 logoFile="pack.png"
 credits="Inspired by a couple of other mods, most notably ComputerCraft."
-authors="Sangar, Vexatos, payonel, magik6k, Lord Joda, Github Contributors and modern port by OpenComputers: Rebooted Team"
+authors="Sangar, Vexatos, payonel, magik6k, Lord Joda, Github Contributors; 1.20.1 port by akki697222; 1.21.1+ port by OpenComputers: Rebooted Team"
 description="This mod adds modular computers and robots that can be programmed in Lua."
 enumExtensions="META-INF/enumextensions.json"
 
