@@ -218,7 +218,13 @@ dependencies {
         transitive = false
     }
 
-    embedded "com.typesafe:config:1.4.5"
+    jarJar(implementation(group: "com.typesafe", name: "config")) {
+        version {
+            strictly "[1.4.5,)"
+            prefer "1.4.5"
+        }
+    }
+
     embedded ":OC-LuaJ:20220907.1"
     embedded ":OC-JNLua-Natives:20220928.1"
 
