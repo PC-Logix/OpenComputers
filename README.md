@@ -58,10 +58,9 @@ task already depends on `prepareClientRun`, including after `clean`.
 ## Project status
 
 The port currently targets NeoForge 1.21.1. Remaining integrations and planned
-features are tracked in [ROADMAP.md](ROADMAP.md). The original
-[OpenComputers wiki](https://ocdoc.cil.li/) is still useful for gameplay and Lua
-API concepts, but some installation and mod-integration details describe older
-Minecraft versions.
+features are tracked in [ROADMAP.md](ROADMAP.md). The 
+[OpenComputers wiki](https://orc.michiyo.me/wiki) is useful for gameplay and Lua
+API concepts.
 
 Useful project links:
 
@@ -71,6 +70,7 @@ Useful project links:
 - [In-game manual sources](src/main/resources/assets/opencomputers/doc)
 - [Lua/OpenOS sources](src/main/resources/assets/opencomputers/loot)
 - [Java API sources](src/main/java/li/cil/oc/api)
+- [Development Builds](https://ci.pc-logix.com/job/OpenComputers%20Rebooted)
 
 ## Contributing
 
