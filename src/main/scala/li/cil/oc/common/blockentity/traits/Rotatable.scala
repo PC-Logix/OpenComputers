@@ -61,6 +61,11 @@ trait Rotatable extends RotationAware with internal.Rotatable {
       pitch2Direction((entity.getXRot / 90).round + 1),
       yaw2Direction((entity.getYRot / 360 * 4).round & 3))
 
+  def setFromEntityPitchAndYaw(entity: Entity, localYaw: Direction) =
+    trySetPitchYaw(
+      pitch2Direction((entity.getXRot / 90).round + 1),
+      localYaw)
+
   def setFromFacing(value: Direction) =
     value match {
       case Direction.DOWN | Direction.UP =>

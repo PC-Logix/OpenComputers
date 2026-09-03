@@ -23,6 +23,7 @@ import li.cil.oc.common.entity.{Drone => EntityDrone}
 import li.cil.oc.common.item.TabletWrapper
 import li.cil.oc.util.BlockPosition
 import li.cil.oc.util.DatabaseAccess
+import li.cil.oc.util.SableCompat
 import li.cil.oc.util.ExtendedArguments._
 import li.cil.oc.util.ExtendedLevel._
 import net.minecraft.world.item.Item
@@ -81,7 +82,9 @@ class Geolyzer(val host: EnvironmentHost) extends AbstractManagedEnvironment wit
 
   private def canSeeSky: Boolean = {
     val blockPos = position.offset(Direction.UP)
-    host.getEnvironmentLevel.dimension != Level.NETHER && host.getEnvironmentLevel.canSeeSkyFromBelowWater(blockPos.toBlockPos)
+    val physical = SableCompat.physicalPosition(host.getEnvironmentLevel, blockPos.toVec3)
+    val physicalBlockPos = net.minecraft.core.BlockPos.containing(physical)
+    host.getEnvironmentLevel.dimension != Level.NETHER && host.getEnvironmentLevel.canSeeSkyFromBelowWater(physicalBlockPos)
   }
 
   @Callback(doc = """function():boolean -- Returns whether there is a clear line of sight to the sky directly above.""")
@@ -92,10 +95,12 @@ class Geolyzer(val host: EnvironmentHost) extends AbstractManagedEnvironment wit
   @Callback(doc = """function():boolean -- Return whether the sun is currently visible directly above.""")
   def isSunVisible(computer: Context, args: Arguments): Array[AnyRef] = {
     val blockPos = BlockPosition(host).offset(Direction.UP)
+    val physical = SableCompat.physicalPosition(host.getEnvironmentLevel, blockPos.toVec3)
+    val physicalBlockPos = net.minecraft.core.BlockPos.containing(physical)
     result(
       host.getEnvironmentLevel.isDay &&
       canSeeSky &&
-        (host.getEnvironmentLevel.getBiome(blockPos.toBlockPos).value.getPrecipitationAt(blockPos.toBlockPos) == Precipitation.NONE || (!host.getEnvironmentLevel.isRaining && !host.getEnvironmentLevel.isThundering)))
+        (host.getEnvironmentLevel.getBiome(physicalBlockPos).value.getPrecipitationAt(physicalBlockPos) == Precipitation.NONE || (!host.getEnvironmentLevel.isRaining && !host.getEnvironmentLevel.isThundering)))
   }
 
   @Callback(doc = """function(x:number, z:number[, y:number, w:number, d:number, h:number][, ignoreReplaceable:boolean|options:table]):table -- Analyzes the density of the column at the specified relative coordinates.""")

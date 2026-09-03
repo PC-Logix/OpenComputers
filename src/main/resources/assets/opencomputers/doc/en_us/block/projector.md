@@ -77,6 +77,10 @@ Right-clicking the visible projected screen opens the normal OpenComputers scree
 
 The screen's text buffer is saved with the projector, and the emulated screen component is restored when the projector's chunk is loaded.
 
+## Lighting
+
+An enabled projector emits a small amount of normal Minecraft block light (light level 4). The projected image itself is rendered emissively, so it remains visible in darkness. The wall, floor, or other block receiving the image is not changed into a light-emitting block: Minecraft's normal light engine gets light emission from the actual block state, while the projection is only a rendered surface. Consequently, the image does not currently illuminate nearby blocks as a torch would.
+
 ## Power and troubleshooting
 
 The projector must be connected to a powered OpenComputers network. In pixel mode, check for the `projector` component. In screen mode, check for the `screen` component instead. The inactive mode is intentionally absent from component listings.

@@ -770,6 +770,15 @@ class OCRecipeProvider extends RecipeProvider {
             .unlockedBy(getHasName(OCItems.Card()), has(OCItems.Card()))
             .save(output);
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, OCItems.NavigationCard())
+            .pattern("cC")
+            .pattern(" B")
+            .define('c', Items.COMPASS)
+            .define('C', OCItems.ChipTier2())
+            .define('B', OCItems.Card())
+            .unlockedBy(getHasName(OCItems.Card()), has(OCItems.Card()))
+            .save(output);
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, OCItems.DataCardTier2())
             .pattern("gPC")
             .pattern(" B ")

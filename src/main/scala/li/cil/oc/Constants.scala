@@ -160,6 +160,7 @@ object Constants {
     final val MicrocontrollerCaseTier3 = "microcontrollercase3"
     final val Nanomachines = "nanomachines"
     final val NavigationUpgrade = "navigationupgrade"
+    final val NavigationCard = "navigationcard"
     final val NetheriteSilicon = "netheritesilicon"
     final val NetworkCard = "lancard"
     final val NumPad = "numpad"

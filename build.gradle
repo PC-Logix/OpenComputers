@@ -197,6 +197,12 @@ repositories {
         }
     }
     exclusiveContent {
+        forRepositories(maven { url = "https://maven.ryanhcode.dev/releases" })
+        filter {
+            includeGroup "dev.ryanhcode.sable-companion"
+        }
+    }
+    exclusiveContent {
         forRepositories(maven { url = "https://maven.kotori316.com" })
         filter {
             includeModule("com.kotori316", "scalablecatsforce-neoforge")
@@ -227,6 +233,24 @@ dependencies {
 
     embedded ":OC-LuaJ:20220907.1"
     embedded ":OC-JNLua-Natives:20220928.1"
+
+    // Sable Companion is deliberately bundled. It has a safe identity
+    // implementation when Sable is absent and is overridden through its
+    // service provider when Sable is installed.
+    jarJar(api("dev.ryanhcode.sable-companion:sable-companion-common-${minecraft_version}:[${sable_companion_version},)")) {
+        version {
+            prefer(sable_companion_version)
+        }
+    }
+
+    // Load Sable in the IDE runs for integration testing, without making it
+    // part of the published OpenComputers dependency set.
+    devRuntimeOnly("maven.modrinth:sable:${sable_version}")
+
+    // The bundled Aeronautics release contains the Simulated, Aeronautics,
+    // and Offroad content needed to assemble and test actual ships in IDE
+    // runs. It remains a development-only runtime dependency.
+    devRuntimeOnly("maven.modrinth:create-aeronautics:${aeronautics_version}")
 
     // ModDevGradle 2.x only discovers actual mods from the normal runtime
     // classpath on Minecraft 1.21.1. These are plain Java libraries that OC
@@ -331,7 +355,8 @@ var generateModMetadata = tasks.register('generateModMetadata', ProcessResources
             mod_license            : mod_license,
             mod_version            : project.version,
             mod_authors            : mod_authors,
-            mod_description        : mod_description
+            mod_description        : mod_description,
+            sable_version_range    : sable_version_range
     ]
 
     inputs.properties replaceProperties

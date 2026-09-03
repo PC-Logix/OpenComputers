@@ -21,16 +21,18 @@ import li.cil.oc.common.item.data.NavigationUpgradeData
 import li.cil.oc.common.Tier
 import li.cil.oc.server.network.Waypoints
 import li.cil.oc.util.BlockPosition
+import li.cil.oc.util.SableCompat
 import net.minecraft.core.component.DataComponentHolder
 import net.minecraft.world.item.ItemStack
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.core.{Direction, HolderLookup}
+import net.minecraft.world.phys.Vec3
 
 import scala.collection.convert.ImplicitConversionsToJava._
 import net.minecraft.world.entity.player.Player
 import net.neoforged.neoforge.common.MutableDataComponentHolder
 
-class UpgradeNavigation(val host: EnvironmentHost with Rotatable) extends AbstractManagedEnvironment with DeviceInfo {
+class UpgradeNavigation(val host: EnvironmentHost with Rotatable, val absolutePosition: Boolean = false) extends AbstractManagedEnvironment with DeviceInfo {
   override val node = Network.newNode(this, Visibility.Network).
     withComponent("navigation", Visibility.Neighbors).
     withConnector().
@@ -40,10 +42,10 @@ class UpgradeNavigation(val host: EnvironmentHost with Rotatable) extends Abstra
 
   private final lazy val deviceInfo = Map(
     DeviceAttribute.Class -> DeviceClass.Generic,
-    DeviceAttribute.Description -> "Navigation upgrade",
+    DeviceAttribute.Description -> (if (absolutePosition) "Navigation card" else "Navigation upgrade"),
     DeviceAttribute.Vendor -> Constants.DeviceInfo.DefaultVendor,
     DeviceAttribute.Product -> "PathFinder v3",
-    DeviceAttribute.Capacity -> data.getSize(host.getEnvironmentLevel).toString
+    DeviceAttribute.Capacity -> (if (absolutePosition) "physical" else data.getSize(host.getEnvironmentLevel).toString)
   )
 
   override def getDeviceInfo: util.Map[String, String] = deviceInfo
@@ -52,22 +54,39 @@ class UpgradeNavigation(val host: EnvironmentHost with Rotatable) extends Abstra
 
   @Callback(doc = """function():number, number, number -- Get the current relative position of the robot.""")
   def getPosition(context: Context, args: Arguments): Array[AnyRef] = {
-    val info = data.mapData(host.getEnvironmentLevel)
-    val size = data.getSize(host.getEnvironmentLevel)
-    val relativeX = host.xPosition - info.centerX
-    val relativeZ = host.zPosition - info.centerZ
+    val physical = SableCompat.physicalPosition(host)
+    if (absolutePosition) result(physical.x, physical.y, physical.z)
+    else {
+      val info = data.mapData(host.getEnvironmentLevel)
+      val size = data.getSize(host.getEnvironmentLevel)
+      val relativeX = physical.x - info.centerX
+      val relativeZ = physical.z - info.centerZ
 
-    if (math.abs(relativeX) <= size / 2 && math.abs(relativeZ) <= size / 2)
-      result(relativeX, host.yPosition, relativeZ)
-    else
-      result((), "out of range")
+      if (math.abs(relativeX) <= size / 2 && math.abs(relativeZ) <= size / 2)
+        result(relativeX, physical.y, relativeZ)
+      else
+        result((), "out of range")
+    }
   }
 
   @Callback(doc = """function():number -- Get the current orientation of the robot.""")
-  def getFacing(context: Context, args: Arguments): Array[AnyRef] = result(host.facing.ordinal)
+  def getFacing(context: Context, args: Arguments): Array[AnyRef] =
+    result(SableCompat.physicalFacing(host.getEnvironmentLevel,
+      new Vec3(host.xPosition, host.yPosition, host.zPosition), host.facing).ordinal)
+
+  @Callback(doc = """function():number -- Get the current world-space heading in degrees (0=north, 90=east, 180=south, 270=west).""")
+  def getHeading(context: Context, args: Arguments): Array[AnyRef] =
+    result(SableCompat.physicalHeading(host.getEnvironmentLevel,
+      new Vec3(host.xPosition, host.yPosition, host.zPosition), host.facing))
+
+  @Callback(doc = """function():number -- Get the current world-space pitch in degrees above the horizontal plane.""")
+  def getPitch(context: Context, args: Arguments): Array[AnyRef] =
+    result(SableCompat.physicalPitch(host.getEnvironmentLevel,
+      new Vec3(host.xPosition, host.yPosition, host.zPosition), host.facing))
 
   @Callback(doc = """function():number -- Get the operational range of the navigation upgrade.""")
-  def getRange(context: Context, args: Arguments): Array[AnyRef] = result(data.getSize(host.getEnvironmentLevel) / 2)
+  def getRange(context: Context, args: Arguments): Array[AnyRef] =
+    result(if (absolutePosition) Double.PositiveInfinity else data.getSize(host.getEnvironmentLevel) / 2)
 
   @Callback(doc = """function(range:number):table -- Find waypoints in the specified range.""")
   def findWaypoints(context: Context, args: Arguments): Array[AnyRef] = {
@@ -76,12 +95,15 @@ class UpgradeNavigation(val host: EnvironmentHost with Rotatable) extends Abstra
     if (!node.tryChangeBuffer(-range * Settings.get.wirelessCostPerRange(Tier.Two) * 0.25)) return result((), "not enough energy")
     context.pause(0.5)
     val position = BlockPosition(host)
-    val positionVec = position.toVec3
+    val positionVec = SableCompat.physicalPosition(host.getEnvironmentLevel, position.toVec3)
     val rangeSq = range * range
     val waypoints = Waypoints.findWaypoints(position, range).
-      filter(waypoint => positionVec.distanceToSqr(waypoint.x + 0.5, waypoint.y + 0.5, waypoint.z + 0.5) <= rangeSq)
+      filter(waypoint => SableCompat.distanceSquared(host.getEnvironmentLevel, positionVec,
+        SableCompat.physicalPosition(waypoint.getEnvironmentLevel,
+          new net.minecraft.world.phys.Vec3(waypoint.x + 0.5, waypoint.y + 0.5, waypoint.z + 0.5))) <= rangeSq)
     result(waypoints.map(waypoint => {
-      val delta = waypoint.position.offset(waypoint.facing).toVec3.subtract(positionVec)
+      val waypointPosition = SableCompat.physicalPosition(waypoint.getEnvironmentLevel, waypoint.position.toVec3)
+      val delta = waypointPosition.subtract(positionVec)
       Map(
         "position" -> Array(delta.x, delta.y, delta.z),
         "redstone" -> waypoint.maxInput,
@@ -96,10 +118,13 @@ class UpgradeNavigation(val host: EnvironmentHost with Rotatable) extends Abstra
     if (message.name == "tablet.use") message.source.host match {
       case machine: api.machine.Machine => (machine.host, message.data) match {
         case (tablet: internal.Tablet, Array(nbt: CompoundTag, stack: ItemStack, player: Player, blockPos: BlockPosition, side: Direction, hitX: java.lang.Float, hitY: java.lang.Float, hitZ: java.lang.Float)) =>
-          val info = data.mapData(host.getEnvironmentLevel)
-          nbt.putInt("posX", blockPos.x - info.centerX)
-          nbt.putInt("posY", blockPos.y)
-          nbt.putInt("posZ", blockPos.z - info.centerZ)
+          if (!absolutePosition) {
+            val info = data.mapData(host.getEnvironmentLevel)
+            val physical = SableCompat.physicalPosition(blockPos.world.orNull, blockPos.toVec3)
+            nbt.putInt("posX", math.floor(physical.x).toInt - info.centerX)
+            nbt.putInt("posY", math.floor(physical.y).toInt)
+            nbt.putInt("posZ", math.floor(physical.z).toInt - info.centerZ)
+          }
         case _ => // Ignore.
       }
       case _ => // Ignore.
@@ -115,6 +140,6 @@ class UpgradeNavigation(val host: EnvironmentHost with Rotatable) extends Abstra
 
   override def saveData(holder: MutableDataComponentHolder): Unit = {
     super.saveData(holder)
-    data.loadData(holder)
+    data.saveData(holder)
   }
 }

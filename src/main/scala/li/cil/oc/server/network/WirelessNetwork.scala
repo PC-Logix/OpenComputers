@@ -3,6 +3,7 @@ package li.cil.oc.server.network
 import li.cil.oc.Settings
 import li.cil.oc.api.network.WirelessEndpoint
 import li.cil.oc.util.BlockPosition
+import li.cil.oc.util.SableCompat
 import li.cil.oc.util.ExtendedBlock._
 import li.cil.oc.util.ExtendedLevel._
 import li.cil.oc.util.RTree
@@ -45,7 +46,7 @@ object WirelessNetwork {
   }
 
   def add(endpoint: WirelessEndpoint): Unit = {
-    dimensions.getOrElseUpdate(dimension(endpoint), new RTree[WirelessEndpoint](Settings.get.rTreeMaxEntries)((endpoint) => (endpoint.x + 0.5, endpoint.y + 0.5, endpoint.z + 0.5))).add(endpoint)
+    dimensions.getOrElseUpdate(dimension(endpoint), new RTree[WirelessEndpoint](Settings.get.rTreeMaxEntries)(coordinate)).add(endpoint)
   }
 
   def update(endpoint: WirelessEndpoint): Unit = {
@@ -53,9 +54,10 @@ object WirelessNetwork {
       case Some(tree) =>
         tree(endpoint) match {
           case Some((x, y, z)) =>
-            val dx = math.abs(endpoint.x + 0.5 - x)
-            val dy = math.abs(endpoint.y + 0.5 - y)
-            val dz = math.abs(endpoint.z + 0.5 - z)
+            val (currentX, currentY, currentZ) = coordinate(endpoint)
+            val dx = math.abs(currentX - x)
+            val dy = math.abs(currentY - y)
+            val dz = math.abs(currentZ - z)
             if (dx > 0.5 || dy > 0.5 || dz > 0.5) {
               tree.remove(endpoint)
               tree.add(endpoint)
@@ -97,15 +99,24 @@ object WirelessNetwork {
 
   private def dimension(endpoint: WirelessEndpoint) = endpoint.getWirelessLevel.dimension
 
-  private def offset(endpoint: WirelessEndpoint, value: Double) =
-    (endpoint.x + 0.5 + value, endpoint.y + 0.5 + value, endpoint.z + 0.5 + value)
+  private def coordinate(endpoint: WirelessEndpoint) = {
+    val position = SableCompat.physicalPosition(endpoint.getWirelessLevel,
+      new Vec3(endpoint.x + 0.5, endpoint.y + 0.5, endpoint.z + 0.5))
+    (position.x, position.y, position.z)
+  }
+
+  private def offset(endpoint: WirelessEndpoint, value: Double) = {
+    val (x, y, z) = coordinate(endpoint)
+    (x + value, y + value, z + value)
+  }
 
   private def zipWithSquaredDistance(reference: WirelessEndpoint)(endpoint: WirelessEndpoint) =
     (endpoint, {
-      val dx = endpoint.x - reference.x
-      val dy = endpoint.y - reference.y
-      val dz = endpoint.z - reference.z
-      dx * dx + dy * dy + dz * dz
+      val referenceCoordinates = coordinate(reference)
+      val endpointCoordinates = coordinate(endpoint)
+      val referencePosition = new Vec3(referenceCoordinates._1, referenceCoordinates._2, referenceCoordinates._3)
+      val endpointPosition = new Vec3(endpointCoordinates._1, endpointCoordinates._2, endpointCoordinates._3)
+      SableCompat.distanceSquared(reference.getWirelessLevel, referencePosition, endpointPosition)
     })
 
   private def isUnobstructed(reference: WirelessEndpoint, strength: Double)(info: (WirelessEndpoint, Double)): Boolean = {
@@ -120,9 +131,11 @@ object WirelessNetwork {
       // we reach a point where the surplus strength does not suffice we block
       // the message.
       val world = endpoint.getWirelessLevel
-
-      val origin = new Vec3(reference.x, reference.y, reference.z)
-      val target = new Vec3(endpoint.x, endpoint.y, endpoint.z)
+      val localOrigin = new Vec3(reference.x, reference.y, reference.z)
+      val localTarget = new Vec3(endpoint.x, endpoint.y, endpoint.z)
+      val bothInPlotGrid = SableCompat.isInPlotGrid(world, localOrigin) && SableCompat.isInPlotGrid(world, localTarget)
+      val origin = if (bothInPlotGrid) localOrigin else SableCompat.physicalPosition(world, localOrigin)
+      val target = if (bothInPlotGrid) localTarget else SableCompat.physicalPosition(world, localTarget)
 
       // Vector from reference endpoint (sender) to this one (receiver).
       val delta = subtract(target, origin)

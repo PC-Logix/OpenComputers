@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "opencomputers:item/paper_shreds"
+    "layer0": "opencomputers:item/navigationcard"
   }
 }

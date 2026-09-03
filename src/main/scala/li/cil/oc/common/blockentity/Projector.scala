@@ -113,6 +113,20 @@ class Projector(pos: BlockPos, state: BlockState)
     if (getLevel != null && isServer) getLevel.sendBlockUpdated(getBlockPos, getBlockState, getBlockState, 3)
   }
 
+  /** Keep the block-light state in step with the persisted projector power state. */
+  private def updateLightState(): Unit = {
+    if (getLevel != null && isServer) {
+      val state = getBlockState
+      val lit = state.hasProperty(net.minecraft.world.level.block.state.properties.BlockStateProperties.LIT) &&
+        state.getValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.LIT).booleanValue()
+      if (lit != isOn) {
+        getLevel.setBlock(getBlockPos,
+          state.setValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.LIT,
+            java.lang.Boolean.valueOf(isOn)), 3)
+      }
+    }
+  }
+
   private def setModeComponentVisibility(): Unit = {
     if (!isServer) return
     val projectorComponent = node.asInstanceOf[api.network.Component]
@@ -139,6 +153,7 @@ class Projector(pos: BlockPos, state: BlockState)
   def turnOn(context: Context, args: Arguments): Array[AnyRef] = {
     val changed = !isOn
     isOn = true
+    updateLightState()
     markChanged()
     if (isServer) ServerPacketSender.sendProjectorPowerChange(this)
     result(changed, isOn)
@@ -148,6 +163,7 @@ class Projector(pos: BlockPos, state: BlockState)
   def turnOff(context: Context, args: Arguments): Array[AnyRef] = {
     val changed = isOn
     isOn = false
+    updateLightState()
     markChanged()
     if (isServer) ServerPacketSender.sendProjectorPowerChange(this)
     result(changed, isOn)
@@ -247,6 +263,7 @@ class Projector(pos: BlockPos, state: BlockState)
   override def updateEntity(): Unit = {
     super.updateEntity()
     if (isServer) {
+      updateLightState()
       if (node.network == null) {
         api.Network.joinOrCreateNetwork(this)
       }

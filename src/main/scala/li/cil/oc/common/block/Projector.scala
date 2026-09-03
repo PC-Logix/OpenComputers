@@ -21,14 +21,23 @@ import java.util
 object Projector {
   /** Block state is the authoritative, always-synced copy of the display mode. */
   final val ScreenMode: BooleanProperty = BooleanProperty.create("screen_mode")
+
+  /** A small amount of block light while the projector is enabled. */
+  final val LightLevel = 4
+
+  final val LightEmission: java.util.function.ToIntFunction[BlockState] =
+    new java.util.function.ToIntFunction[BlockState] {
+      override def applyAsInt(state: BlockState): Int =
+        if (state.getValue(BlockStateProperties.LIT)) LightLevel else 0
+    }
 }
 
-class Projector(props: BlockBehaviour.Properties) extends SimpleBlock(props) with traits.Tickable {
+class Projector(props: BlockBehaviour.Properties) extends SimpleBlock(props.lightLevel(Projector.LightEmission)) with traits.Tickable {
   val shape: VoxelShape = Shapes.box(0, 0, 0, 1, 0.75, 1)
 
   registerDefaultState(defaultBlockState()
     .setValue(PropertyRotatable.Facing, Direction.NORTH)
-    .setValue(BlockStateProperties.LIT, java.lang.Boolean.FALSE)
+    .setValue(BlockStateProperties.LIT, java.lang.Boolean.TRUE)
     .setValue(Projector.ScreenMode, java.lang.Boolean.FALSE))
 
   override protected def createBlockStateDefinition(builder: StateDefinition.Builder[Block, BlockState]): Unit = {

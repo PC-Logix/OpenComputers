@@ -13,6 +13,7 @@ import li.cil.oc.api.network.Visibility
 import li.cil.oc.api.prefab
 import li.cil.oc.api.prefab.AbstractManagedEnvironment
 import li.cil.oc.util.BlockPosition
+import li.cil.oc.util.SableCompat
 import net.minecraft.core.Direction
 
 import scala.collection.convert.ImplicitConversionsToJava._
@@ -56,9 +57,11 @@ class UpgradeSolarGenerator(val host: EnvironmentHost) extends AbstractManagedEn
 
   private def isSunVisible = {
     val blockPos = BlockPosition(host).offset(Direction.UP)
+    val physical = SableCompat.physicalPosition(host.getEnvironmentLevel, blockPos.toVec3)
+    val physicalBlockPos = net.minecraft.core.BlockPos.containing(physical)
     host.getEnvironmentLevel.isDay &&
       (host.getEnvironmentLevel.dimension != Level.NETHER) &&
-      host.getEnvironmentLevel.canSeeSkyFromBelowWater(blockPos.toBlockPos) &&
-      (host.getEnvironmentLevel.getBiome(blockPos.toBlockPos).value.getPrecipitationAt(blockPos.toBlockPos) == Precipitation.NONE || (!host.getEnvironmentLevel.isRaining && !host.getEnvironmentLevel.isThundering))
+      host.getEnvironmentLevel.canSeeSkyFromBelowWater(physicalBlockPos) &&
+      (host.getEnvironmentLevel.getBiome(physicalBlockPos).value.getPrecipitationAt(physicalBlockPos) == Precipitation.NONE || (!host.getEnvironmentLevel.isRaining && !host.getEnvironmentLevel.isThundering))
   }
 }

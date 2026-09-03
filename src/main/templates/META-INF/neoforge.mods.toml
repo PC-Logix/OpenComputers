@@ -27,3 +27,10 @@ config="opencomputers.core.mixins.json"
     versionRange="${minecraft_version_range}"
     ordering="NONE"
     side="BOTH"
+
+[[dependencies.opencomputers]]
+    modId="sable"
+    mandatory=false
+    versionRange="${sable_version_range}"
+    ordering="AFTER"
+    side="BOTH"

@@ -4,6 +4,7 @@ import li.cil.oc.Settings
 import li.cil.oc.common.blockentity.Waypoint
 import li.cil.oc.util.BlockPosition
 import li.cil.oc.util.RTree
+import li.cil.oc.util.SableCompat
 import net.neoforged.bus.api.SubscribeEvent
 
 import scala.collection.convert.ImplicitConversionsToScala._
@@ -46,7 +47,7 @@ object Waypoints {
   }
 
   def add(waypoint: Waypoint): Unit = if (!waypoint.isRemoved && waypoint.getEnvironmentLevel != null && !waypoint.getEnvironmentLevel.isClientSide) {
-    dimensions.getOrElseUpdate(dimension(waypoint), new RTree[Waypoint](Settings.get.rTreeMaxEntries)((waypoint) => (waypoint.x + 0.5, waypoint.y + 0.5, waypoint.z + 0.5))).add(waypoint)
+    dimensions.getOrElseUpdate(dimension(waypoint), new RTree[Waypoint](Settings.get.rTreeMaxEntries)(coordinate)).add(waypoint)
   }
 
   def remove(waypoint: Waypoint): Unit = if (waypoint.getEnvironmentLevel != null && !waypoint.getEnvironmentLevel.isClientSide) {
@@ -59,11 +60,20 @@ object Waypoints {
   def findWaypoints(pos: BlockPosition, range: Double): Iterable[Waypoint] = {
     dimensions.get(pos.world.get.dimension) match {
       case Some(set) =>
-        val bounds = pos.bounds.inflate(range * 0.5, range * 0.5, range * 0.5)
+        val physical = SableCompat.physicalPosition(pos.world.orNull, pos.toVec3)
+        val bounds = new net.minecraft.world.phys.AABB(physical.x, physical.y, physical.z,
+          physical.x + 1, physical.y + 1, physical.z + 1).
+          inflate(range * 0.5, range * 0.5, range * 0.5)
         set.query((bounds.minX, bounds.minY, bounds.minZ), (bounds.maxX, bounds.maxY, bounds.maxZ))
       case _ => Iterable.empty
     }
   }
 
   private def dimension(waypoint: Waypoint) = waypoint.getEnvironmentLevel.dimension
+
+  private def coordinate(waypoint: Waypoint) = {
+    val position = SableCompat.physicalPosition(waypoint.getEnvironmentLevel,
+      new net.minecraft.world.phys.Vec3(waypoint.x + 0.5, waypoint.y + 0.5, waypoint.z + 0.5))
+    (position.x, position.y, position.z)
+  }
 }

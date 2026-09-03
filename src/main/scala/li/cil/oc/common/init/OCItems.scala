@@ -453,6 +453,10 @@ object OCItems extends ItemAPI {
   val DataCardTier2: DeferredItem[item.DataCard] = registerItem(new item.DataCard(defaultProps.rarity(Rarity.UNCOMMON), Tier.Two), Constants.ItemName.DataCardTier2, Constants.SectionName.Component)
   val DataCardTier3: DeferredItem[item.DataCard] = registerItem(new item.DataCard(defaultProps.rarity(Rarity.RARE), Tier.Three), Constants.ItemName.DataCardTier3, Constants.SectionName.Component)
 
+  // Physical navigation for computers, including computers inside moving
+  // Sable sub-levels.
+  val NavigationCard: DeferredItem[Item] = registerItem(new item.BasicTieredComponentItem(defaultProps.rarity(Rarity.UNCOMMON), "navigationcard"), Constants.ItemName.NavigationCard, Constants.SectionName.Component)
+
   // 1.7.2
   val WirelessNetworkCardTier1: DeferredItem[item.WirelessNetworkCard] = registerItem(new item.WirelessNetworkCard(defaultProps, Tier.One), Constants.ItemName.WirelessNetworkCardTier1, Constants.SectionName.Component)
 

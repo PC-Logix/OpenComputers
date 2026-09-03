@@ -21,6 +21,7 @@ object Mods {
 
   def All: ArrayBuffer[ModBase] = knownMods.clone()
   val Create = new SimpleMod(IDs.Create)
+  val Sable = new SimpleMod(IDs.Sable, "[2.0,3)")
   val ComputerCraft = new SimpleMod(IDs.ComputerCraft)
   val NeoForge = new SimpleMod(IDs.Forge)
   val JustEnoughItems = new SimpleMod(IDs.JustEnoughItems)
@@ -96,6 +97,7 @@ object Mods {
 
   object IDs {
     final val Create = "create"
+    final val Sable = "sable"
     final val ComputerCraft = "computercraft"
     final val Forge = "forge"
     final val JustEnoughItems = "jei"
