@@ -96,27 +96,56 @@ public final class DriverPeripheral implements li.cil.oc.api.driver.DriverBlock 
         protected final String[] methodNames;
         protected final Map<String, FakeComputerAccess> accesses = new HashMap<>();
         protected final Map<String, Method> reflectedMethods = new HashMap<>();
+        protected final Map<String, Integer> dynamicMethods = new HashMap<>();
         protected final AtomicLong nextTaskId = new AtomicLong();
 
         public Environment(final IPeripheral peripheral) {
             this.peripheral = peripheral;
 
-            if (peripheral instanceof IDynamicPeripheral dynamic) {
-                methodNames = dynamic.getMethodNames();
-            } else {
-                final List<String> names = new ArrayList<>();
+            final LinkedHashSet<String> names = new LinkedHashSet<>();
 
-                for (Method method : peripheral.getClass().getMethods()) {
-                    if (method.isAnnotationPresent(LuaFunction.class)) {
-                        reflectedMethods.put(method.getName(), method);
-                        names.add(method.getName());
+            if (peripheral instanceof IDynamicPeripheral dynamic) {
+                final String[] dynamicNames = dynamic.getMethodNames();
+
+                for (int i = 0; i < dynamicNames.length; i++) {
+                    final String name = dynamicNames[i];
+                    if (dynamicMethods.putIfAbsent(name, i) == null) {
+                        names.add(name);
                     }
                 }
-
-                methodNames = names.toArray(new String[0]);
             }
 
+            // CC:T exposes annotated and dynamic methods together. Some
+            // peripherals (notably AdvancedPeripherals' BasePeripheral)
+            // implement IDynamicPeripheral while keeping their concrete API
+            // in @LuaFunction methods.
+            for (Method method : peripheral.getClass().getMethods()) {
+                final LuaFunction annotation = method.getAnnotation(LuaFunction.class);
+                if (annotation == null || java.lang.reflect.Modifier.isStatic(method.getModifiers())) {
+                    continue;
+                }
+
+                final String[] exposedNames = annotation.value();
+                if (exposedNames.length == 0) {
+                    addReflectedMethod(method.getName(), method, names);
+                } else {
+                    for (String name : exposedNames) {
+                        addReflectedMethod(name, method, names);
+                    }
+                }
+            }
+
+            methodNames = names.toArray(new String[0]);
+
             setNode(Network.newNode(this, Visibility.Network).create());
+        }
+
+        private void addReflectedMethod(final String name, final Method method, final Set<String> names) {
+            // Preserve the existing dynamic-method precedence if a peripheral
+            // happens to use the same name for both APIs.
+            if (!dynamicMethods.containsKey(name) && reflectedMethods.putIfAbsent(name, method) == null) {
+                names.add(name);
+            }
         }
 
         @Override
@@ -137,26 +166,11 @@ public final class DriverPeripheral implements li.cil.oc.api.driver.DriverBlock 
             final Object[] argArray = CallableHelper.convertArguments(args);
             final ILuaContext luaContext = new SynchronousLuaContext(context, nextTaskId);
 
-            if (peripheral instanceof IDynamicPeripheral dynamic) {
-                final String[] names = dynamic.getMethodNames();
-
-                int index = -1;
-
-                for (int i = 0; i < names.length; i++) {
-                    if (names[i].equals(name)) {
-                        index = i;
-                        break;
-                    }
-                }
-
-                if (index == -1) {
-                    throw new NoSuchMethodException();
-                }
-
+            if (peripheral instanceof IDynamicPeripheral dynamic && dynamicMethods.containsKey(name)) {
                 return dynamic.callMethod(
                         access,
                         luaContext,
-                        index,
+                        dynamicMethods.get(name),
                         new ObjectArguments(argArray)
                 ).getResult();
             }
@@ -167,14 +181,18 @@ public final class DriverPeripheral implements li.cil.oc.api.driver.DriverBlock 
                 throw new NoSuchMethodException();
             }
 
-            final Object[] invokeArgs = buildInvokeArguments(method, argArray, luaContext);
+            final Object[] invokeArgs = buildInvokeArguments(method, argArray, luaContext, access);
 
             final Object result = method.invoke(peripheral, invokeArgs);
+
+            if (result instanceof MethodResult methodResult) {
+                return methodResult.getResult();
+            }
 
             return wrapResult(result);
         }
 
-        private Object[] buildInvokeArguments(final Method method, final Object[] args, final ILuaContext luaContext) {
+        private Object[] buildInvokeArguments(final Method method, final Object[] args, final ILuaContext luaContext, final IComputerAccess access) {
             final Class<?>[] parameterTypes = method.getParameterTypes();
             final Object[] invokeArgs = new Object[parameterTypes.length];
 
@@ -184,9 +202,11 @@ public final class DriverPeripheral implements li.cil.oc.api.driver.DriverBlock 
                 final Class<?> type = parameterTypes[i];
 
                 if (type == IComputerAccess.class) {
-                    invokeArgs[i] = null;
+                    invokeArgs[i] = access;
                 } else if (type == ILuaContext.class) {
                     invokeArgs[i] = luaContext;
+                } else if (type == IArguments.class) {
+                    invokeArgs[i] = new ObjectArguments(args);
                 } else if (type == ObjectArguments.class) {
                     invokeArgs[i] = new ObjectArguments(args);
                 } else {
