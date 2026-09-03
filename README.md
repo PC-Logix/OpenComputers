@@ -59,7 +59,7 @@ task already depends on `prepareClientRun`, including after `clean`.
 
 The port currently targets NeoForge 1.21.1. Remaining integrations and planned
 features are tracked in [ROADMAP.md](ROADMAP.md). The 
-[OpenComputers wiki](https://orc.michiyo.me/wiki) is useful for gameplay and Lua
+[OpenComputers wiki](https://ocr.michiyo.me/wiki) is useful for gameplay and Lua
 API concepts.
 
 Useful project links:
