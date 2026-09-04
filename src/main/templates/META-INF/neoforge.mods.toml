@@ -30,7 +30,7 @@ config="opencomputers.core.mixins.json"
 
 [[dependencies.opencomputers]]
     modId="sable"
-    mandatory=false
+    type="optional"
     versionRange="${sable_version_range}"
     ordering="AFTER"
     side="BOTH"
