@@ -36,7 +36,7 @@ function process.load(path, env, init, name)
       local fs, shell = require("filesystem"), require("shell")
       local program, reason = shell.resolve(path, "lua")
       if not program then
-        return require("tools/programLocations").reportNotFound(path, reason)
+        return require("tools/programlocations").reportNotFound(path, reason)
       end
       os.setenv("_", program)
       local f = fs.open(program)
