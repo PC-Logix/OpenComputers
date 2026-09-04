@@ -240,6 +240,10 @@ public final class DriverPeripheral implements li.cil.oc.api.driver.DriverBlock 
         }
 
         private Object coerce(final Object value, final Class<?> type) {
+            if (type == Optional.class) {
+                return Optional.ofNullable(value);
+            }
+
             if (value == null) {
                 return defaultValue(type);
             }
@@ -290,6 +294,10 @@ public final class DriverPeripheral implements li.cil.oc.api.driver.DriverBlock 
         }
 
         private Object defaultValue(final Class<?> type) {
+            if (type == Optional.class) {
+                return Optional.empty();
+            }
+
             if (!type.isPrimitive()) {
                 return null;
             }
