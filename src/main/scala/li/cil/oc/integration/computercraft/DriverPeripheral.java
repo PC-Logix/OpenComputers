@@ -27,6 +27,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
@@ -183,7 +184,27 @@ public final class DriverPeripheral implements li.cil.oc.api.driver.DriverBlock 
 
             final Object[] invokeArgs = buildInvokeArguments(method, argArray, luaContext, access);
 
-            final Object result = method.invoke(peripheral, invokeArgs);
+            final Object result;
+
+            try {
+                result = method.invoke(peripheral, invokeArgs);
+            } catch (final InvocationTargetException exception) {
+                // Preserve the peripheral's actual exception. Reflection
+                // otherwise exposes only InvocationTargetException, whose
+                // message is commonly null and becomes "unknown error" in
+                // the Lua callback layer.
+                final Throwable cause = exception.getCause();
+
+                if (cause instanceof Exception targetException) {
+                    throw targetException;
+                }
+
+                if (cause instanceof Error targetError) {
+                    throw targetError;
+                }
+
+                throw exception;
+            }
 
             if (result instanceof MethodResult methodResult) {
                 return methodResult.getResult();
