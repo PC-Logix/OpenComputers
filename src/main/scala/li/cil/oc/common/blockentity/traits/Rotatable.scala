@@ -26,13 +26,10 @@ trait Rotatable extends RotationAware with internal.Rotatable {
   // Accessors
   // ----------------------------------------------------------------------- //
 
-  def pitch = if (isMoving) movingBlockState match {
+  def pitch: Direction = (if (isMoving) movingBlockState else getBlockState) match {
     case rotatable if rotatable.getProperties.contains(PropertyRotatable.Pitch) => rotatable.getValue(PropertyRotatable.Pitch)
     case _ => Direction.NORTH
-  } else if (getLevel != null && getLevel.isLoaded(getBlockPos)) getLevel.getBlockState(getBlockPos) match {
-    case rotatable if rotatable.getProperties.contains(PropertyRotatable.Pitch) => rotatable.getValue(PropertyRotatable.Pitch)
-    case _ => Direction.NORTH
-  } else null
+  }
 
   def pitch_=(value: Direction): Unit =
     trySetPitchYaw(value match {
@@ -40,15 +37,11 @@ trait Rotatable extends RotationAware with internal.Rotatable {
       case _ => Direction.NORTH
     }, yaw)
 
-  def yaw = if (isMoving) movingBlockState match {
+  def yaw: Direction = (if (isMoving) movingBlockState else getBlockState) match {
     case rotatable if rotatable.getProperties.contains(PropertyRotatable.Yaw) => rotatable.getValue(PropertyRotatable.Yaw)
     case rotatable if rotatable.getProperties.contains(PropertyRotatable.Facing) => rotatable.getValue(PropertyRotatable.Facing)
     case _ => Direction.SOUTH
-  } else if (getLevel != null && getLevel.isLoaded(getBlockPos)) getLevel.getBlockState(getBlockPos) match {
-    case rotatable if rotatable.getProperties.contains(PropertyRotatable.Yaw) => rotatable.getValue(PropertyRotatable.Yaw)
-    case rotatable if rotatable.getProperties.contains(PropertyRotatable.Facing) => rotatable.getValue(PropertyRotatable.Facing)
-    case _ => Direction.SOUTH
-  } else null
+  }
 
   def yaw_=(value: Direction): Unit =
     trySetPitchYaw(pitch, value match {
@@ -113,17 +106,9 @@ trait Rotatable extends RotationAware with internal.Rotatable {
     }
   }
 
-  override def toLocal(value: Direction) = if (value == null) null else {
-    val p = pitch
-    val y = yaw
-    if (p != null && y != null) RotationHelper.toLocal(pitch, yaw, value) else null
-  }
+  override def toLocal(value: Direction): Direction = if (value == null) null else RotationHelper.toLocal(pitch, yaw, value)
 
-  override def toGlobal(value: Direction) = if (value == null) null else {
-    val p = pitch
-    val y = yaw
-    if (p != null && y != null) RotationHelper.toGlobal(pitch, yaw, value) else null
-  }
+  override def toGlobal(value: Direction): Direction = if (value == null) null else RotationHelper.toGlobal(pitch, yaw, value)
 
   def validFacings = Array(Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST)
 
