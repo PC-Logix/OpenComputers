@@ -203,12 +203,6 @@ repositories {
         }
     }
     exclusiveContent {
-        forRepositories(maven { url = "https://maven.kotori316.com" })
-        filter {
-            includeModule("com.kotori316", "scalablecatsforce-neoforge")
-        }
-    }
-    exclusiveContent {
         forRepositories(maven { url = "https://maven.ithundxr.dev/snapshots" })
         filter {
             includeGroup "com.tterrag.registrate"
@@ -219,10 +213,12 @@ repositories {
 }
 
 dependencies {
-    compileOnly("org.scala-lang:scala-library:2.13.12")
-    runtimeOnly("com.kotori316:scalablecatsforce-neoforge:3.3.3-build-15:with-library") {
-        transitive = false
-    }
+    // OpenComputers is predominantly Scala. Bundle the runtime so the mod
+    // does not require a separate Scala loader/library mod at runtime.
+    // Keep Scala in the parent mod and relocate it into a private namespace.
+    // This lets OpenComputers coexist with older Scala mods which still ship
+    // ScalableCatsForce and its scala.library module.
+    embedded("org.scala-lang:scala-library:2.13.12")
 
     jarJar(implementation(group: "com.typesafe", name: "config")) {
         version {
@@ -259,6 +255,7 @@ dependencies {
     additionalRuntimeClasspath "com.typesafe:config:1.4.5"
     additionalRuntimeClasspath ":OC-LuaJ:20220907.1"
     additionalRuntimeClasspath ":OC-JNLua-Natives:20220928.1"
+    additionalRuntimeClasspath "org.scala-lang:scala-library:2.13.12"
 
     def jeiSlug = "jei-${minecraft_version}"
 
@@ -388,6 +385,13 @@ tasks.named('jar', Jar).configure {
         configurations.embedded.collect { it.isDirectory() ? it : zipTree(it) }
     }) {
         exclude 'META-INF', 'META-INF/**'
+    }
+
+    // Java's module resolver rejects two modules exporting scala.* packages.
+    // Relocate the bundled runtime and all compiled references to it so an
+    // older ScalableCatsForce installation can continue serving other mods.
+    doLast {
+        li.cil.oc.build.RelocateScalaJar.relocate(archiveFile.get().asFile.toPath())
     }
 
 //    finalizedBy 'reobfJar'

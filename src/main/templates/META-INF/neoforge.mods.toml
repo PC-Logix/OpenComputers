@@ -1,4 +1,4 @@
-modLoader="kotori_scala"
+modLoader="javafml"
 loaderVersion="${loader_version_range}"
 license="MIT and CC0; see META-INF/LICENSE and META-INF/licenses"
 issueTrackerURL="https://github.com/PC-Logix/OpenComputers/issues"

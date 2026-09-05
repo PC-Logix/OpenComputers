@@ -16,18 +16,16 @@ on modern Minecraft.
 - Minecraft 1.21.1
 - NeoForge 21.1 or newer
 - Java 21
-- ScalableCatsForce for NeoForge 3.3.3
+- Scala is bundled in the OpenComputers JAR.
 
 ## Installation
 
-Download a release or CI build and put both of these files in the instance's
+Download a release or CI build and put the OpenComputers JAR in the instance's
 `mods` directory:
 
 - `opencomputers-*.jar`
-- `scalablecatsforce-neoforge-*-with-library.jar`
 
-The ScalableCatsForce JAR is included beside OpenComputers in local build
-outputs and CI artifacts.
+ScalableCatsForce may remain installed when it is required by other mods.
 
 ## Building
 
