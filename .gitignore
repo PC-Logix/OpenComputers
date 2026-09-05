@@ -1,7 +1,9 @@
 # Gradle
 /.gradle
+/buildSrc/.gradle
 /.gradle-user
 /build
+/buildSrc/build
 
 # Eclipse
 /.classpath
@@ -10,9 +12,9 @@
 /bin
 
 # IntelliJ IDEA
-/*.iml
-/*.ipr
-/*.iws
+*.iml
+*.ipr
+*.iws
 /.idea
 /out
 
