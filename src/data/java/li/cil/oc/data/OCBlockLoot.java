@@ -108,6 +108,9 @@ class OCBlockLoot extends BlockLootSubProvider {
         // Tape drives retain their inserted tape when broken.
         dropVolatileContents(OCBlocks.TapeDrive().get());
 
+        dropSelf(OCBlocks.AudioCable().get());
+        dropSelf(OCBlocks.Speaker().get());
+
         // Open Printers
         dropSelf(OpenPrinter.BRIEFCASE.get());
         dropSelf(OpenPrinter.PRINTER.get());
