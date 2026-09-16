@@ -65,7 +65,7 @@ public class OCBlockStateProvider extends BlockStateProvider {
         horizontalBlockGenericTop(OCBlocks.DiskDrive().get());
         itemModels().simpleBlockItem(OCBlocks.DiskDrive().get());
 
-        simpleBlockWithItem(OCBlocks.Geolyzer().get(), cubeGenericBottomTop(OCBlocks.Geolyzer().get()));
+        geolyzerBlock();
 
         simpleBlockWithItem(OCBlocks.HologramTier1().get(), existingModel(OCBlocks.HologramTier1().get()));
         simpleBlockWithItem(OCBlocks.HologramTier2().get(), existingModel(OCBlocks.HologramTier2().get()));
@@ -165,6 +165,27 @@ public class OCBlockStateProvider extends BlockStateProvider {
         var runningModel = models().getExistingFile(ResourceLocation.fromNamespaceAndPath(OpenComputers.ID(), "case_running"));
         horizontalBlock(block, s -> s.getValue(PropertyRunning.Running()) ? runningModel : model);
         simpleBlockItem(block, model);
+    }
+
+    private void geolyzerBlock() {
+        var geolyzer = OCBlocks.Geolyzer().get();
+
+        var geolyzerModel = cubeGenericBottomTop(geolyzer);
+        simpleBlockItem(geolyzer, geolyzerModel);
+
+        // Create a new model which just renders the geolyzer_top_on overlay texture, and set up our block state to use that.
+        var geolyzerModelTop = models().withExistingParent(modelName(geolyzer) + "_top_on", "block")
+            .renderType("cutout")
+            .texture("particle", textureName(geolyzer, "top"))
+            .texture("top", ResourceLocation.fromNamespaceAndPath(OpenComputers.ID(), "block/overlay/geolyzer_top_on"));
+        geolyzerModelTop.element()
+            .from(0, 0, 0).to(16, 16, 16)
+            .face(Direction.UP).cullface(Direction.UP).texture("#top")
+            .emissivity(15, 15);
+
+        getMultipartBuilder(geolyzer)
+            .part().modelFile(geolyzerModel).addModel().end()
+            .part().modelFile(geolyzerModelTop).addModel();
     }
 
     private void screenBlock(Block block) {

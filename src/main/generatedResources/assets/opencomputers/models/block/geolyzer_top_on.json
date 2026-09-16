@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:block/block",
+  "elements": [
+    {
+      "faces": {
+        "up": {
+          "cullface": "up",
+          "neoforge_data": {
+            "block_light": 15,
+            "sky_light": 15
+          },
+          "texture": "#top"
+        }
+      },
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ]
+    }
+  ],
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "particle": "opencomputers:block/geolyzer_top",
+    "top": "opencomputers:block/overlay/geolyzer_top_on"
+  }
+}

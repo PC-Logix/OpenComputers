@@ -1,7 +1,14 @@
 {
-  "variants": {
-    "": {
-      "model": "opencomputers:block/geolyzer"
+  "multipart": [
+    {
+      "apply": {
+        "model": "opencomputers:block/geolyzer"
+      }
+    },
+    {
+      "apply": {
+        "model": "opencomputers:block/geolyzer_top_on"
+      }
     }
-  }
+  ]
 }
