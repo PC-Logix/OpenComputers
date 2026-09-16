@@ -555,10 +555,10 @@
   "blockentity.oc.tape_drive": "Tape Drive",
   "blockentity.oc.audio_cable": "Audio Cable",
   "blockentity.oc.speaker": "Speaker",
-  "item.oc.tape": "Cassette Tape",
-  "item.oc.tape_copper": "Copper Cassette Tape",
-  "item.oc.tape_gold": "Gold Cassette Tape",
-  "item.oc.tape_diamond": "Diamond Cassette Tape",
-  "item.oc.tape_nether_star": "Nether Star Cassette Tape",
-  "item.oc.tape_steel": "Steel Cassette Tape"
+  "item.opencomputers.tape": "Cassette Tape",
+  "item.opencomputers.tape_copper": "Copper Cassette Tape",
+  "item.opencomputers.tape_gold": "Gold Cassette Tape",
+  "item.opencomputers.tape_diamond": "Diamond Cassette Tape",
+  "item.opencomputers.tape_nether_star": "Nether Star Cassette Tape",
+  "item.opencomputers.tape_steel": "Steel Cassette Tape"
 }
