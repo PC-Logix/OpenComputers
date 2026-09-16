@@ -58,15 +58,15 @@ public final class CreateLogisticsEnvironments {
 
         @Callback
         public Object[] getRequest(final Context context, final Arguments args) {
-            final Map<Integer, Map<String, Object>> result = new LinkedHashMap<>();
+            final Map<Integer, ItemStack> result = new LinkedHashMap<>();
             int index = 1;
             for (final BigItemStack stack : blockEntity.encodedRequest.stacks()) {
                 if (stack.stack.isEmpty()) {
                     index++;
                     continue;
                 }
-                final Map<String, Object> details = CreateLuaConversion.itemDetails(stack.stack);
-                details.put("count", stack.count);
+                final ItemStack details = stack.stack.copy();
+                details.setCount(stack.count);
                 result.put(index++, details);
             }
             return result(result);
@@ -198,7 +198,7 @@ public final class CreateLogisticsEnvironments {
         @Callback
         public Object[] getPriceTagItem(final Context context, final Arguments args) {
             assertShop();
-            return result(CreateLuaConversion.itemDetails(blockEntity.priceTag.getFilter()));
+            return result(blockEntity.priceTag.getFilter());
         }
 
         @Callback
@@ -227,11 +227,11 @@ public final class CreateLogisticsEnvironments {
         @Callback
         public Object[] getWares(final Context context, final Arguments args) {
             assertShop();
-            final Map<Integer, Map<String, Object>> result = new LinkedHashMap<>();
+            final Map<Integer, ItemStack> result = new LinkedHashMap<>();
             int index = 1;
             for (final BigItemStack stack : blockEntity.requestData.encodedRequest().stacks()) {
-                final Map<String, Object> details = CreateLuaConversion.itemDetails(stack.stack);
-                details.put("count", stack.count);
+                final ItemStack details = stack.stack.copy();
+                details.setCount(stack.count);
                 result.put(index++, details);
             }
             return result(result);

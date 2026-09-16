@@ -118,25 +118,25 @@ public final class CreatePackageValue extends AbstractValue implements ManagedPe
             };
         }
 
-        private static Map<Integer, Map<String, Object>> list(final PackageOrderWithCrafts order) {
-            final Map<Integer, Map<String, Object>> result = new LinkedHashMap<>();
+        private static Map<Integer, ItemStack> list(final PackageOrderWithCrafts order) {
+            final Map<Integer, ItemStack> result = new LinkedHashMap<>();
             int index = 1;
             for (final BigItemStack stack : order.stacks()) {
-                final Map<String, Object> details = CreateLuaConversion.itemDetails(stack.stack);
-                details.put("count", stack.count);
+                final ItemStack details = stack.stack.copy();
+                details.setCount(stack.count);
                 result.put(index++, details);
             }
             return result;
         }
 
-        private static Map<String, Object> detail(final PackageOrderWithCrafts order, final int slot) {
+        private static ItemStack detail(final PackageOrderWithCrafts order, final int slot) {
             if (slot < 1)
                 throw new IllegalArgumentException("Slot out of range (1 or greater)");
             if (slot > order.stacks().size())
                 return null;
             final BigItemStack stack = order.stacks().get(slot - 1);
-            final Map<String, Object> details = CreateLuaConversion.itemDetails(stack.stack);
-            details.put("count", stack.count);
+            final ItemStack details = stack.stack.copy();
+            details.setCount(stack.count);
             return details;
         }
 

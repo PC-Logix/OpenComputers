@@ -17,59 +17,49 @@ final class CreateLuaConversion {
     private CreateLuaConversion() {
     }
 
-    static Map<Integer, Map<String, Object>> list(final IItemHandler inventory) {
-        final Map<Integer, Map<String, Object>> result = new LinkedHashMap<>();
+    static Map<Integer, ItemStack> list(final IItemHandler inventory) {
+        final Map<Integer, ItemStack> result = new LinkedHashMap<>();
         for (int slot = 0; slot < inventory.getSlots(); slot++) {
             final ItemStack stack = inventory.getStackInSlot(slot);
             if (!stack.isEmpty())
-                result.put(slot + 1, itemDetails(stack));
+                result.put(slot + 1, stack);
         }
         return result;
     }
 
-    static Map<Integer, Map<String, Object>> list(final InventorySummary inventory) {
-        final Map<Integer, Map<String, Object>> result = new LinkedHashMap<>();
+    static Map<Integer, ItemStack> list(final InventorySummary inventory) {
+        final Map<Integer, ItemStack> result = new LinkedHashMap<>();
         int slot = 1;
         for (final BigItemStack stack : inventory.getStacks()) {
-            final Map<String, Object> details = itemDetails(stack.stack);
-            details.put("count", stack.count);
+            final ItemStack details = stack.stack.copy();
+            details.setCount(stack.count);
             result.put(slot++, details);
         }
         return result;
     }
 
-    static Map<String, Object> getItemDetail(final IItemHandler inventory, final int slot) {
+    static ItemStack getItemDetail(final IItemHandler inventory, final int slot) {
         if (slot < 1 || slot > inventory.getSlots())
             throw new IllegalArgumentException("Slot " + slot + " out of range, available slots between 1 and " + inventory.getSlots());
         final ItemStack stack = inventory.getStackInSlot(slot - 1);
-        return stack.isEmpty() ? null : itemDetails(stack);
+        return stack.isEmpty() ? null : stack;
     }
 
-    static Map<String, Object> getItemDetail(final InventorySummary inventory, final int slot) {
+    static ItemStack getItemDetail(final InventorySummary inventory, final int slot) {
         final List<BigItemStack> stacks = inventory.getStacks();
         if (slot < 1 || slot > stacks.size())
             throw new IllegalArgumentException("Slot " + slot + " out of range, available slots between 1 and " + stacks.size());
         final BigItemStack stack = stacks.get(slot - 1);
-        final Map<String, Object> details = itemDetails(stack.stack);
-        details.put("count", stack.count);
-        return details;
-    }
-
-    static Map<String, Object> itemDetails(final ItemStack stack) {
-        final Map<String, Object> details = new LinkedHashMap<>();
-        details.put("name", BuiltInRegistries.ITEM.getKey(stack.getItem()).toString());
-        details.put("count", stack.getCount());
-        details.put("displayName", stack.getHoverName().getString());
-        details.put("damage", stack.getDamageValue());
-        details.put("maxDamage", stack.getMaxDamage());
+        final ItemStack details = stack.stack.copy();
+        details.setCount(stack.count);
         return details;
     }
 
     static int matchingCount(final BigItemStack entry, final Map<?, ?> filter) {
-        final Map<String, Object> details = itemDetails(entry.stack);
-        details.put("count", entry.count);
-        if (filter.get("name") instanceof String name && !name.contains(":"))
-            details.put("name", "minecraft:" + name);
+        final ItemStack details = entry.stack.copy();
+        details.setCount(entry.count);
+        //if (filter.get("name") instanceof String name && !name.contains(":"))
+        //    details.put("name", "minecraft:" + name);
         return deepMatches(filter, details) ? entry.count : 0;
     }
 
