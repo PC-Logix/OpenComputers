@@ -14,16 +14,6 @@ class Adapter(id: Int, playerInventory: Inventory, adapter: Container)
 
   override protected def getHostClass = classOf[blockentity.Adapter]
 
-  // Keep the upgrade-slot appearance, but also accept card drivers. The
-  // inventory performs the authoritative host-aware check for both kinds.
-  addSlot(new StaticComponentSlot(this, otherInventory, slots.size, 80, 35, getHostClass, Slot.Upgrade, Tier.Any) {
-    override def mayPlace(stack: net.minecraft.world.item.ItemStack): Boolean = {
-      if (!otherInventory.canPlaceItem(getSlotIndex, stack)) false
-      else Option(Driver.driverFor(stack, getHostClass)).exists { driver =>
-        val driverSlot = driver.slot(stack)
-        driverSlot == Slot.Upgrade || driverSlot == Slot.Card
-      }
-    }
-  })
+  addSlotToContainer(80, 35, Slot.Upgrade)
   addPlayerInventorySlots(8, 84)
 }
