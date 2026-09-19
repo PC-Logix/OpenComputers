@@ -191,7 +191,8 @@ class Adapter(pos: BlockPos, state: BlockState)
   override def getContainerSize = 1
 
   override def canPlaceItem(slot: Int, stack: ItemStack) = (slot, Option(Driver.driverFor(stack, getClass))) match {
-    case (0, Some(driver)) => driver.slot(stack) == Slot.Upgrade
+    case (0, Some(driver)) =>
+      driver.slot(stack) == Slot.Upgrade || driver.slot(stack) == Slot.Card
     case _ => false
   }
 
