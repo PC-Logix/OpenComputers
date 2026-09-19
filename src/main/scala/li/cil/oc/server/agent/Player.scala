@@ -156,7 +156,7 @@ class Player(val agent: internal.Agent) extends FakePlayer(agent.getEnvironmentL
 
   def closestEntity[Type <: Entity](clazz: Class[Type], side: Direction = facing): Option[Entity] = {
     val bounds = BlockPosition(agent).offset(side).bounds
-    val candidates = level.getEntitiesOfClass(clazz, bounds, null)
+    val candidates = level.getEntitiesOfClass(clazz, bounds, (_: Type) => true)
     if (candidates.isEmpty) return None
     Some(candidates.asScala.minBy(e => distanceToSqr(e)))
   }
@@ -166,11 +166,11 @@ class Player(val agent: internal.Agent) extends FakePlayer(agent.getEnvironmentL
   }
 
   def entitiesInBlock[Type <: Entity](clazz: Class[Type], blockPos: BlockPosition): util.List[Type] = {
-    level.getEntitiesOfClass(clazz, blockPos.bounds, null)
+    level.getEntitiesOfClass(clazz, blockPos.bounds, (_: Type) => true)
   }
 
   private def adjacentItems: util.List[ItemEntity] = {
-    level.getEntitiesOfClass(classOf[ItemEntity], BlockPosition(agent).bounds.inflate(2, 2, 2), null)
+    level.getEntitiesOfClass(classOf[ItemEntity], BlockPosition(agent).bounds.inflate(2, 2, 2), _ => true)
   }
 
   private def collectDroppedItems(itemsBefore: Iterable[ItemEntity]): Unit = {
