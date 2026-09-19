@@ -480,6 +480,7 @@ object PacketHandler extends CommonPacketHandler {
         case player: ServerPlayer if player.distanceToSqr(waypoint.x + 0.5, waypoint.y + 0.5, waypoint.z + 0.5) <= 64 =>
           if (label != waypoint.label) {
             waypoint.label = label
+            waypoint.setChanged()
             PacketSender.sendWaypointLabel(waypoint)
           }
         case _ =>

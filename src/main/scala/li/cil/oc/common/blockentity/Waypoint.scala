@@ -40,6 +40,7 @@ class Waypoint(pos: BlockPos, state: BlockState)
   @Callback(doc = """function(value:string) -- Set the label for this waypoint.""")
   def setLabel(context: Context, args: Arguments): Array[Object] = {
     label = args.checkString(0).take(32)
+    setChanged()
     context.pause(0.5)
     null
   }
