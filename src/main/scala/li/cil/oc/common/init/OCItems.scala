@@ -191,7 +191,11 @@ object OCItems extends ItemAPI {
 
   // ----------------------------------------------------------------------- //
 
-  private def safeGetStack(name: String) = if (name == Constants.ItemName.LuaBios) Loot.defaultEEPROM.copy() else Option(get(name)).map(_.createItemStack(1)).getOrElse(ItemStack.EMPTY)
+  private def safeGetStack(name: String) = name match {
+    case Constants.ItemName.LuaBios => Loot.defaultEEPROM.copy()
+    case Constants.ItemName.OpenOS  => Loot.defaultOpenOS.copy()
+    case _ => Option(get(name)).map(_.createItemStack(1)).getOrElse(ItemStack.EMPTY)
+  }
 
   def createConfiguredDrone(): ItemStack = {
     val data = new DroneData()
