@@ -255,25 +255,25 @@ class RobotRenderer extends TileEntityRenderer[blockentity.RobotProxy] {
         val blue  = (lightColor >>> 0)  & 0xFF
 
         val r = buffer.getBuffer(RenderTypes.ROBOT_LIGHT)
-        r.addVertex(stack.last.pose(), l, gt, l).setColor(red, green, blue, 0xFF).setUv(u0, v0)
-        r.addVertex(stack.last.pose(), l, gb, l).setColor(red, green, blue, 0xFF).setUv(u0, v1)
-        r.addVertex(stack.last.pose(), l, gb, h).setColor(red, green, blue, 0xFF).setUv(u1, v1)
-        r.addVertex(stack.last.pose(), l, gt, h).setColor(red, green, blue, 0xFF).setUv(u1, v0)
+        r.addVertex(stack.last.pose(), l, gt, l).setColor(red, green, blue, 0xFF).setUv(u0, v0).setLight(light).setNormal(stack.last(), -1, 0, 0)
+        r.addVertex(stack.last.pose(), l, gb, l).setColor(red, green, blue, 0xFF).setUv(u0, v1).setLight(light).setNormal(stack.last(), -1, 0, 0)
+        r.addVertex(stack.last.pose(), l, gb, h).setColor(red, green, blue, 0xFF).setUv(u1, v1).setLight(light).setNormal(stack.last(), -1, 0, 0)
+        r.addVertex(stack.last.pose(), l, gt, h).setColor(red, green, blue, 0xFF).setUv(u1, v0).setLight(light).setNormal(stack.last(), -1, 0, 0)
 
-        r.addVertex(stack.last.pose(), l, gt, h).setColor(red, green, blue, 0xFF).setUv(u0, v0)
-        r.addVertex(stack.last.pose(), l, gb, h).setColor(red, green, blue, 0xFF).setUv(u0, v1)
-        r.addVertex(stack.last.pose(), h, gb, h).setColor(red, green, blue, 0xFF).setUv(u1, v1)
-        r.addVertex(stack.last.pose(), h, gt, h).setColor(red, green, blue, 0xFF).setUv(u1, v0)
+        r.addVertex(stack.last.pose(), l, gt, h).setColor(red, green, blue, 0xFF).setUv(u0, v0).setLight(light).setNormal(stack.last(), 0, 0, 1)
+        r.addVertex(stack.last.pose(), l, gb, h).setColor(red, green, blue, 0xFF).setUv(u0, v1).setLight(light).setNormal(stack.last(), 0, 0, 1)
+        r.addVertex(stack.last.pose(), h, gb, h).setColor(red, green, blue, 0xFF).setUv(u1, v1).setLight(light).setNormal(stack.last(), 0, 0, 1)
+        r.addVertex(stack.last.pose(), h, gt, h).setColor(red, green, blue, 0xFF).setUv(u1, v0).setLight(light).setNormal(stack.last(), 0, 0, 1)
 
-        r.addVertex(stack.last.pose(), h, gt, h).setColor(red, green, blue, 0xFF).setUv(u0, v0)
-        r.addVertex(stack.last.pose(), h, gb, h).setColor(red, green, blue, 0xFF).setUv(u0, v1)
-        r.addVertex(stack.last.pose(), h, gb, l).setColor(red, green, blue, 0xFF).setUv(u1, v1)
-        r.addVertex(stack.last.pose(), h, gt, l).setColor(red, green, blue, 0xFF).setUv(u1, v0)
+        r.addVertex(stack.last.pose(), h, gt, h).setColor(red, green, blue, 0xFF).setUv(u0, v0).setLight(light).setNormal(stack.last(), 1, 0, 0)
+        r.addVertex(stack.last.pose(), h, gb, h).setColor(red, green, blue, 0xFF).setUv(u0, v1).setLight(light).setNormal(stack.last(), 1, 0, 0)
+        r.addVertex(stack.last.pose(), h, gb, l).setColor(red, green, blue, 0xFF).setUv(u1, v1).setLight(light).setNormal(stack.last(), 1, 0, 0)
+        r.addVertex(stack.last.pose(), h, gt, l).setColor(red, green, blue, 0xFF).setUv(u1, v0).setLight(light).setNormal(stack.last(), 1, 0, 0)
 
-        r.addVertex(stack.last.pose(), h, gt, l).setColor(red, green, blue, 0xFF).setUv(u0, v0)
-        r.addVertex(stack.last.pose(), h, gb, l).setColor(red, green, blue, 0xFF).setUv(u0, v1)
-        r.addVertex(stack.last.pose(), l, gb, l).setColor(red, green, blue, 0xFF).setUv(u1, v1)
-        r.addVertex(stack.last.pose(), l, gt, l).setColor(red, green, blue, 0xFF).setUv(u1, v0)
+        r.addVertex(stack.last.pose(), h, gt, l).setColor(red, green, blue, 0xFF).setUv(u0, v0).setLight(light).setNormal(stack.last(), 0, 0, -1)
+        r.addVertex(stack.last.pose(), h, gb, l).setColor(red, green, blue, 0xFF).setUv(u0, v1).setLight(light).setNormal(stack.last(), 0, 0, -1)
+        r.addVertex(stack.last.pose(), l, gb, l).setColor(red, green, blue, 0xFF).setUv(u1, v1).setLight(light).setNormal(stack.last(), 0, 0, -1)
+        r.addVertex(stack.last.pose(), l, gt, l).setColor(red, green, blue, 0xFF).setUv(u1, v0).setLight(light).setNormal(stack.last(), 0, 0, -1)
       }
     }
   }

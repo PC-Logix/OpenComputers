@@ -31,7 +31,8 @@ public class OCBlockStateProvider extends BlockStateProvider {
         // Block Entity Renderers
         simpleBlock(OCBlocks.NetSplitter().get(), existingModel(Blocks.AIR));
         simpleBlock(OCBlocks.Print().get(), existingModel(Blocks.AIR));
-        simpleBlock(OCBlocks.Robot().get(), existingModel(Blocks.AIR));
+        simpleBlock(OCBlocks.Robot().get(), models().getBuilder("robot_particle")
+            .texture("particle", ResourceLocation.fromNamespaceAndPath(OpenComputers.ID(), "model/robot")));
         simpleBlock(OCBlocks.RobotAfterimage().get(), existingModel(Blocks.AIR));
 
         simpleBlockWithItem(OCBlocks.Adapter().get(), models().cubeTop(modelName(OCBlocks.Adapter().get()),
