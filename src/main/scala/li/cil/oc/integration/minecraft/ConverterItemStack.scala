@@ -76,6 +76,7 @@ object ConverterItemStack extends api.driver.Converter {
           case storage: IEnergyStorage => {
             output += "Energy" -> Int.box(storage.getEnergyStored)
           }
+          case _ =>
         }
 
         // custom mod tags
