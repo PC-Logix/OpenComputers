@@ -46,6 +46,12 @@ class UpgradeExperience(val host: EnvironmentHost with internal.Agent) extends A
 
   var level = 0
 
+  // The node starts with its maximum connector size so persisted charge can
+  // be loaded without being discarded. Normalize the fresh component before
+  // it can be connected, otherwise a zero-XP upgrade temporarily grants the
+  // level-30 energy capacity until its first XP update.
+  updateXpInfo()
+
   def xpForNextLevel: Double = ExperienceUtil.xpForLevel(level + 1)
 
   def addExperience(value: Double): Unit = {
