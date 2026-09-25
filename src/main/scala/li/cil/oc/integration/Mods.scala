@@ -31,6 +31,7 @@ object Mods {
   val OpenComputers = new SimpleMod(IDs.OpenComputers)
   val EnderStorage = new SimpleMod(IDs.EnderStorage)
   val ProjectRedTransmission = new SimpleMod(IDs.ProjectRedTransmission)
+  val ImmersiveEngineering = new SimpleMod(IDs.ImmersiveEngineering)
 
   // ----------------------------------------------------------------------- //
 
@@ -43,6 +44,7 @@ object Mods {
     integration.appeng.ModAppliedEnergistics2.INSTANCE,
     integration.enderstorage.ModEnderStorage,
     integration.projectred.ModProjectRed,
+    integration.immersiveengineering.ModImmersiveEngineering,
 
     // We go late to ensure all other mod integration is done, e.g. to
     // allow properly checking if wireless redstone is present.
@@ -107,6 +109,7 @@ object Mods {
     final val OpenComputers = "opencomputers"
     final val EnderStorage = "enderstorage"
     final val ProjectRedTransmission = "projectred_transmission"
+    final val ImmersiveEngineering = "immersiveengineering"
   }
 
   // ----------------------------------------------------------------------- //
