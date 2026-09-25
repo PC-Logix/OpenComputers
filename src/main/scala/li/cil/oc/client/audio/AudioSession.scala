@@ -201,6 +201,7 @@ class AudioSession(
     if (isPlayCalled && alSource != -1) {
       Audio.runOnSoundEngine {
         if (alSource != -1) {
+          updateSpatialAudio()
           if (!loop) refillProcessedBuffers()
           val state = AL10.alGetSourcei(alSource, AL10.AL_SOURCE_STATE)
           val queued = AL10.alGetSourcei(alSource, AL10.AL_BUFFERS_QUEUED)
@@ -257,5 +258,23 @@ class AudioSession(
     val state = AL10.alGetSourcei(alSource, AL10.AL_SOURCE_STATE)
     if (state != AL10.AL_PLAYING && pendingBuffers.nonEmpty && AL10.alGetSourcei(alSource, AL10.AL_BUFFERS_QUEUED) > 0)
       AL10.alSourcePlay(alSource)
+  }
+
+  /** Keep the stream attached to its physical source as the listener moves. */
+  private def updateSpatialAudio(): Unit = {
+    val mc = Minecraft.getInstance
+    if (mc == null || mc.player == null || mc.level == null) return
+
+    val local = Audio.localAudioPosition(pos)
+    AL10.alSource3f(alSource, AL10.AL_POSITION, local.x.toFloat, local.y.toFloat, local.z.toFloat)
+
+    val maxDistance = Settings.get.beepRadius
+    val volume = mc.options.getSoundSourceVolume(net.minecraft.sounds.SoundSource.BLOCKS)
+    val distanceGain = Audio.physicalGain(pos, maxDistance).toFloat
+    val gain = distanceGain * volume
+    // OpenAL's AL_MAX_DISTANCE clamps attenuation; it does not silence a
+    // source beyond that distance. physicalGain supplies the hard cutoff.
+    val outputGain = if (encodedDfpwm) gain * streamGain else gain * 0.3f * streamGain
+    AL10.alSourcef(alSource, AL10.AL_GAIN, outputGain)
   }
 }
