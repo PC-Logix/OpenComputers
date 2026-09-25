@@ -19,6 +19,7 @@ import li.cil.oc.client.renderer.markdown.segment.render.TextureImageProvider
 import li.cil.oc.common.EventHandler
 import li.cil.oc.common.Loot
 import li.cil.oc.common.SaveHandler
+import li.cil.oc.integration.SableTickBridge
 import li.cil.oc.common.block.SimpleBlock
 import li.cil.oc.common.event._
 import li.cil.oc.common.item.Analyzer
@@ -92,6 +93,7 @@ object ModOpenComputers extends ModProxy {
 
     OpenComputers.proxy.modBus.addListener(EventHandler.onRegisterCapabilities)
     OpenComputers.proxy.modBus.addListener(ChunkloaderUpgradeHandler.onRegisterTicketControllers)
+    OpenComputers.proxy.modBus.addListener(SableTickBridge.onRegisterTicketControllers)
 
     NeoForge.EVENT_BUS.register(EventHandler)
     NeoForge.EVENT_BUS.register(NanomachinesHandler.Common)

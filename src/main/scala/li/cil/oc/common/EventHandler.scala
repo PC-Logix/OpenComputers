@@ -126,6 +126,7 @@ object EventHandler {
     })
 
     serverTicks += 1
+    integration.SableTickBridge.tick(e.getServer)
     while (pendingServerTimed.nonEmpty && pendingServerTimed.head._1 < serverTicks) {
       val (_, callback) = pendingServerTimed.dequeue()
       try callback() catch {

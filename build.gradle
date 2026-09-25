@@ -309,6 +309,7 @@ dependencies {
 
     // Load Sable in the IDE runs for integration testing, without making it
     // part of the published OpenComputers dependency set.
+    compileOnly("maven.modrinth:sable:${sable_version}")
     devRuntimeOnly("maven.modrinth:sable:${sable_version}")
 
     // The bundled Aeronautics release contains the Simulated, Aeronautics,
