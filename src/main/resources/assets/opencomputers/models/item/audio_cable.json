@@ -1,3 +1,8 @@
 {
-  "parent": "opencomputers:block/audio_cable"
+  "parent": "opencomputers:item/cable",
+  "textures": {
+    "particle": "opencomputers:block/audio_cable",
+    "cablecap": "opencomputers:block/audio_cable",
+    "cable": "opencomputers:block/audio_cable"
+  }
 }

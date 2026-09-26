@@ -8,4 +8,4 @@
 
 Holding the key for OpenComputers' extended tooltips (default is `Shift`), a print's active state will be shown, if any.
 
-Printed blocks are also Forge MultiPart compatible. If present, multiple prints can be placed into a single block-space, unless they do not collide, and the total number of shapes in the block-space does not exceed the limit for a single model. Due to the nature of Forge MultiPart, prints can therefore also be placed into the same block-space as any other Forge MultiPart compatible block, such as torches, levers, cables or red alloy wires from Project Red, for example.
+If CB MultiPart is installed, prints can share a block-space with other prints, cables, and microblocks when their shapes do not overlap. The combined number of shapes in each print state cannot exceed the printer's shape limit. Adding a multipart to an existing print converts it into a print part while preserving its design and orientation.

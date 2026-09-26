@@ -30,6 +30,7 @@ object Mods {
   val Minecraft = new SimpleMod(IDs.Minecraft)
   val OpenComputers = new SimpleMod(IDs.OpenComputers)
   val EnderStorage = new SimpleMod(IDs.EnderStorage)
+  val CBMultipart = new SimpleMod(IDs.CBMultipart)
   val ProjectRedTransmission = new SimpleMod(IDs.ProjectRedTransmission)
 
   // ----------------------------------------------------------------------- //
@@ -42,6 +43,7 @@ object Mods {
     integration.computercraft.ModComputerCraft,
     integration.appeng.ModAppliedEnergistics2.INSTANCE,
     integration.enderstorage.ModEnderStorage,
+    integration.multipart.ModCBMultipart,
     integration.projectred.ModProjectRed,
 
     // We go late to ensure all other mod integration is done, e.g. to
@@ -106,6 +108,7 @@ object Mods {
     final val Minecraft = "minecraft"
     final val OpenComputers = "opencomputers"
     final val EnderStorage = "enderstorage"
+    final val CBMultipart = "cb_multipart"
     final val ProjectRedTransmission = "projectred_transmission"
   }
 

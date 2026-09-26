@@ -77,17 +77,21 @@ object PrintModel extends SmartBlockModelBase {
 
   override def getQuads(state: BlockState, side: Direction, rand: RandomSource, data: ModelData, renderType: RenderType): util.List[BakedQuad] =
     Option(data.get(PRINT_PROPERTY)) match {
-      case Some(t) =>
-        val faces = mutable.ArrayBuffer.empty[BakedQuad]
-        for (shape <- t.shapes if !Strings.isNullOrEmpty(shape.texture)) {
-          val bounds  = shape.bounds.rotateTowards(t.facing)
-          val texture = resolveTexture(shape.texture)
-          val tint    = shape.tint.orElse(defaultTintFor(shape.texture)).getOrElse(White)
-          faces ++= bakeQuads(makeBox(bounds.minVec, bounds.maxVec), Array.fill(6)(texture), tint)
-        }
-        faces.asJava
+      case Some(t) => quadsFor(t.shapes, t.facing)
       case _ => super.getQuads(state, side, rand)
     }
+
+  /** The same baked geometry used by ordinary prints and CB Multipart print parts. */
+  def quadsFor(shapes: Iterable[PrintData.Shape], facing: Direction): util.List[BakedQuad] = {
+    val faces = mutable.ArrayBuffer.empty[BakedQuad]
+    for (shape <- shapes if !Strings.isNullOrEmpty(shape.texture)) {
+      val bounds = shape.bounds.rotateTowards(facing)
+      val texture = resolveTexture(shape.texture)
+      val tint = shape.tint.orElse(defaultTintFor(shape.texture)).getOrElse(White)
+      faces ++= bakeQuads(makeBox(bounds.minVec, bounds.maxVec), Array.fill(6)(texture), tint)
+    }
+    faces.asJava
+  }
 
   private def resolveTexture(name: String): TextureAtlasSprite = {
     def isMissing(s: TextureAtlasSprite) =

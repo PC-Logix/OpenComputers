@@ -4,6 +4,8 @@ import li.cil.oc.api.internal.Colored
 import li.cil.oc.common.{block, blockentity}
 import li.cil.oc.common.block.ChameliumBlock
 import li.cil.oc.common.datacomponents.OCComponents
+import li.cil.oc.integration.{Mods}
+import li.cil.oc.integration.multipart.ModCBMultipart
 import li.cil.oc.common.init.{OCBlocks, OCItems}
 import li.cil.oc.util.{Color, ItemColorizer, ItemUtils}
 import net.minecraft.util.FastColor
@@ -16,6 +18,7 @@ object ColorHandler {
   def onRegisterBlocks(event: RegisterColorHandlersEvent.Block): Unit = {
     event.register((state, world, pos, tintIndex) => if (pos == null) 0xFFFFFFFF else world.getBlockEntity(pos) match {
       case block: blockentity.Cable => FastColor.ARGB32.opaque(block.getColor)
+      case _ if Mods.CBMultipart.isModAvailable => ModCBMultipart.cableColor(world, pos).fold(0xFFFFFFFF)(FastColor.ARGB32.opaque)
       case _ => 0xFFFFFFFF
     }, OCBlocks.Cable.get())
 

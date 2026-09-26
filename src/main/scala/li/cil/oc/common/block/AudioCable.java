@@ -1,6 +1,7 @@
 package li.cil.oc.common.block;
 
 import li.cil.oc.common.block.property.PropertyCableConnection;
+import li.cil.oc.integration.multipart.ModCBMultipart;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
@@ -69,7 +70,7 @@ public class AudioCable extends SimpleBlock {
 
     private BlockState updateConnection(BlockState state, BlockGetter level, BlockPos pos, Direction side) {
         var entity = level.getBlockEntity(pos);
-        PropertyCableConnection.Shape shape = entity instanceof li.cil.oc.common.blockentity.AudioCable ? PropertyCableConnection.Shape.CABLE
+        PropertyCableConnection.Shape shape = entity instanceof li.cil.oc.common.blockentity.AudioCable || ModCBMultipart.isAudioCable(level, pos) ? PropertyCableConnection.Shape.CABLE
             : entity instanceof li.cil.oc.common.blockentity.Speaker || entity instanceof li.cil.oc.common.blockentity.TapeDrive ? PropertyCableConnection.Shape.DEVICE
             : PropertyCableConnection.Shape.NONE;
         return CableHelper.helperSetCableShapeState(state, side, shape);
