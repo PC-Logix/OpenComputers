@@ -246,7 +246,7 @@ object DataCard {
     }
 
     @Callback(direct = true, limit = 1, doc = """function(keyType:string):userdata, userdata -- Generates an ed25519/x25519 key pair.""")
-    def generate25519Keypair(context: Context, args: Arguments): Array[AnyRef] = {
+    def generate25519KeyPair(context: Context, args: Arguments): Array[AnyRef] = {
       checkCost(Settings.get.dataCardAsymmetric)
       val keyType = args.checkString(0)
       val algorithm = keyType match {
