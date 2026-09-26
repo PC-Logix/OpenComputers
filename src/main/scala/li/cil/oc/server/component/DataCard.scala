@@ -245,7 +245,7 @@ object DataCard {
       result(new ECUserdata(kp.getPublic), new ECUserdata(kp.getPrivate))
     }
 
-    @Callback(direct = true, limit = 1, doc = """function(keyType:string):userdata, userdata -- Generates an ed25519/x25519 private key.""")
+    @Callback(direct = true, limit = 1, doc = """function(keyType:string):userdata, userdata -- Generates an ed25519/x25519 key pair.""")
     def generate25519Keypair(context: Context, args: Arguments): Array[AnyRef] = {
       checkCost(Settings.get.dataCardAsymmetric)
       val keyType = args.checkString(0)
@@ -294,13 +294,13 @@ object DataCard {
       result(ka.generateSecret)
     }
 
-    @Callback(direct = true, limit = 1, doc = """function(data:string, key:userdata[, sig:string]):string or boolean -- Signs or verifies data using Ed25519.""")
-    def ed25519(context: Context, args: Arguments): Array[AnyRef] = {
+    @Callback(direct = true, limit = 1, doc = """function(data:string, key:userdata[, sig:string]):string or boolean -- Signs or verifies data.""")
+    def ecdsa(context: Context, args: Arguments): Array[AnyRef] = {
       val data = asymmetricCost(context, args)
-      val key = checkEd25519Userdata(args, 1)
+      val key = checkUserdata(args, 1)
       val sig = args.optByteArray(2, null)
 
-      val sign = Signature.getInstance("Ed25519")
+      val sign = Signature.getInstance("SHA256withECDSA")
       if (sig != null) {
         // Verify mode
         key.value match {
@@ -324,13 +324,13 @@ object DataCard {
       }
     }
 
-    @Callback(direct = true, limit = 1, doc = """function(data:string, key:userdata[, sig:string]):string or boolean -- Signs or verifies data.""")
-    def ecdsa(context: Context, args: Arguments): Array[AnyRef] = {
+    @Callback(direct = true, limit = 1, doc = """function(data:string, key:userdata[, sig:string]):string or boolean -- Signs or verifies data using Ed25519.""")
+    def ed25519(context: Context, args: Arguments): Array[AnyRef] = {
       val data = asymmetricCost(context, args)
-      val key = checkUserdata(args, 1)
+      val key = checkEd25519Userdata(args, 1)
       val sig = args.optByteArray(2, null)
 
-      val sign = Signature.getInstance("SHA256withECDSA")
+      val sign = Signature.getInstance("Ed25519")
       if (sig != null) {
         // Verify mode
         key.value match {
