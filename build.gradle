@@ -384,6 +384,10 @@ dependencies {
     runtimeOnly("mrtjp:ProjectRed:${projred_version}:core")
     runtimeOnly("mrtjp:ProjectRed:${projred_version}:transmission")
 
+    // Immersive Engineering
+    compileOnly("maven.modrinth:immersiveengineering:${immersiveengineering_version}")
+    runtimeOnly("maven.modrinth:immersiveengineering:${immersiveengineering_version}")
+
     testImplementation("com.typesafe:config:1.4.5")
     testImplementation("org.scala-lang:scala-library:2.13.12")
     testImplementation("org.scalatest:scalatest_2.13:3.2.18")
