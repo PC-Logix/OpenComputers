@@ -2,6 +2,11 @@ package li.cil.oc.server.component
 
 import java.security._
 import java.security.interfaces.ECPublicKey
+import java.security.interfaces.ECPrivateKey
+import java.security.interfaces.EdECPrivateKey
+import java.security.interfaces.EdECPublicKey
+import java.security.interfaces.XECPrivateKey
+import java.security.interfaces.XECPublicKey
 import java.security.spec.PKCS8EncodedKeySpec
 import java.security.spec.X509EncodedKeySpec
 import java.util
@@ -240,6 +245,23 @@ object DataCard {
       result(new ECUserdata(kp.getPublic), new ECUserdata(kp.getPrivate))
     }
 
+    @Callback(direct = true, limit = 1, doc = """function(keyType:string):userdata, userdata -- Generates an ed25519/x25519 key pair.""")
+    def generate25519KeyPair(context: Context, args: Arguments): Array[AnyRef] = {
+      checkCost(Settings.get.dataCardAsymmetric)
+      val keyType = args.checkString(0)
+      val algorithm = keyType match {
+        case "ed25519" => "Ed25519"
+        case "x25519" => "X25519"
+        case _ => throw new IllegalArgumentException("invalid key type, must be ed25519 or x25519")
+      }
+
+      val kpg = KeyPairGenerator.getInstance(algorithm)
+      kpg.initialize(255, SecureRandomInstance.get)
+      val kp = kpg.generateKeyPair()
+
+      result(new ECUserdata(kp.getPublic), new ECUserdata(kp.getPrivate))
+    }
+
     @Callback(direct = true, limit = 8, doc = """function(data:string, type:string):userdata -- Restores key from its string representation.""")
     def deserializeKey(context: Context, args: Arguments): Array[AnyRef] = {
       val data = simpleCost(context, args)
@@ -255,6 +277,18 @@ object DataCard {
       val pubKey = checkUserdata(args, 1, isPublic = Option(true)).value
 
       val ka = KeyAgreement.getInstance("ECDH")
+      ka.init(privKey)
+      ka.doPhase(pubKey, true)
+      result(ka.generateSecret)
+    }
+
+    @Callback(direct = true, limit = 1, doc = """function(priv:userdata, pub:userdata):string -- Generates a shared key using X25519. x25519(a.priv, b.pub) == x25519(b.priv, a.pub)""")
+    def x25519(context: Context, args: Arguments): Array[AnyRef] = {
+      checkCost(Settings.get.dataCardAsymmetric)
+      val privKey = checkX25519Userdata(args, 0, isPublic = Option(false)).value
+      val pubKey = checkX25519Userdata(args, 1, isPublic = Option(true)).value
+
+      val ka = KeyAgreement.getInstance("X25519")
       ka.init(privKey)
       ka.doPhase(pubKey, true)
       result(ka.generateSecret)
@@ -290,9 +324,39 @@ object DataCard {
       }
     }
 
+    @Callback(direct = true, limit = 1, doc = """function(data:string, key:userdata[, sig:string]):string or boolean -- Signs or verifies data using Ed25519.""")
+    def ed25519(context: Context, args: Arguments): Array[AnyRef] = {
+      val data = asymmetricCost(context, args)
+      val key = checkEd25519Userdata(args, 1)
+      val sig = args.optByteArray(2, null)
+
+      val sign = Signature.getInstance("Ed25519")
+      if (sig != null) {
+        // Verify mode
+        key.value match {
+          case public: PublicKey =>
+            sign.initVerify(public)
+            sign.update(data)
+            result(sign.verify(sig))
+          case _ => throw new IllegalArgumentException("public key expected")
+        }
+      }
+      else {
+        // Sign mode
+        key.value match {
+          case k: PrivateKey =>
+            sign.initSign(k)
+            sign.update(data)
+            result(sign.sign())
+          case _ =>
+            throw new IllegalArgumentException("private key expected")
+        }
+      }
+    }
+
     // ----------------------------------------------------------------------- //
 
-    private def checkUserdata(args: Arguments, i: Int, isPublic: Option[Boolean] = None) =
+    private def checkUserdata(args: Arguments, i: Int, isPublic: Option[Boolean] = None) = {
       args.checkAny(i) match {
         case value: ECUserdata =>
           if (isPublic.fold(true)(_ == value.isPublic)) value
@@ -303,15 +367,40 @@ object DataCard {
         case value => throw new IllegalArgumentException(
           s"bad argument #${i + 1} (userdata expected, got ${value.getClass.getName})")
       }
+    }
+
+    private def checkX25519Userdata(args: Arguments, i: Int, isPublic: Option[Boolean] = None) = {
+      val value = checkUserdata(args, i, isPublic)
+      value.value match {
+        case _: XECPublicKey | _: XECPrivateKey => value
+        case _ => throw new IllegalArgumentException(s"bad argument #${i + 1} (x25519 key expected)")
+      }
+    }
+
+    private def checkEd25519Userdata(args: Arguments, i: Int, isPublic: Option[Boolean] = None) = {
+      val value = checkUserdata(args, i, isPublic)
+      value.value match {
+        case _: EdECPublicKey | _: EdECPrivateKey => value
+        case _ => throw new IllegalArgumentException(s"bad argument #${i + 1} (ed25519 key expected)")
+      }
+    }
   }
 
   class ECUserdata(var value: Key) extends prefab.AbstractValue {
     // Empty constructor for deserialization.
     def this() = this(null)
 
-    def isPublic = value.isInstanceOf[ECPublicKey]
+    def isPublic = value.isInstanceOf[PublicKey]
 
-    def keyType = if (isPublic) ECUserdata.PublicTypeName else ECUserdata.PrivateTypeName
+    def keyType: String = value match {
+      case _: ECPublicKey => ECUserdata.PublicTypeName
+      case _: ECPrivateKey => ECUserdata.PrivateTypeName
+      case _: EdECPublicKey => ECUserdata.Ed25519PublicTypeName
+      case _: EdECPrivateKey => ECUserdata.Ed25519PrivateTypeName
+      case _: XECPublicKey => ECUserdata.X25519PublicTypeName
+      case _: XECPrivateKey => ECUserdata.X25519PrivateTypeName
+      case _ => throw new IllegalStateException(s"unsupported key type: ${value.getClass.getName}")
+    }
 
     // ----------------------------------------------------------------------- //
 
@@ -338,14 +427,24 @@ object DataCard {
     }
   }
 
+
   object ECUserdata {
     final val PrivateTypeName = "ec-private"
     final val PublicTypeName = "ec-public"
+    final val Ed25519PrivateTypeName = "ed25519-private"
+    final val Ed25519PublicTypeName = "ed25519-public"
+    final val X25519PrivateTypeName = "x25519-private"
+    final val X25519PublicTypeName = "x25519-public"
 
-    def deserializeKey(typeName: String, data: Array[Byte]): Key = {
-      if (typeName == PrivateTypeName) KeyFactory.getInstance("EC").generatePrivate(new PKCS8EncodedKeySpec(data))
-      else if (typeName == PublicTypeName) KeyFactory.getInstance("EC").generatePublic(new X509EncodedKeySpec(data))
-      else throw new IllegalArgumentException("invalid key type, must be ec-public or ec-private")
+    def deserializeKey(typeName: String, data: Array[Byte]): Key = typeName match {
+      case PrivateTypeName => KeyFactory.getInstance("EC").generatePrivate(new PKCS8EncodedKeySpec(data))
+      case PublicTypeName => KeyFactory.getInstance("EC").generatePublic(new X509EncodedKeySpec(data))
+      case Ed25519PrivateTypeName => KeyFactory.getInstance("Ed25519").generatePrivate(new PKCS8EncodedKeySpec(data))
+      case Ed25519PublicTypeName => KeyFactory.getInstance("Ed25519").generatePublic(new X509EncodedKeySpec(data))
+      case X25519PrivateTypeName => KeyFactory.getInstance("X25519").generatePrivate(new PKCS8EncodedKeySpec(data))
+      case X25519PublicTypeName => KeyFactory.getInstance("X25519").generatePublic(new X509EncodedKeySpec(data))
+      case _ => throw new IllegalArgumentException(
+        "invalid key type, must be one of ec-public, ec-private, ed25519-public, ed25519-private, x25519-public, x25519-private")
     }
   }
 
