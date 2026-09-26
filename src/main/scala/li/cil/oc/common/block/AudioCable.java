@@ -70,8 +70,9 @@ public class AudioCable extends SimpleBlock {
 
     private BlockState updateConnection(BlockState state, BlockGetter level, BlockPos pos, Direction side) {
         var entity = level.getBlockEntity(pos);
-        PropertyCableConnection.Shape shape = entity instanceof li.cil.oc.common.blockentity.AudioCable || ModCBMultipart.isAudioCable(level, pos) ? PropertyCableConnection.Shape.CABLE
-            : entity instanceof li.cil.oc.common.blockentity.Speaker || entity instanceof li.cil.oc.common.blockentity.TapeDrive ? PropertyCableConnection.Shape.DEVICE
+        boolean canPassMultipart = ModCBMultipart.canAudioConnectFromSide(level, pos, side.getOpposite());
+        PropertyCableConnection.Shape shape = canPassMultipart && (entity instanceof li.cil.oc.common.blockentity.AudioCable || ModCBMultipart.isAudioCable(level, pos)) ? PropertyCableConnection.Shape.CABLE
+            : canPassMultipart && (entity instanceof li.cil.oc.common.blockentity.Speaker || entity instanceof li.cil.oc.common.blockentity.TapeDrive) ? PropertyCableConnection.Shape.DEVICE
             : PropertyCableConnection.Shape.NONE;
         return CableHelper.helperSetCableShapeState(state, side, shape);
     }

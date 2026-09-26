@@ -197,12 +197,17 @@ final class MultipartCablePart(
       val neighborPos = pos.relative(side)
       val neighborSide = side.getOpposite
       val multipartCable = MultipartColorLookup.cablePart(level, neighborPos)
+      val canPassMultipart = MultipartColorLookup.canConnectFromSide(level, pos, side) &&
+        MultipartColorLookup.canConnectFromSide(level, neighborPos, side.getOpposite)
       val sided = level.getCapability(Capabilities.SidedEnvironmentCapability, neighborPos, neighborSide)
-      val hasNode = if (sided != null) {
+      // MultipartCablePart is an unsided Environment. A sided capability can
+      // be present on the multipart tile while returning no sided node on the
+      // server, even though this neighboring cable part has a live network node.
+      val hasNode = canPassMultipart && (multipartCable.nonEmpty || (if (sided != null) {
         if (level.isClientSide) sided.canConnect(neighborSide)
         else sided.sidedNode(neighborSide) != null
       }
-      else level.getCapability(Capabilities.EnvironmentCapability, neighborPos, neighborSide) != null
+      else level.getCapability(Capabilities.EnvironmentCapability, neighborPos, neighborSide) != null))
 
       val neighborColor = level.getCapability(Capabilities.ColoredCapability, neighborPos, null)
       val otherColor = multipartCable.map(_.getColor).getOrElse(if (neighborColor == null) gray else neighborColor.getColor)

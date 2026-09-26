@@ -8,6 +8,7 @@ import li.cil.oc.api.network._
 import li.cil.oc.api.network.{Node => ImmutableNode}
 import li.cil.oc.common.{Capabilities => OCCapabilities}
 import li.cil.oc.common.blockentity
+import li.cil.oc.integration.multipart.ModCBMultipart
 import li.cil.oc.server.network.Component
 import li.cil.oc.server.network.ComponentConnector
 import li.cil.oc.server.network.Connector
@@ -456,11 +457,13 @@ object Network extends api.detail.NetworkAPI {
           val localNode = getNetworkNode(tileEntity, side)
           val neighborTileEntity = tileEntity.getLevel.getBlockEntity(npos)
           val neighborNode = getNetworkNode(neighborTileEntity, side.getOpposite)
+          val canPassMultipart = ModCBMultipart.canConnectFromSide(tileEntity.getLevel, tileEntity.getBlockPos, side) &&
+            ModCBMultipart.canConnectFromSide(tileEntity.getLevel, npos, side.getOpposite)
           localNode match {
             case Some(node: MutableNode) =>
               neighborNode match {
                 case Some(neighbor: MutableNode) if neighbor != node && neighbor.network != null =>
-                  if (canConnectBasedOnColor(tileEntity, neighborTileEntity)) neighbor.connect(node)
+                  if (canPassMultipart && canConnectBasedOnColor(tileEntity, neighborTileEntity)) neighbor.connect(node)
                   else node.disconnect(neighbor)
                 case _ =>
               }

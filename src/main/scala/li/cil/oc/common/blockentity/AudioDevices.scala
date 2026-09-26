@@ -96,10 +96,11 @@ object AudioRouter {
       val current = pending.dequeue()
       Direction.values.foreach { direction =>
         val next = li.cil.oc.util.BlockPosHelper.relative(current, direction)
-        if (!visited(next)) {
+        val canPassMultipart = li.cil.oc.integration.multipart.ModCBMultipart.canAudioConnectFromSide(level, current, direction) &&
+          li.cil.oc.integration.multipart.ModCBMultipart.canAudioConnectFromSide(level, next, direction.getOpposite)
+        if (!visited(next) && canPassMultipart) {
           val entity = level.getBlockEntity(next)
-          if (entity.isInstanceOf[AudioCable] ||
-            li.cil.oc.integration.Mods.CBMultipart.isModAvailable && li.cil.oc.integration.multipart.ModCBMultipart.isAudioCable(level, next)) {
+          if (entity.isInstanceOf[AudioCable] || li.cil.oc.integration.multipart.ModCBMultipart.isAudioCable(level, next)) {
             visited += next
             pending.enqueue(next)
           }

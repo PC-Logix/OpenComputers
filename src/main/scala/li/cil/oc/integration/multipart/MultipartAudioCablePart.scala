@@ -61,10 +61,13 @@ final class MultipartAudioCablePart(initialState: BlockState = OCBlocks.AudioCab
 
   private def updateConnections(): Unit = if (hasLevel) {
     val nextState = Direction.values.foldLeft(OCBlocks.AudioCable.get.defaultBlockState()) { (current, side) =>
-      val neighbor = level.getBlockEntity(pos.relative(side))
-      val shape = if (neighbor.isInstanceOf[li.cil.oc.common.blockentity.AudioCable] || MultipartColorLookup.isAudioCable(level, pos.relative(side)))
+      val neighborPos = pos.relative(side)
+      val neighbor = level.getBlockEntity(neighborPos)
+      val canPassMultipart = MultipartColorLookup.canAudioConnectFromSide(level, pos, side) &&
+        MultipartColorLookup.canAudioConnectFromSide(level, neighborPos, side.getOpposite)
+      val shape = if (canPassMultipart && (neighbor.isInstanceOf[li.cil.oc.common.blockentity.AudioCable] || MultipartColorLookup.isAudioCable(level, neighborPos)))
         PropertyCableConnection.Shape.CABLE
-      else if (neighbor.isInstanceOf[li.cil.oc.common.blockentity.Speaker] || neighbor.isInstanceOf[li.cil.oc.common.blockentity.TapeDrive])
+      else if (canPassMultipart && (neighbor.isInstanceOf[li.cil.oc.common.blockentity.Speaker] || neighbor.isInstanceOf[li.cil.oc.common.blockentity.TapeDrive]))
         PropertyCableConnection.Shape.DEVICE
       else PropertyCableConnection.Shape.NONE
       CableHelper.helperSetCableShapeState(current, side, shape)
