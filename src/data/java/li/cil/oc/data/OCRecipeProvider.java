@@ -1449,6 +1449,15 @@ class OCRecipeProvider extends RecipeProvider {
             .unlockedBy(getHasName(OCItems.PrintedCircuitBoard()), has(OCItems.PrintedCircuitBoard()))
             .save(output);
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, OCItems.CapacitorMountable())
+            .pattern("i i")
+            .pattern(" C ")
+            .pattern("i i")
+            .define('i', Items.IRON_BARS)
+            .define('C', OCBlocks.Capacitor())
+            .unlockedBy(getHasName(OCBlocks.Capacitor()), has(OCBlocks.Capacitor()))
+            .save(output);
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, OCBlocks.CaseTier2())
             .pattern("gCg")
             .pattern("bcb")

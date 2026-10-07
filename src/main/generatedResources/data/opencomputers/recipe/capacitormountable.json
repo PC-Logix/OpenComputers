@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "opencomputers:capacitor"
+    },
+    "i": {
+      "item": "minecraft:iron_bars"
+    }
+  },
+  "pattern": [
+    "i i",
+    " C ",
+    "i i"
+  ],
+  "result": {
+    "count": 1,
+    "id": "opencomputers:capacitormountable"
+  }
+}
