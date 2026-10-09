@@ -393,6 +393,7 @@ dependencies {
     testImplementation("org.scalatest:scalatest_2.13:3.2.18")
     testImplementation("org.scalatestplus:junit-4-13_2.13:3.2.18.0")
     testImplementation("junit:junit:4.13.2")
+    testImplementation(files(sourceSets.main.compileClasspath))
     testRuntimeOnly("org.apache.maven:maven-artifact:3.8.5")
 }
 

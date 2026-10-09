@@ -116,7 +116,7 @@ trait Component extends network.Component with Node {
   override def invoke(method: String, context: Context, arguments: AnyRef*): Array[AnyRef] = {
     callbacks.get(method) match {
       case Some(callback) => hosts(method) match {
-        case Some(environment) => Registry.convert(callback(environment, context, new ArgumentsImpl(Seq(arguments: _*))))
+        case Some(environment) => Registry.convert(callback(environment, context, new ArgumentsImpl(arguments: _*)))
         case _ => throw new NoSuchMethodException()
       }
       case _ => throw new NoSuchMethodException()

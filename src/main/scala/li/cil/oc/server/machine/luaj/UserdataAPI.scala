@@ -17,14 +17,14 @@ class UserdataAPI(owner: LuaJLuaArchitecture) extends LuaJAPI(owner) {
     userdata.set("apply", (args: Varargs) => {
       val value = args.checkuserdata(1, classOf[Value]).asInstanceOf[Value]
       val params = toSimpleJavaObjects(args, 2)
-      owner.invoke(() => Registry.convert(Array(value.apply(machine, new ArgumentsImpl(params)))))
+      owner.invoke(() => Registry.convert(Array(value.apply(machine, new ArgumentsImpl(params: _*)))))
     })
 
     userdata.set("unapply", (args: Varargs) => {
       val value = args.checkuserdata(1, classOf[Value]).asInstanceOf[Value]
       val params = toSimpleJavaObjects(args, 2)
       owner.invoke(() => {
-        value.unapply(machine, new ArgumentsImpl(params))
+        value.unapply(machine, new ArgumentsImpl(params: _*))
         null
       })
     })
@@ -32,7 +32,7 @@ class UserdataAPI(owner: LuaJLuaArchitecture) extends LuaJAPI(owner) {
     userdata.set("call", (args: Varargs) => {
       val value = args.checkuserdata(1, classOf[Value]).asInstanceOf[Value]
       val params = toSimpleJavaObjects(args, 2)
-      owner.invoke(() => Registry.convert(value.call(machine, new ArgumentsImpl(params))))
+      owner.invoke(() => Registry.convert(value.call(machine, new ArgumentsImpl(params: _*))))
     })
 
     userdata.set("dispose", (args: Varargs) => {

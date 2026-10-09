@@ -430,7 +430,7 @@ class Machine(val host: MachineHost) extends AbstractManagedEnvironment with mac
         if (annotation.direct) {
           consumeCallBudget(1.0 / annotation.limit)
         }
-        val arguments = new ArgumentsImpl(Seq(args: _*))
+        val arguments = new ArgumentsImpl(args: _*)
         Registry.convert(callback(value, this, arguments))
       case _ => throw new NoSuchMethodException()
     }

@@ -49,7 +49,7 @@ class UserdataAPI(owner: NativeLuaArchitecture) extends NativeLuaAPI(owner) {
     lua.pushScalaFunction(lua => {
       val value = lua.toJavaObjectRaw(1).asInstanceOf[Value]
       val args = lua.toSimpleJavaObjects(2)
-      owner.invoke(() => Registry.convert(Array(value.apply(machine, new ArgumentsImpl(args)))))
+      owner.invoke(() => Registry.convert(Array(value.apply(machine, new ArgumentsImpl(args: _*)))))
     })
     lua.setField(-2, "apply")
 
@@ -57,7 +57,7 @@ class UserdataAPI(owner: NativeLuaArchitecture) extends NativeLuaAPI(owner) {
       val value = lua.toJavaObjectRaw(1).asInstanceOf[Value]
       val args = lua.toSimpleJavaObjects(2)
       owner.invoke(() => {
-        value.unapply(machine, new ArgumentsImpl(args))
+        value.unapply(machine, new ArgumentsImpl(args: _*))
         null
       })
     })
@@ -66,7 +66,7 @@ class UserdataAPI(owner: NativeLuaArchitecture) extends NativeLuaAPI(owner) {
     lua.pushScalaFunction(lua => {
       val value = lua.toJavaObjectRaw(1).asInstanceOf[Value]
       val args = lua.toSimpleJavaObjects(2)
-      owner.invoke(() => Registry.convert(value.call(machine, new ArgumentsImpl(args))))
+      owner.invoke(() => Registry.convert(value.call(machine, new ArgumentsImpl(args: _*))))
     })
     lua.setField(-2, "call")
 
