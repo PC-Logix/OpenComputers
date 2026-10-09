@@ -13,6 +13,7 @@ import net.neoforged.bus.api.SubscribeEvent
 
 import scala.collection.convert.ImplicitConversionsToScala._
 import scala.collection.mutable
+import scala.jdk.CollectionConverters._
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.Vec3
@@ -46,23 +47,23 @@ object WirelessNetwork {
   }
 
   def add(endpoint: WirelessEndpoint): Unit = {
-    dimensions.getOrElseUpdate(dimension(endpoint), new RTree[WirelessEndpoint](Settings.get.rTreeMaxEntries)(coordinate)).add(endpoint)
+    dimensions.getOrElseUpdate(dimension(endpoint), new RTree[WirelessEndpoint](Settings.get.rTreeMaxEntries, endpoint => point(coordinate(endpoint)))).add(endpoint)
   }
 
   def update(endpoint: WirelessEndpoint): Unit = {
     dimensions.get(dimension(endpoint)) match {
       case Some(tree) =>
-        tree(endpoint) match {
-          case Some((x, y, z)) =>
-            val (currentX, currentY, currentZ) = coordinate(endpoint)
-            val dx = math.abs(currentX - x)
-            val dy = math.abs(currentY - y)
-            val dz = math.abs(currentZ - z)
-            if (dx > 0.5 || dy > 0.5 || dz > 0.5) {
-              tree.remove(endpoint)
-              tree.add(endpoint)
-            }
-          case _ =>
+        val previous = tree.get(endpoint)
+        if (previous.isPresent) {
+          val old = previous.get()
+          val (currentX, currentY, currentZ) = coordinate(endpoint)
+          val dx = math.abs(currentX - old.x())
+          val dy = math.abs(currentY - old.y())
+          val dz = math.abs(currentZ - old.z())
+          if (dx > 0.5 || dy > 0.5 || dz > 0.5) {
+            tree.remove(endpoint)
+            tree.add(endpoint)
+          }
         }
       case _ =>
     }
@@ -86,7 +87,7 @@ object WirelessNetwork {
     dimensions.get(dimension(endpoint)) match {
       case Some(tree) if strength > 0 =>
         val range = strength + 1
-        tree.query(offset(endpoint, -range), offset(endpoint, range)).
+        tree.query(point(offset(endpoint, -range)), point(offset(endpoint, range))).asScala.
           filter(_ != endpoint).
           map(zipWithSquaredDistance(endpoint)).
           filter(_._2 <= range * range).
@@ -109,6 +110,9 @@ object WirelessNetwork {
     val (x, y, z) = coordinate(endpoint)
     (x + value, y + value, z + value)
   }
+
+  private def point(coordinates: (Double, Double, Double)) =
+    new RTree.Point(coordinates._1, coordinates._2, coordinates._3)
 
   private def zipWithSquaredDistance(reference: WirelessEndpoint)(endpoint: WirelessEndpoint) =
     (endpoint, {

@@ -9,6 +9,7 @@ import net.neoforged.bus.api.SubscribeEvent
 
 import scala.collection.convert.ImplicitConversionsToScala._
 import scala.collection.mutable
+import scala.jdk.CollectionConverters._
 import net.minecraft.world.level.Level
 import net.minecraft.resources.ResourceKey
 import net.neoforged.neoforge.event.level.LevelEvent
@@ -47,7 +48,7 @@ object Waypoints {
   }
 
   def add(waypoint: Waypoint): Unit = if (!waypoint.isRemoved && waypoint.getEnvironmentLevel != null && !waypoint.getEnvironmentLevel.isClientSide) {
-    dimensions.getOrElseUpdate(dimension(waypoint), new RTree[Waypoint](Settings.get.rTreeMaxEntries)(coordinate)).add(waypoint)
+    dimensions.getOrElseUpdate(dimension(waypoint), new RTree[Waypoint](Settings.get.rTreeMaxEntries, waypoint => point(coordinate(waypoint)))).add(waypoint)
   }
 
   def remove(waypoint: Waypoint): Unit = if (waypoint.getEnvironmentLevel != null && !waypoint.getEnvironmentLevel.isClientSide) {
@@ -64,7 +65,8 @@ object Waypoints {
         val bounds = new net.minecraft.world.phys.AABB(physical.x, physical.y, physical.z,
           physical.x + 1, physical.y + 1, physical.z + 1).
           inflate(range * 0.5, range * 0.5, range * 0.5)
-        set.query((bounds.minX, bounds.minY, bounds.minZ), (bounds.maxX, bounds.maxY, bounds.maxZ))
+        set.query(new RTree.Point(bounds.minX, bounds.minY, bounds.minZ),
+          new RTree.Point(bounds.maxX, bounds.maxY, bounds.maxZ)).asScala
       case _ => Iterable.empty
     }
   }
@@ -76,4 +78,7 @@ object Waypoints {
       new net.minecraft.world.phys.Vec3(waypoint.x + 0.5, waypoint.y + 0.5, waypoint.z + 0.5))
     (position.x, position.y, position.z)
   }
+
+  private def point(coordinates: (Double, Double, Double)) =
+    new RTree.Point(coordinates._1, coordinates._2, coordinates._3)
 }

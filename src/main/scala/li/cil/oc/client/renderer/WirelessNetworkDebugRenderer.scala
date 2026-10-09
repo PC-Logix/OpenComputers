@@ -14,6 +14,8 @@ import net.neoforged.bus.api.SubscribeEvent
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent
 import org.lwjgl.opengl.GL11
 
+import scala.jdk.CollectionConverters._
+
 object WirelessNetworkDebugRenderer {
   val colors = Array(0xFF0000, 0x00FFFF, 0x00FF00, 0x0000FF, 0xFF00FF, 0xFFFF00, 0xFFFFFF, 0x000000)
 
@@ -57,9 +59,16 @@ object WirelessNetworkDebugRenderer {
         val bufferSource = Minecraft.getInstance.renderBuffers.bufferSource
         val consumer = bufferSource.getBuffer(RENDER_TYPE)
 
-        for (((min, max), level) <- tree.allBounds) {
-          val (minX, minY, minZ) = min
-          val (maxX, maxY, maxZ) = max
+        for (bounds <- tree.allBounds().asScala) {
+          val min = bounds.min()
+          val max = bounds.max()
+          val minX = min.x()
+          val minY = min.y()
+          val minZ = min.z()
+          val maxX = max.x()
+          val maxY = max.y()
+          val maxZ = max.z()
+          val level = bounds.level()
           val color = colors(level % colors.length)
           val r = ((color >> 16) & 0xFF)
           val g = ((color >> 8) & 0xFF)
