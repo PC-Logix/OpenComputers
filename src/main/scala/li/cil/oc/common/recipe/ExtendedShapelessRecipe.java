@@ -1,6 +1,8 @@
 package li.cil.oc.common.recipe;
 
 import com.mojang.serialization.MapCodec;
+import li.cil.oc.common.datacomponents.OCComponents;
+import li.cil.oc.common.init.OCItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -25,7 +27,28 @@ public class ExtendedShapelessRecipe implements CraftingRecipe {
 
     @Override
     public ItemStack assemble(@NonNull CraftingInput inv, @NotNull HolderLookup.Provider provider) {
-        return ExtendedRecipe.addNBTToResult(this, wrapped.assemble(inv, provider), inv, provider);
+        ItemStack result = wrapped.assemble(inv, provider);
+        if (result.is(OCItems.Floppy().get())) {
+            for (int slot = 0; slot < inv.size(); slot++) {
+                ItemStack input = inv.getItem(slot);
+                if (!input.is(OCItems.Floppy().get())) continue;
+
+                if (result.has(OCComponents.DISK_COLOR().get())) {
+                    // Dyeing changes the shell without erasing the disk's contents or label.
+                    ItemStack dyed = input.copy();
+                    dyed.setCount(result.getCount());
+                    dyed.set(OCComponents.DISK_COLOR().get(), result.get(OCComponents.DISK_COLOR().get()));
+                    return dyed;
+                }
+
+                if (wrapped.getIngredients().size() == 1 && input.has(OCComponents.DISK_COLOR().get())) {
+                    // Formatting clears disk data, but keeps its shell color.
+                    result.set(OCComponents.DISK_COLOR().get(), input.get(OCComponents.DISK_COLOR().get()));
+                }
+                break;
+            }
+        }
+        return ExtendedRecipe.addNBTToResult(this, result, inv, provider);
     }
 
     @Override
