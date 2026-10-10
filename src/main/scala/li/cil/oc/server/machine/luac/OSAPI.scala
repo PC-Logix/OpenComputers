@@ -31,21 +31,21 @@ class OSAPI(owner: NativeLuaArchitecture) extends NativeLuaAPI(owner) {
       def fmt(format: String): Unit = {
         if (format == "*t") {
           lua.newTable(0, 8)
-          lua.pushInteger(dt.year)
+          lua.pushInteger(dt.year())
           lua.setField(-2, "year")
-          lua.pushInteger(dt.month)
+          lua.pushInteger(dt.month())
           lua.setField(-2, "month")
-          lua.pushInteger(dt.day)
+          lua.pushInteger(dt.day())
           lua.setField(-2, "day")
-          lua.pushInteger(dt.hour)
+          lua.pushInteger(dt.hour())
           lua.setField(-2, "hour")
-          lua.pushInteger(dt.minute)
+          lua.pushInteger(dt.minute())
           lua.setField(-2, "min")
-          lua.pushInteger(dt.second)
+          lua.pushInteger(dt.second())
           lua.setField(-2, "sec")
-          lua.pushInteger(dt.weekDay)
+          lua.pushInteger(dt.weekDay())
           lua.setField(-2, "wday")
-          lua.pushInteger(dt.yearDay)
+          lua.pushInteger(dt.yearDay())
           lua.setField(-2, "yday")
         }
         else {
@@ -94,10 +94,7 @@ class OSAPI(owner: NativeLuaArchitecture) extends NativeLuaAPI(owner) {
         val mon = getField("month", -1)
         val year = getField("year", -1)
 
-        GameTimeFormatter.mktime(year, mon, mday, hour, min, sec) match {
-          case Some(time) => lua.pushNumber(time)
-          case _ => lua.pushNil()
-        }
+        lua.pushNumber(GameTimeFormatter.mktime(year, mon, mday, hour, min, sec))
       }
       1
     })

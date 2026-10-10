@@ -73,7 +73,7 @@ trait Hub extends traits.Environment with SidedEnvironment with Tickable {
       relayCooldown = -1
       if (queue.nonEmpty) queue.synchronized {
         val packetsToRely = math.min(queue.size, relayAmount)
-        packetsPerCycleAvg += packetsToRely
+        packetsPerCycleAvg.add(packetsToRely)
         for (i <- 0 until packetsToRely) {
           val (sourceSide, packet) = queue.dequeue()
           relayPacket(sourceSide, packet)
@@ -83,7 +83,7 @@ trait Hub extends traits.Environment with SidedEnvironment with Tickable {
         }
       }
       else if (getLevel.getGameTime % relayDelay == 0) {
-        packetsPerCycleAvg += 0
+        packetsPerCycleAvg.add(0)
       }
     }
   }

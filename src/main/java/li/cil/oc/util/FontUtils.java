@@ -1,39 +1,22 @@
-package li.cil.oc.util
+package li.cil.oc.util;
 
-import java.io.{BufferedReader, InputStreamReader}
-import java.nio.charset.StandardCharsets
-import li.cil.oc.OpenComputers
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import scala.collection.mutable
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.BitSet;
 
-object FontUtils {
-  private val defined_double_wide: mutable.BitSet = mutable.BitSet()
-  private val defined_zero_width: mutable.BitSet = mutable.BitSet()
+public final class FontUtils {
+    private static final Logger LOG = LogManager.getLogger("OpenComputers");
+    private static final BitSet DEFINED_DOUBLE_WIDE = new BitSet();
+    private static final BitSet DEFINED_ZERO_WIDTH = new BitSet();
 
-  // theoretical Unicode maximum
-  val codepoint_limit: Int = 0x110000
-  def wcwidth(charCode: Int): Int = {
-    if (defined_zero_width(charCode)) 0
-    else if (defined_double_wide(charCode)) 2
-    else 1
-  }
+    // Theoretical Unicode maximum.
+    private static final int CODEPOINT_LIMIT = 0x110000;
 
-  def wtrunc(value: String, count: Long): String = {
-    if (count <= 0) return ""
-
-    var width = 0
-    var end = 0
-    while (end < value.length) {
-      val next = value.offsetByCodePoints(end, 1)
-      val nextWidth = width + wcwidth(value.codePointAt(end))
-      if (nextWidth >= count) return value.substring(0, end)
-      width = nextWidth
-      end = next
-    }
-    value
-  }
-
-  {
     /**
      * musl wcwidth implementation starts here:
      *
@@ -60,8 +43,8 @@ object FontUtils {
      */
 
     // src/ctype/nonspacing.h
-    val table = Array[Int](
-      16, 16, 16, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 16, 33, 16, 16, 16, 34, 35, 36,
+    private static final int[] TABLE = {
+        16, 16, 16, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 16, 33, 16, 16, 16, 34, 35, 36,
       37, 38, 39, 40, 16, 16, 41, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 42, 43, 16, 16, 44, 16, 16, 16,
       16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
       16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
@@ -152,10 +135,11 @@ object FontUtils {
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 240, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 127, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 240, 7, 0, 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-    )
+    };
+
     // src/ctype/wide.h
-    val wtable = Array[Int](
-      16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 18, 16, 16, 16, 16, 16, 16, 16, 16,
+    private static final int[] WTABLE = {
+        16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 18, 16, 16, 16, 16, 16, 16, 16, 16,
       16, 16, 16, 16, 16, 16, 16, 16, 16, 19, 16, 20, 21, 22, 16, 16, 16, 23, 16, 16, 24, 25, 26, 27, 28, 17,
       17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 29,
       17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
@@ -220,72 +204,104 @@ object FontUtils {
       0, 0, 224, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 123, 252, 255, 255, 255,
       255, 231, 199, 255, 255, 255, 231, 255, 255, 255, 255, 255, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       0, 15, 7, 7, 0, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-    )
-    // src/ctype/wcwidth.c
-    def c_wcwidth(charCode: Int): Int = {
-      if (charCode < 0xFF) {
-        if (((charCode + 1) & 0x7F) >= 0x21) 1
-        else if (charCode > 0) -1
-        else 0
-      }
-      else if ((charCode & 0xfffeffff) < 0xfffe) {
-        if (((table(table(charCode >> 8) * 32 + ((charCode & 0xFF) >> 3)) >> (charCode & 7)) & 1) == 1) 0
-        else if (((wtable(wtable(charCode >> 8) * 32 + ((charCode & 0xFF) >> 3)) >> (charCode & 7)) & 1) == 1) 2
-        else 1
-      }
-      else if ((charCode & 0xfffe) == 0xfffe) -1
-      else if ((charCode >= 0x20000) && (charCode < 0x40000)) 2
-      else if ((charCode == 0xe0001) || ((charCode >= 0xe0020) && (charCode < 0xe007f)) || ((charCode >= 0xe0100) && (charCode < 0xe01ef))) 0
-      else 1
+    };
+
+    static {
+        LOG.info("Initializing font glyph width cache...");
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < CODEPOINT_LIMIT; i++) {
+            switch (cWcwidth(i)) {
+                case 0 -> DEFINED_ZERO_WIDTH.set(i);
+                case 2 -> DEFINED_DOUBLE_WIDE.set(i);
+                default -> {
+                }
+            }
+        }
+        LOG.info("Initialized font glyph width cache in " +
+            (System.currentTimeMillis() - start) + " milliseconds.");
+
+        try {
+            LOG.info("Initializing font glyph width overrides...");
+            start = System.currentTimeMillis();
+            int outOfRangeGlyphs = 0;
+            InputStream font = FontUtils.class.getResourceAsStream("/assets/opencomputers/font.hex");
+            try (BufferedReader input = new BufferedReader(new InputStreamReader(font, StandardCharsets.UTF_8))) {
+                String line;
+                while ((line = input.readLine()) != null) {
+                    String info = line.substring(0, line.indexOf(':'));
+                    int charCode = Integer.parseInt(info, 16);
+                    if (charCode >= 0 && charCode < CODEPOINT_LIMIT) {
+                        int glyphSize = line.length() - info.length() - 1;
+                        switch (glyphSize) {
+                            case 64 -> DEFINED_DOUBLE_WIDE.set(charCode);
+                            case 32 -> DEFINED_DOUBLE_WIDE.clear(charCode);
+                            default -> LOG.warn(
+                                "Invalid glyph size detected in font.hex. Expected 64 or 32, got: " + glyphSize);
+                        }
+                    } else {
+                        outOfRangeGlyphs++;
+                    }
+                }
+            }
+            if (outOfRangeGlyphs >= 1) {
+                LOG.info(outOfRangeGlyphs +
+                    " total out-of-bounds glyph char codes detected in font.hex");
+            }
+            LOG.info("Initialized font glyph width overrides in " +
+                (System.currentTimeMillis() - start) + " milliseconds.");
+        } catch (Throwable ex) {
+            LOG.error("Error parsing glyphs to determine widths: " + ex);
+        }
+    }
+
+    private FontUtils() {
+    }
+
+    public static int codepoint_limit() {
+        return CODEPOINT_LIMIT;
+    }
+
+    public static int wcwidth(int charCode) {
+        if (charCode < 0) return 1;
+        if (DEFINED_ZERO_WIDTH.get(charCode)) return 0;
+        if (DEFINED_DOUBLE_WIDE.get(charCode)) return 2;
+        return 1;
+    }
+
+    public static String wtrunc(String value, long count) {
+        if (count <= 0) return "";
+        int width = 0;
+        int end = 0;
+        while (end < value.length()) {
+            int next = value.offsetByCodePoints(end, 1);
+            int nextWidth = width + wcwidth(value.codePointAt(end));
+            if (nextWidth >= count) return value.substring(0, end);
+            width = nextWidth;
+            end = next;
+        }
+        return value;
+    }
+
+    private static int cWcwidth(int charCode) {
+        if (charCode < 0xFF) {
+            if (((charCode + 1) & 0x7F) >= 0x21) return 1;
+            if (charCode > 0) return -1;
+            return 0;
+        } else if ((charCode & 0xfffeffff) < 0xfffe) {
+            if (((TABLE[TABLE[charCode >> 8] * 32 + ((charCode & 0xFF) >> 3)] >> (charCode & 7)) & 1) == 1)
+                return 0;
+            if (((WTABLE[WTABLE[charCode >> 8] * 32 + ((charCode & 0xFF) >> 3)] >> (charCode & 7)) & 1) == 1)
+                return 2;
+            return 1;
+        } else if ((charCode & 0xfffe) == 0xfffe) {
+            return -1;
+        } else if (charCode >= 0x20000 && charCode < 0x40000) {
+            return 2;
+        } else if (charCode == 0xe0001 || (charCode >= 0xe0020 && charCode < 0xe007f) ||
+            (charCode >= 0xe0100 && charCode < 0xe01ef)) {
+            return 0;
+        }
+        return 1;
     }
     /* musl wcwidth implementation ends here. */
-
-    {
-      OpenComputers.log.info("Initializing font glyph width cache...")
-      val time = System.currentTimeMillis()
-      for (i <- 0 until codepoint_limit) {
-        c_wcwidth(i) match {
-          case 0 => defined_zero_width += i
-          case 2 => defined_double_wide += i
-          case _ =>
-        }
-      }
-      OpenComputers.log.info("Initialized font glyph width cache in " + (System.currentTimeMillis() - time) + " milliseconds.")
-    }
-    try {
-      OpenComputers.log.info("Initializing font glyph width overrides...")
-      val time = System.currentTimeMillis()
-      val font = FontUtils.getClass.getResourceAsStream("/assets/opencomputers/font.hex")
-      try {
-        var line: String = null
-        val input = new BufferedReader(new InputStreamReader(font, StandardCharsets.UTF_8))
-        var out_of_range_glyph: Int = 0
-        while ({line = input.readLine; line != null}) {
-          val info = line.substring(0, line.indexOf(':'))
-          val charCode = Integer.parseInt(info, 16)
-          if (charCode >= 0 && charCode < codepoint_limit) {
-            line.length - info.length - 1 match {
-              case 64 => defined_double_wide += charCode
-              case 32 => defined_double_wide -= charCode
-              case n => OpenComputers.log.warn(s"Invalid glyph size detected in font.hex. Expected 64 or 32, got: $n")
-            }
-          } else {
-            out_of_range_glyph += 1
-          }
-        }
-        if (out_of_range_glyph >= 1) {
-          OpenComputers.log.info(f"${out_of_range_glyph} total out-of-bounds glyph char codes detected in font.hex")
-        }
-      } finally {
-        try {
-          font.close()
-        } catch {
-          case ex: Throwable => OpenComputers.log.error(s"Error closing font.hex: $ex")
-        }
-      }
-      OpenComputers.log.info("Initialized font glyph width overrides in " + (System.currentTimeMillis() - time) + " milliseconds.")
-    } catch {
-      case ex: Throwable => OpenComputers.log.error(s"Error parsing glyphs to determine widths: $ex")
-    }
-  }
 }

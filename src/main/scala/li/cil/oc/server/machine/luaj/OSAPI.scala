@@ -24,14 +24,14 @@ class OSAPI(owner: LuaJLuaArchitecture) extends LuaJAPI(owner) {
       def fmt(format: String) = {
         if (format == "*t") {
           val table = LuaValue.tableOf(0, 8)
-          table.set("year", LuaValue.valueOf(dt.year))
-          table.set("month", LuaValue.valueOf(dt.month))
-          table.set("day", LuaValue.valueOf(dt.day))
-          table.set("hour", LuaValue.valueOf(dt.hour))
-          table.set("min", LuaValue.valueOf(dt.minute))
-          table.set("sec", LuaValue.valueOf(dt.second))
-          table.set("wday", LuaValue.valueOf(dt.weekDay))
-          table.set("yday", LuaValue.valueOf(dt.yearDay))
+          table.set("year", LuaValue.valueOf(dt.year()))
+          table.set("month", LuaValue.valueOf(dt.month()))
+          table.set("day", LuaValue.valueOf(dt.day()))
+          table.set("hour", LuaValue.valueOf(dt.hour()))
+          table.set("min", LuaValue.valueOf(dt.minute()))
+          table.set("sec", LuaValue.valueOf(dt.second()))
+          table.set("wday", LuaValue.valueOf(dt.weekDay()))
+          table.set("yday", LuaValue.valueOf(dt.yearDay()))
           table
         }
         else {
@@ -75,10 +75,7 @@ class OSAPI(owner: LuaJLuaArchitecture) extends LuaJAPI(owner) {
         val mon = getField("month", -1)
         val year = getField("year", -1)
 
-        GameTimeFormatter.mktime(year, mon, mday, hour, min, sec) match {
-          case Some(time) => LuaValue.valueOf(time)
-          case _ => LuaValue.NIL
-        }
+        LuaValue.valueOf(GameTimeFormatter.mktime(year, mon, mday, hour, min, sec))
       }
     })
 

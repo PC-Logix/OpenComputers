@@ -49,7 +49,7 @@ class Relay(id: Int, playerInventory: Inventory, relay: Container)
         synchronizedData.putInt("relayDelay", te.relayDelay)
         synchronizedData.putInt("relayAmount", te.relayAmount)
         synchronizedData.putInt("maxQueueSize", te.maxQueueSize)
-        synchronizedData.putInt("packetsPerCycleAvg", te.packetsPerCycleAvg())
+        synchronizedData.putInt("packetsPerCycleAvg", te.packetsPerCycleAvg.get())
         synchronizedData.putInt("queueSize", te.queue.size)
       }
       case _ =>
