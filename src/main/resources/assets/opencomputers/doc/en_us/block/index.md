@@ -42,6 +42,12 @@ Keep in mind that some of these may not be available, depending on the recipe se
 * [Block of Chamelium](chameliumblock.md)
 * [Disassembler](disassembler.md)
 
+## OpenPrinter
+* [Document Printer](documentprinter.md)
+* [File Cabinet](filecabinet.md)
+* [Shredder](shredder.md)
+* [Briefcase](briefcase.md)
+
 ## Networking
 * [Cable](cable.md)
 * [Net Splitter](netsplitter.md)

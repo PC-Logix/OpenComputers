@@ -1,4 +1,4 @@
-# Disc
+# Disk Platter
 
 ![World. RIP Terry Pratchett.](oredict:opencomputers:materialDisk)
 
