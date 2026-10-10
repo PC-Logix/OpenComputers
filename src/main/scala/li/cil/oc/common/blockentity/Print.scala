@@ -6,7 +6,7 @@ import li.cil.oc.common.block.{Print => PrintBlock}
 import li.cil.oc.common.blockentity.traits.RedstoneChangedEventArgs
 import li.cil.oc.common.init.OCBlocks
 import li.cil.oc.common.item.data.PrintData
-import li.cil.oc.util.ExtendedAABB._
+import li.cil.oc.util.ExtendedAABB
 import li.cil.oc.util.ExtendedNBT._
 import net.minecraft.core.{BlockPos, Direction, HolderLookup}
 import net.minecraft.nbt.CompoundTag
@@ -90,7 +90,7 @@ class Print(pos: BlockPos, blockState: BlockState, val canToggle: Option[() => B
 
   private def convertShape(state: Iterable[PrintData.Shape]): VoxelShape = if (!state.isEmpty) {
     state.foldLeft(Shapes.empty)((curr, s) => {
-      val voxel = Shapes.create(s.bounds.rotateTowards(facing))
+      val voxel = Shapes.create(ExtendedAABB.rotateTowards(s.bounds, facing))
       Shapes.joinUnoptimized(curr, voxel, BooleanOp.OR)
     }).optimize()
   }

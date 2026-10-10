@@ -631,7 +631,7 @@ private object Migrators {
       val targetAcceleration = by(de.float("targetAcceleration"))
       val selectedSlot = by(de.byte("selectedSlot"))
       val selectedTank = by(de.byte("selectedTank"))
-      DroneState(targetX, targetY, targetZ, targetAcceleration, selectedSlot, selectedTank)
+      new DroneState(targetX, targetY, targetZ, targetAcceleration, selectedSlot, selectedTank)
     }
   }
 

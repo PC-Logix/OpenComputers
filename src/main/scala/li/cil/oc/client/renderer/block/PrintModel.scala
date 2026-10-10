@@ -9,7 +9,6 @@ import li.cil.oc.common.item.data.PrintData
 import li.cil.oc.common.blockentity
 import li.cil.oc.util.Color
 import li.cil.oc.util.ExtendedAABB
-import li.cil.oc.util.ExtendedAABB._
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.client.multiplayer.ClientLevel
 import net.minecraft.client.renderer.block.model.BakedQuad
@@ -85,10 +84,10 @@ object PrintModel extends SmartBlockModelBase {
   def quadsFor(shapes: Iterable[PrintData.Shape], facing: Direction): util.List[BakedQuad] = {
     val faces = mutable.ArrayBuffer.empty[BakedQuad]
     for (shape <- shapes if !Strings.isNullOrEmpty(shape.texture)) {
-      val bounds = shape.bounds.rotateTowards(facing)
+      val bounds = ExtendedAABB.rotateTowards(shape.bounds, facing)
       val texture = resolveTexture(shape.texture)
       val tint = shape.tint.orElse(defaultTintFor(shape.texture)).getOrElse(White)
-      faces ++= bakeQuads(makeBox(bounds.minVec, bounds.maxVec), Array.fill(6)(texture), tint)
+      faces ++= bakeQuads(makeBox(ExtendedAABB.minVec(bounds), ExtendedAABB.maxVec(bounds)), Array.fill(6)(texture), tint)
     }
     faces.asJava
   }
@@ -142,12 +141,12 @@ object PrintModel extends SmartBlockModelBase {
         val bounds  = shape.bounds
         val texture = resolveTexture(shape.texture)
         val tint    = shape.tint.orElse(defaultTintFor(shape.texture)).getOrElse(White)
-        faces ++= bakeQuads(makeBox(bounds.minVec, bounds.maxVec), Array.fill(6)(texture), tint)
+        faces ++= bakeQuads(makeBox(ExtendedAABB.minVec(bounds), ExtendedAABB.maxVec(bounds)), Array.fill(6)(texture), tint)
       }
       if (shapes.isEmpty) {
-        val bounds  = ExtendedAABB.unitBounds
+        val bounds  = ExtendedAABB.unitBounds()
         val texture = resolveTexture(Settings.resourceDomain + ":block/white")
-        faces ++= bakeQuads(makeBox(bounds.minVec, bounds.maxVec), Array.fill(6)(texture), Color.rgbValues(DyeColor.LIME))
+        faces ++= bakeQuads(makeBox(ExtendedAABB.minVec(bounds), ExtendedAABB.maxVec(bounds)), Array.fill(6)(texture), Color.rgbValues(DyeColor.LIME))
       }
       faces.asJava
     }

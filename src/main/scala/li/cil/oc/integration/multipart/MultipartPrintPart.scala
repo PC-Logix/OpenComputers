@@ -10,7 +10,7 @@ import io.netty.buffer.Unpooled
 import li.cil.oc.{Settings}
 import li.cil.oc.common.item.data.PrintData
 import li.cil.oc.common.init.OCBlocks
-import li.cil.oc.util.ExtendedAABB._
+import li.cil.oc.util.ExtendedAABB
 import net.minecraft.core.{BlockPos, Direction, HolderLookup}
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.sounds.{SoundEvents, SoundSource}
@@ -48,7 +48,7 @@ final class MultipartPrintPart(
   def shapes: Iterable[PrintData.Shape] = if (active) data.stateOn else data.stateOff
 
   private def printedShape: VoxelShape = shapes.foldLeft(Shapes.empty()) { (current, shape) =>
-    Shapes.or(current, Shapes.create(shape.bounds.rotateTowards(facing)))
+    Shapes.or(current, Shapes.create(ExtendedAABB.rotateTowards(shape.bounds, facing)))
   }
 
   override def getShape(context: CollisionContext): VoxelShape = {

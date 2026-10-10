@@ -596,13 +596,13 @@ class Drone(selfType: EntityType[Drone], level: Level) extends Entity(selfType, 
       ownerUUID = owner.id()
     }
 
-    for(DroneState(x, y, z, accel, slot, tank) <- holder.getComponent(OCComponents.DRONE_STATE)) {
-      targetX = x
-      targetY = y
-      targetZ = z
-      targetAcceleration = accel
-      setSelectedSlot(slot & 0xFF)
-      setSelectedTank(tank & 0xFF)
+    for(state <- holder.getComponent(OCComponents.DRONE_STATE)) {
+      targetX = state.targetX()
+      targetY = state.targetY()
+      targetZ = state.targetZ()
+      targetAcceleration = state.targetAcceleration()
+      setSelectedSlot(state.selectedSlot() & 0xFF)
+      setSelectedTank(state.selectedTank() & 0xFF)
     }
 
     for(text <- holder.getComponent(OCComponents.STATUS_TEXT)) {
@@ -625,7 +625,7 @@ class Drone(selfType: EntityType[Drone], level: Level) extends Entity(selfType, 
     }
 
     holder.set(OCComponents.OWNER, new Owner(ownerName, ownerUUID))
-    holder.set(OCComponents.DRONE_STATE, DroneState(
+    holder.set(OCComponents.DRONE_STATE, new DroneState(
       targetX,
       targetY,
       targetZ,

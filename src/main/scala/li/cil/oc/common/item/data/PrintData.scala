@@ -6,7 +6,7 @@ import io.netty.buffer.ByteBuf
 import li.cil.oc.{Constants, Settings, api}
 import li.cil.oc.common.IMC
 import li.cil.oc.common.datacomponents.{OCComponents, ScalaCodec, ScalaStreamCodec}
-import li.cil.oc.util.ExtendedAABB._
+import li.cil.oc.util.ExtendedAABB
 import li.cil.oc.util.ExtendedDataComponentHolder._
 import net.minecraft.core.component.DataComponentHolder
 import net.minecraft.nbt.CompoundTag
@@ -177,8 +177,8 @@ object PrintData {
   }
 
   def computeCosts(data: PrintData): Option[(Int, Int)] = {
-    val totalVolume = data.stateOn.foldLeft(0)((acc, shape) => acc + shape.bounds.volume) + data.stateOff.foldLeft(0)((acc, shape) => acc + shape.bounds.volume)
-    val totalSurface = data.stateOn.foldLeft(0)((acc, shape) => acc + shape.bounds.surface) + data.stateOff.foldLeft(0)((acc, shape) => acc + shape.bounds.surface)
+    val totalVolume = data.stateOn.foldLeft(0)((acc, shape) => acc + ExtendedAABB.volume(shape.bounds)) + data.stateOff.foldLeft(0)((acc, shape) => acc + ExtendedAABB.volume(shape.bounds))
+    val totalSurface = data.stateOn.foldLeft(0)((acc, shape) => acc + ExtendedAABB.surface(shape.bounds)) + data.stateOff.foldLeft(0)((acc, shape) => acc + ExtendedAABB.surface(shape.bounds))
     val multiplier = if (data.noclipOff || data.noclipOn) Settings.get.noclipMultiplier else 1
 
     if (totalVolume > 0) {

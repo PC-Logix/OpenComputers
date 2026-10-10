@@ -4,8 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem
 import li.cil.oc.{Constants, api}
 import li.cil.oc.common.block.property.PropertyRotatable
 import li.cil.oc.common.blockentity
-import li.cil.oc.util.ExtendedEnumFacing._
-import li.cil.oc.util.{BlockPosHelper, BlockPosition, InventoryUtils, RotationHelper}
+import li.cil.oc.util.{BlockPosHelper, BlockPosition, ExtendedEnumFacing, InventoryUtils, RotationHelper}
 import net.minecraft.core.{BlockPos, Direction, Vec3i}
 import net.minecraft.server.level.{ServerLevel => ServerWorld}
 import net.minecraft.util.RandomSource
@@ -38,7 +37,7 @@ class Keyboard(props: Properties) extends SimpleBlock(props) {
       case side@(Direction.DOWN | Direction.UP) => (side, yaw)
       case _ => (yaw, Direction.UP)
     }
-    val side = forward.getRotation(up)
+    val side = ExtendedEnumFacing.getRotation(forward, up)
     val sizes = Array(7f / 16f, 4f / 16f, 7f / 16f)
     val x0 = -up.getStepX * sizes(1) - side.getStepX * sizes(2) - forward.getStepX * sizes(0)
     val x1 = up.getStepX * sizes(1) + side.getStepX * sizes(2) - forward.getStepX * 0.5f
