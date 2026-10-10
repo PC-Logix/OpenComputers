@@ -49,6 +49,6 @@ trait RemoteTerminalHost extends api.network.EnvironmentHost {
 
   protected def isAuthorizedRemote(stack: ItemStack): Boolean = {
     stack.getComponent(OCComponents.TERMINAL_REFERENCE).exists(reference =>
-      reference.server == address && sidedKeys.contains(reference.key))
+      reference.server() == address && sidedKeys.contains(reference.key()))
   }
 }

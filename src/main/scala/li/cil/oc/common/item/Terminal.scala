@@ -35,14 +35,16 @@ class Terminal(props: Properties) extends Item(props) with traits.SimpleItem wit
   override def appendHoverText(stack: ItemStack, context: TooltipContext, tooltip: util.List[Component], flag: TooltipFlag): Unit = {
     super.appendHoverText(stack, context, tooltip, flag)
     for (data <- stack.getComponent(OCComponents.TERMINAL_REFERENCE)) {
-      tooltip.add(Component.literal("§8" + data.server.substring(0, 13) + "...§7"))
+      tooltip.add(Component.literal("§8" + data.server().substring(0, 13) + "...§7"))
     }
   }
 
 
   override def use(level: Level, player: Player, hand: InteractionHand): InteractionResultHolder[ItemStack] = {
     val stack = player.getItemInHand(hand)
-    for (TerminalReference(key, server) <- stack.getComponent(OCComponents.TERMINAL_REFERENCE) if !player.isCrouching) {
+    for (reference <- stack.getComponent(OCComponents.TERMINAL_REFERENCE) if !player.isCrouching) {
+      val key = reference.key()
+      val server = reference.server()
       if (key.nonEmpty && server.nonEmpty) {
         if (level.isClientSide) {
           if (!Strings.isNullOrEmpty(key) && !Strings.isNullOrEmpty(server)) {

@@ -62,9 +62,9 @@ class RobotData extends ItemData(Constants.BlockName.Robot) {
       case None => Component.literal(RobotData.randomName)
     }
 
-    for(RobotChargeInfo(total, stored) <- holder.getComponent(OCComponents.ROBOT_CHARGE)) {
-      totalEnergy = total
-      robotEnergy = stored
+    for(charge <- holder.getComponent(OCComponents.ROBOT_CHARGE)) {
+      totalEnergy = charge.max()
+      robotEnergy = charge.have()
     }
 
     for(tier <- holder.getComponent(OCComponents.TIER)) {
@@ -88,7 +88,7 @@ class RobotData extends ItemData(Constants.BlockName.Robot) {
 
   override def saveData(holder: MutableDataComponentHolder): Unit = {
     holder.setComponent(DataComponents.CUSTOM_NAME, name)
-    holder.setComponent(OCComponents.ROBOT_CHARGE, RobotChargeInfo(totalEnergy, robotEnergy))
+    holder.setComponent(OCComponents.ROBOT_CHARGE, new RobotChargeInfo(totalEnergy, robotEnergy))
     holder.setComponent(OCComponents.TIER, tier.toByte)
     holder.setComponent(OCComponents.COMPONENTS, components.map(ImmutableItemStack.copyOf).toList)
     holder.setComponent(OCComponents.CONTAINERS, containers.map(ImmutableItemStack.copyOf).toList)

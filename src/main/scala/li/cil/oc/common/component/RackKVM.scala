@@ -151,7 +151,7 @@ class RackKVM(val rack: api.internal.Rack, val slot: Int)
         val key = UUID.randomUUID().toString
         keys.clear()
         keys += key
-        heldItem.setComponent(OCComponents.TERMINAL_REFERENCE, TerminalReference(key, node.address))
+        heldItem.setComponent(OCComponents.TERMINAL_REFERENCE, new TerminalReference(key, node.address))
         rack.markChanged(slot)
         rack.markChanged()
         player.getInventory.setChanged()

@@ -26,7 +26,10 @@ object MFUTargetRenderer {
     if (player == null) return
     player.getItemInHand(InteractionHand.MAIN_HAND) match {
       case stack: ItemStack if api.Items.get(stack) == mfu && stack.has(OCComponents.MF_COORD) =>
-        for(MFCoords(dimension, blockPos, side) <- stack.getComponent(OCComponents.MF_COORD)) {
+        for(coords <- stack.getComponent(OCComponents.MF_COORD)) {
+          val dimension = coords.dimension()
+          val blockPos = coords.blockPos()
+          val side = coords.side()
           if (!player.level.dimension.location.equals(dimension)) return
           val (x, y, z) = (blockPos.getX, blockPos.getY, blockPos.getZ)
           if (player.distanceToSqr(x, y, z) > 64 * 64) return

@@ -325,14 +325,14 @@ private object Migrators {
       () => composeAndRemove[Owner] { by =>
         val name = by(de.string(oc -> "owner"))
         val id = by(de.uuid(oc -> "ownerUuid"))
-        Owner(name, id)
+        new Owner(name, id)
       },
 
       // alternative to help migrate block entities
       () => composeAndRemove[Owner] { by =>
         val name = by(de.string("owner"))
         val id = by(de.uuid("ownerUuid"))
-        Owner(name, id)
+        new Owner(name, id)
       }
     )
   }
@@ -387,7 +387,7 @@ private object Migrators {
     composeAndRemove[MFCoords] { by =>
       val dimension = by(de.resourceLocation(oc -> "dimension"))
       val Array(x, y, z, side) = by(de.intArray(oc -> "coord") mustBeExactly 4)
-      MFCoords(dimension, new BlockPos(x, y, z), Direction.from3DDataValue(side))
+      new MFCoords(dimension, new BlockPos(x, y, z), Direction.from3DDataValue(side))
     }
   }
 
@@ -416,7 +416,7 @@ private object Migrators {
       val message = by(de.string("wakeMessage"))
       val fuzzy = by(de.boolean("wakeMessageFuzzy"))
 
-      WakeMessage(message, fuzzy)
+      new WakeMessage(message, fuzzy)
     }
   }
 
@@ -460,7 +460,7 @@ private object Migrators {
       val maxWidth = by(de.int(oc -> "maxWidth"))
       val maxHeight = by(de.int(oc -> "maxHeight"))
       val maxDepth = by(de.int(oc -> "maxDepth"))
-      MaximumVideoMode(maxWidth, maxHeight, maxDepth)
+      new MaximumVideoMode(maxWidth, maxHeight, maxDepth)
     }
   }
 
@@ -469,12 +469,12 @@ private object Migrators {
       () => composeAndRemove[VideoMode] { by =>
         val width = by(de.int(oc -> "viewportWidth"))
         val height = by(de.int(oc -> "viewportHeight"))
-        VideoMode(width, height)
+        new VideoMode(width, height)
       },
       () => composeAndRemove[VideoMode] { by =>
         val width = by(de.int(oc -> "configWidth"))
         val height = by(de.int(oc -> "configHeight"))
-        VideoMode(width, height)
+        new VideoMode(width, height)
       }
     )
   }
@@ -486,7 +486,7 @@ private object Migrators {
     composeAndRemove[TerminalReference] { by =>
       val key = by(de.string(oc -> "key"))
       val server = by(de.string(oc -> "server"))
-      TerminalReference(key, server)
+      new TerminalReference(key, server)
     }
   }
 
@@ -618,7 +618,7 @@ private object Migrators {
       val frequency = by(de.int("wirelessFrequency"))
       val input = by(de.boolean("wirelessInput"))
       val output = by(de.boolean("wirelessOutput"))
-      WirelessRedstoneState(frequency, input, output)
+      new WirelessRedstoneState(frequency, input, output)
     }
   }
 
@@ -653,9 +653,9 @@ private object Migrators {
   // robot
   register(OCComponents.ROBOT_CHARGE) { de =>
     composeAndRemove[RobotChargeInfo] { by =>
-      RobotChargeInfo(
-        max = by(de.int(oc -> "storedEnergy")),
-        have = by(de.int(oc -> "robotEnergy"))
+      new RobotChargeInfo(
+        by(de.int(oc -> "storedEnergy")),
+        by(de.int(oc -> "robotEnergy"))
       )
     }
   }

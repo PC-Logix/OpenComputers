@@ -591,9 +591,9 @@ class Drone(selfType: EntityType[Drone], level: Level) extends Entity(selfType, 
       mainInventory.loadData(holder)
     }
 
-    for(Owner(name, id) <- holder.getComponent(OCComponents.OWNER)) {
-      ownerName = name
-      ownerUUID = id
+    for(owner <- holder.getComponent(OCComponents.OWNER)) {
+      ownerName = owner.name()
+      ownerUUID = owner.id()
     }
 
     for(DroneState(x, y, z, accel, slot, tank) <- holder.getComponent(OCComponents.DRONE_STATE)) {
@@ -624,7 +624,7 @@ class Drone(selfType: EntityType[Drone], level: Level) extends Entity(selfType, 
       mainInventory.saveData(holder)
     }
 
-    holder.set(OCComponents.OWNER, Owner(ownerName, ownerUUID))
+    holder.set(OCComponents.OWNER, new Owner(ownerName, ownerUUID))
     holder.set(OCComponents.DRONE_STATE, DroneState(
       targetX,
       targetY,

@@ -114,16 +114,16 @@ trait RedstoneWireless extends RedstoneSignaller with DeviceInfo {
   override def loadData(holder: DataComponentHolder): Unit = {
     super.loadData(holder)
 
-    for(WirelessRedstoneState(frequency, input, output) <- holder.getComponent(OCComponents.WIRELESS_REDSTONE_STATE)) {
-      wirelessFrequency = frequency
-      wirelessInput = input
-      wirelessOutput = output
+    for(state <- holder.getComponent(OCComponents.WIRELESS_REDSTONE_STATE)) {
+      wirelessFrequency = state.frequency()
+      wirelessInput = state.input()
+      wirelessOutput = state.output()
     }
   }
 
   override def saveData(holder: MutableDataComponentHolder): Unit = {
     super.saveData(holder)
-    holder.setComponent(OCComponents.WIRELESS_REDSTONE_STATE, WirelessRedstoneState(
+    holder.setComponent(OCComponents.WIRELESS_REDSTONE_STATE, new WirelessRedstoneState(
       wirelessFrequency,
       wirelessInput,
       wirelessOutput

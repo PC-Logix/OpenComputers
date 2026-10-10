@@ -16,7 +16,7 @@ class UpgradeMF(props: Properties) extends Item(props) with traits.SimpleItem wi
   override def onItemUseFirst(stack: ItemStack, ctx: UseOnContext): InteractionResult = {
     val level = ctx.getLevel
     if (!level.isClientSide && ctx.isSecondaryUseActive) {
-      stack.set(OCComponents.MF_COORD, MFCoords(level.dimension.location, ctx.getClickedPos, ctx.getClickedFace))
+      stack.set(OCComponents.MF_COORD, new MFCoords(level.dimension.location, ctx.getClickedPos, ctx.getClickedFace))
       return InteractionResult.sidedSuccess(level.isClientSide)
     }
 

@@ -31,7 +31,10 @@ object DriverUpgradeMF extends Item with HostAware {
 
   override def createEnvironment(stack: ItemStack, host: EnvironmentHost): ManagedEnvironment = {
     if (host.getEnvironmentLevel != null && !host.getEnvironmentLevel.isClientSide) {
-      for(MFCoords(dimension, blockPos, side) <- stack.getComponent(OCComponents.MF_COORD)) {
+      for(coords <- stack.getComponent(OCComponents.MF_COORD)) {
+        val dimension = coords.dimension()
+        val blockPos = coords.blockPos()
+        val side = coords.side()
         ServerLifecycleHooks.getCurrentServer.getLevel(ResourceKey.create(Registries.DIMENSION, dimension)) match {
           case world: ServerLevel => return new component.UpgradeMF(host, BlockPosition(blockPos, world), side)
           case _ => // Invalid dimension ID

@@ -67,8 +67,8 @@ trait WakeMessageAware extends traits.NetworkAware {
   def loadWakeMessage(holder: DataComponentHolder): Unit = {
     holder.getComponent(OCComponents.WAKE_MESSAGE) match {
       case Some(wake) =>
-        wakeMessage = Some(wake.message)
-        wakeMessageFuzzy = wake.fuzzy
+        wakeMessage = Some(wake.message())
+        wakeMessageFuzzy = wake.fuzzy()
       case None =>
         wakeMessage = None
         wakeMessageFuzzy = false
@@ -76,6 +76,6 @@ trait WakeMessageAware extends traits.NetworkAware {
   }
 
   def saveWakeMessage(holder: MutableDataComponentHolder): Unit = {
-    holder.setComponent(OCComponents.WAKE_MESSAGE, wakeMessage.map(WakeMessage(_, wakeMessageFuzzy)))
+    holder.setComponent(OCComponents.WAKE_MESSAGE, wakeMessage.map(new WakeMessage(_, wakeMessageFuzzy)))
   }
 }

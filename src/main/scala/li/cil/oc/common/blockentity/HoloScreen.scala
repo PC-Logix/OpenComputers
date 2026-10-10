@@ -179,7 +179,9 @@ class HoloScreen(pos: BlockPos, state: BlockState, tier: Int) extends Screen(pos
 
   override def loadComponentsCommon(holder: DataComponentHolder): Unit = {
     super.loadComponentsCommon(holder)
-    for(VideoMode(w, h) <- holder.getComponent(OCComponents.VIDEO_MODE)) {
+    for(mode <- holder.getComponent(OCComponents.VIDEO_MODE)) {
+      val w = mode.width()
+      val h = mode.height()
       width = w max 1 min Settings.get.maxScreenWidth
       height = h max 1 min Settings.get.maxScreenHeight
       checkMultiBlock()
@@ -193,7 +195,7 @@ class HoloScreen(pos: BlockPos, state: BlockState, tier: Int) extends Screen(pos
 
   override def saveComponentsCommon(holder: MutableDataComponentHolder): Unit = {
     super.saveComponentsCommon(holder)
-    holder.setComponent(OCComponents.VIDEO_MODE, VideoMode(width, height))
+    holder.setComponent(OCComponents.VIDEO_MODE, new VideoMode(width, height))
   }
 
   override def getRenderBoundingBox: AABB = {

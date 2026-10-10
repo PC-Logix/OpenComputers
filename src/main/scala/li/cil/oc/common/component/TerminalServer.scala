@@ -141,7 +141,7 @@ class TerminalServer(val rack: api.internal.Rack, val slot: Int) extends Environ
           keys.remove(0)
         }
         keys += key
-        heldItem.setComponent(OCComponents.TERMINAL_REFERENCE, TerminalReference(key, node.address))
+        heldItem.setComponent(OCComponents.TERMINAL_REFERENCE, new TerminalReference(key, node.address))
         rack.markChanged(slot)
         player.getInventory.setChanged()
       }

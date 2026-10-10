@@ -498,21 +498,21 @@ class TextBuffer(val host: EnvironmentHost) extends AbstractManagedEnvironment w
     for(isPoweredComponent <- holder.getComponent(OCComponents.IS_POWERED))
       hasPower = isPoweredComponent
 
-    for(MaximumVideoMode(maxWidth, maxHeight, depth) <- holder.getComponent(OCComponents.MAX_VIDEO_MODE)) {
-      maxResolution = (maxWidth, maxHeight)
+    for(mode <- holder.getComponent(OCComponents.MAX_VIDEO_MODE)) {
+      maxResolution = (mode.width(), mode.height())
 
       // Restore maxDepth so that getMaximumColorDepth() returns the correct tier
       // even if setMaximumColorDepth() was not called after construction (e.g.
       // when the buffer lazy val was initialised before load(nbt) ran).
       val depthValues = api.internal.TextBuffer.ColorDepth.values
-      val ordinal = depth min (depthValues.length - 1) max 0
+      val ordinal = mode.depth() min (depthValues.length - 1) max 0
       maxDepth = depthValues(ordinal)
     }
 
     precisionMode = holder.getOrDefault(OCComponents.IS_PRECISE, false)
 
     viewport = holder.getComponent(OCComponents.VIDEO_MODE) match {
-      case Some(VideoMode(vpw, vph)) => (vpw min data.width max 1, vph min data.height max 1)
+      case Some(mode) => (mode.width() min data.width max 1, mode.height() min data.height max 1)
       case None => data.size
     }
   }
@@ -568,9 +568,9 @@ class TextBuffer(val host: EnvironmentHost) extends AbstractManagedEnvironment w
     }
     holder.setComponent(OCComponents.IS_ON, isDisplaying)
     holder.setComponent(OCComponents.IS_POWERED, hasPower)
-    holder.setComponent(OCComponents.MAX_VIDEO_MODE, MaximumVideoMode(maxResolution._1, maxResolution._2, maxDepth.ordinal))
+    holder.setComponent(OCComponents.MAX_VIDEO_MODE, new MaximumVideoMode(maxResolution._1, maxResolution._2, maxDepth.ordinal))
     holder.setComponent(OCComponents.IS_PRECISE, precisionMode)
-    holder.setComponent(OCComponents.VIDEO_MODE, VideoMode(viewport._1, viewport._2))
+    holder.setComponent(OCComponents.VIDEO_MODE, new VideoMode(viewport._1, viewport._2))
   }
 }
 

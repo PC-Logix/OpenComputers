@@ -441,9 +441,9 @@ class Robot(pos: BlockPos, state: BlockState)
     machine.onHostChanged()
 
     bot.loadData(holder)
-    for(Owner(name, id) <- holder.getComponent(OCComponents.OWNER)) {
-      ownerName = name
-      ownerUUID = id
+    for(owner <- holder.getComponent(OCComponents.OWNER)) {
+      ownerName = owner.name()
+      ownerUUID = owner.id()
     }
 
     selectedTank = holder.getComponent(OCComponents.SELECTED_TANK) getOrElse 0
@@ -456,7 +456,7 @@ class Robot(pos: BlockPos, state: BlockState)
 
   override def saveComponentsForServer(holder: MutableDataComponentHolder): Unit = this.synchronized {
     bot.saveData(holder)
-    holder.setComponent(OCComponents.OWNER, Owner(ownerName, ownerUUID))
+    holder.setComponent(OCComponents.OWNER, new Owner(ownerName, ownerUUID))
     holder.setComponent(OCComponents.SELECTED_TANK, selectedTank)
   }
 
