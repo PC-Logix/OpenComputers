@@ -11,9 +11,7 @@
   "result": {
     "id": "opencomputers:floppy",
     "components": {
-      "minecraft:custom_data": {
-        "oc:color": 12
-      }
+      "opencomputers:disk_color": "brown"
     }
   }
 }

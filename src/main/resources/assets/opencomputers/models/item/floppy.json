@@ -1,7 +1,104 @@
 {
-    "parent": "minecraft:item/generated",
-    "textures": {
-        "layer0": "opencomputers:item/floppy_base",
-        "layer1": "opencomputers:item/floppy_tint"
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "opencomputers:item/floppy_dyegray"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "opencomputers:floppy_color": 0
+      },
+      "model": "opencomputers:item/floppy_dyewhite"
+    },
+    {
+      "predicate": {
+        "opencomputers:floppy_color": 1
+      },
+      "model": "opencomputers:item/floppy_dyeorange"
+    },
+    {
+      "predicate": {
+        "opencomputers:floppy_color": 2
+      },
+      "model": "opencomputers:item/floppy_dyemagenta"
+    },
+    {
+      "predicate": {
+        "opencomputers:floppy_color": 3
+      },
+      "model": "opencomputers:item/floppy_dyelightblue"
+    },
+    {
+      "predicate": {
+        "opencomputers:floppy_color": 4
+      },
+      "model": "opencomputers:item/floppy_dyeyellow"
+    },
+    {
+      "predicate": {
+        "opencomputers:floppy_color": 5
+      },
+      "model": "opencomputers:item/floppy_dyelime"
+    },
+    {
+      "predicate": {
+        "opencomputers:floppy_color": 6
+      },
+      "model": "opencomputers:item/floppy_dyepink"
+    },
+    {
+      "predicate": {
+        "opencomputers:floppy_color": 7
+      },
+      "model": "opencomputers:item/floppy_dyegray"
+    },
+    {
+      "predicate": {
+        "opencomputers:floppy_color": 8
+      },
+      "model": "opencomputers:item/floppy_dyelightgray"
+    },
+    {
+      "predicate": {
+        "opencomputers:floppy_color": 9
+      },
+      "model": "opencomputers:item/floppy_dyecyan"
+    },
+    {
+      "predicate": {
+        "opencomputers:floppy_color": 10
+      },
+      "model": "opencomputers:item/floppy_dyepurple"
+    },
+    {
+      "predicate": {
+        "opencomputers:floppy_color": 11
+      },
+      "model": "opencomputers:item/floppy_dyeblue"
+    },
+    {
+      "predicate": {
+        "opencomputers:floppy_color": 12
+      },
+      "model": "opencomputers:item/floppy_dyebrown"
+    },
+    {
+      "predicate": {
+        "opencomputers:floppy_color": 13
+      },
+      "model": "opencomputers:item/floppy_dyegreen"
+    },
+    {
+      "predicate": {
+        "opencomputers:floppy_color": 14
+      },
+      "model": "opencomputers:item/floppy_dyered"
+    },
+    {
+      "predicate": {
+        "opencomputers:floppy_color": 15
+      },
+      "model": "opencomputers:item/floppy_dyeblack"
     }
+  ]
 }
