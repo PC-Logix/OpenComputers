@@ -31,7 +31,7 @@ import li.cil.oc.api.network._
 import li.cil.oc.api.prefab
 import li.cil.oc.api.prefab.AbstractManagedEnvironment
 import li.cil.oc.api.prefab.AbstractValue
-import li.cil.oc.util.ThreadPoolFactory
+import li.cil.oc.util.{InternetFilteringRule, ThreadPoolFactory}
 import net.neoforged.neoforge.server.ServerLifecycleHooks
 
 import scala.collection.convert.ImplicitConversionsToJava._
@@ -397,7 +397,7 @@ object InternetCard {
           // block this request.
           if (InetAddresses.hasEmbeddedIPv4ClientAddress(inet6Address)) {
             val inet4in6Address = InetAddresses.getEmbeddedIPv4ClientAddress(inet6Address)
-            if (!rules.map(r => r.apply(inet4in6Address, host)).collectFirst({ case Some(r) => r }).getOrElse(true)) {
+            if (!InternetFilteringRule.firstMatch(rules, inet4in6Address, host, true)) {
               return false
             }
           }
@@ -405,17 +405,17 @@ object InternetCard {
           // As above, but with NAT64 addresses.
           if (isNAT64Address(inet6Address)) {
             val inet4in6Address = extractNAT64EmbeddedAddress(inet6Address)
-            if (!rules.map(r => r.apply(inet4in6Address, host)).collectFirst({ case Some(r) => r }).getOrElse(true)) {
+            if (!InternetFilteringRule.firstMatch(rules, inet4in6Address, host, true)) {
               return false
             }
           }
 
           // Process address as an IPv6 address.
-          rules.map(r => r.apply(inet6Address, host)).collectFirst({ case Some(r) => r }).getOrElse(false)
+          InternetFilteringRule.firstMatch(rules, inet6Address, host, false)
         // IPv4 handling
         case inet4Address: Inet4Address =>
           // Process address as an IPv4 address.
-          rules.map(r => r.apply(inet4Address, host)).collectFirst({ case Some(r) => r }).getOrElse(false)
+          InternetFilteringRule.firstMatch(rules, inet4Address, host, false)
         case _ =>
           // Unrecognized address type - block.
           OpenComputers.log.warn("Internet Card blocked unrecognized address type: " + inetAddress.toString)
