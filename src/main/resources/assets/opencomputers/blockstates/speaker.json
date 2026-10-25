@@ -14,12 +14,6 @@
     "facing=east": {
       "model": "opencomputers:block/speaker",
       "y": 90
-    },
-    "facing=up": {
-      "model": "opencomputers:block/speaker"
-    },
-    "facing=down": {
-      "model": "opencomputers:block/speaker"
     }
   }
 }

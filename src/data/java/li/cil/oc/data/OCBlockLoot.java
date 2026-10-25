@@ -1,8 +1,8 @@
 package li.cil.oc.data;
+import li.cil.oc.common.datacomponents.OCComponentsJava;
 
 import li.cil.oc.OpenComputers;
 import li.cil.oc.common.block.ChameliumBlock;
-import li.cil.oc.common.datacomponents.OCComponents;
 import li.cil.oc.common.init.OCBlocks;
 import li.cil.oc.common.openprinter.OpenPrinter;
 import li.cil.oc.server.loot.CopyColor;
@@ -126,9 +126,9 @@ class OCBlockLoot extends BlockLootSubProvider {
                 .add(AlternativesEntry.alternatives(Arrays.asList(DyeColor.values()), color -> LootItem.lootTableItem(block)
                     .when(
                         LootItemBlockStatePropertyCondition.hasBlockStateProperties(block)
-                            .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(ChameliumBlock.Color(), color))
+                            .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(ChameliumBlock.COLOR, color))
                     )
-                    .apply(SetComponentsFunction.setComponent(OCComponents.CHAMELIUM_COLOR().get(), color))))))
+                    .apply(SetComponentsFunction.setComponent(OCComponentsJava.CHAMELIUM_COLOR.get(), color))))))
         );
     }
 

@@ -3,7 +3,6 @@ plugins {
     id 'maven-publish'
     id 'net.neoforged.moddev' version '2.0.141'
     id 'idea'
-    id 'scala'
 }
 
 group = mod_group_id
@@ -111,6 +110,7 @@ neoForge {
 
         gameTestServer {
             type = "gameTestServer"
+            gameDirectory = project.file('run/gametest')
 
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         }
@@ -219,7 +219,7 @@ repositories {
 }
 
 dependencies {
-    // OpenComputers is predominantly Scala. Bundle the runtime so the mod
+    // Bundle Scala library types still used by Java compatibility APIs so the mod
     // does not require a separate Scala loader/library mod at runtime.
     // Keep Scala in the parent mod and relocate it into a private namespace.
     // This lets OpenComputers coexist with older Scala mods which still ship
@@ -291,12 +291,12 @@ dependencies {
         }
     }
     if (usePublishedRuntimeDependencies) {
-        // LuaJ is needed on Scala's compile classpath and both JARs are needed
+        // LuaJ is needed on the main Java compile classpath and both JARs are needed
         // for packaging. Do not attach this to `clean`: it destroys build/.
-        tasks.matching { it.name in ['compileJava', 'compileScala', 'jarJar'] }.configureEach {
+        tasks.matching { it.name in ['compileJava', 'jarJar'] }.configureEach {
             dependsOn(downloadRuntimeDependencies)
         }
-    }
+}
 
     // Sable Companion is deliberately bundled. It has a safe identity
     // implementation when Sable is absent and is overridden through its
@@ -493,10 +493,6 @@ tasks.named('test', Test).configure {
     classpath += sourceSets.main.compileClasspath
 }
 
-tasks.withType(ScalaCompile).configureEach {
-    scalaCompileOptions.forkOptions.memoryMaximumSize = '2g'
-    scalaCompileOptions.forkOptions.jvmArgs = ['-Xss4m']
-}
 
 publishing {
     publications {

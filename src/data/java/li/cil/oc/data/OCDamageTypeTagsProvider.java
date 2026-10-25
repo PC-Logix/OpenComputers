@@ -1,7 +1,7 @@
 package li.cil.oc.data;
 
 import li.cil.oc.OpenComputers;
-import li.cil.oc.common.nanomachines.ControllerImpl;
+import li.cil.oc.common.nanomachines.ControllerImplConstants;
 import li.cil.oc.common.nanomachines.provider.HungryProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
@@ -24,7 +24,7 @@ class OCDamageTypeTagsProvider extends TagsProvider<DamageType> {
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
-        tag(DamageTypeTags.BYPASSES_ARMOR).add(HungryProvider.HungryDamageKey(), ControllerImpl.OverloadDamageKey());
-        tag(DamageTypeTags.BYPASSES_ENCHANTMENTS).add(ControllerImpl.OverloadDamageKey());
+        tag(DamageTypeTags.BYPASSES_ARMOR).add(HungryProvider.HUNGRY_DAMAGE_KEY, ControllerImplConstants.OverloadDamageKey);
+        tag(DamageTypeTags.BYPASSES_ENCHANTMENTS).add(ControllerImplConstants.OverloadDamageKey);
     }
 }

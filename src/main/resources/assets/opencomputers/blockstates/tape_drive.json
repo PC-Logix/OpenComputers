@@ -14,12 +14,6 @@
     "facing=east": {
       "model": "opencomputers:block/tape_drive",
       "y": 90
-    },
-    "facing=up": {
-      "model": "opencomputers:block/tape_drive"
-    },
-    "facing=down": {
-      "model": "opencomputers:block/tape_drive"
     }
   }
 }

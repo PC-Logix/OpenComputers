@@ -1,6 +1,7 @@
 package li.cil.oc.data;
 
 import li.cil.oc.OpenComputers;
+import li.cil.oc.common.init.OCItemsHardware;
 import li.cil.oc.common.init.OCItems;
 import li.cil.oc.common.recipe.ExtendedRecipe;
 import net.minecraft.core.HolderLookup;
@@ -29,7 +30,7 @@ class OCItemTagsProvider extends ItemTagsProvider {
     protected void addTags(HolderLookup.Provider provider) {
         copy(Tags.Blocks.END_STONES, Tags.Items.END_STONES);
 
-        tag(ExtendedRecipe.beaconBlocks()).add(
+        tag(ExtendedRecipe.beaconBlocks).add(
             Items.NETHERITE_BLOCK,
             Items.EMERALD_BLOCK,
             Items.DIAMOND_BLOCK,
@@ -38,6 +39,6 @@ class OCItemTagsProvider extends ItemTagsProvider {
         );
 
         tag(ItemTags.create(ResourceLocation.withDefaultNamespace("bookshelf_books")))
-            .add(OCItems.Manual().get());
+            .add(OCItemsHardware.Manual.get());
     }
 }

@@ -2,11 +2,9 @@ package li.cil.oc.util;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import scala.math.Ordered;
-
 import java.util.Objects;
 
-public final class ItemStackWrapper implements Ordered<ItemStackWrapper>, Cloneable {
+public final class ItemStackWrapper implements Comparable<ItemStackWrapper>, Cloneable {
     private final ItemStack inner;
 
     public ItemStackWrapper(ItemStack inner) {
@@ -26,8 +24,14 @@ public final class ItemStackWrapper implements Ordered<ItemStackWrapper>, Clonea
     }
 
     @Override
-    public int compare(ItemStackWrapper that) {
+    public int compareTo(ItemStackWrapper that) {
         return id() == that.id() ? damage() - that.damage() : id() - that.id();
+    }
+
+    /** Compatibility alias for callers using the former Scala Ordered contract. */
+    @Deprecated
+    public int compare(ItemStackWrapper that) {
+        return compareTo(that);
     }
 
     @Override
@@ -37,7 +41,7 @@ public final class ItemStackWrapper implements Ordered<ItemStackWrapper>, Clonea
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof ItemStackWrapper that && compare(that) == 0;
+        return obj instanceof ItemStackWrapper that && compareTo(that) == 0;
     }
 
     @Override
