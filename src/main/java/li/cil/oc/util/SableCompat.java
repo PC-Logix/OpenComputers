@@ -1,11 +1,15 @@
 package li.cil.oc.util;
 
 import dev.ryanhcode.sable.companion.SableCompanion;
+import dev.ryanhcode.sable.companion.SubLevelAccess;
+import dev.ryanhcode.sable.companion.math.Pose3d;
+import dev.ryanhcode.sable.companion.math.Pose3dc;
 import li.cil.oc.api.network.EnvironmentHost;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Quaterniond;
 import org.joml.Vector3d;
 
 /**
@@ -56,6 +60,11 @@ public final class SableCompat {
     public static double distanceSquared(Level level, Vec3 first, Vec3 second) {
         if (level == null) return first.distanceToSqr(second);
         return SableCompanion.INSTANCE.distanceSquaredWithSubLevels(level, first, second);
+    }
+    
+    public static double distanceRectilinear(Level level, Vec3 first, Vec3 second) {
+        if (level == null) return first.distanceTo(second);
+        return SableCompanion.INSTANCE.rectilinearDistanceWithSubLevels(level, first, second);
     }
 
     public static boolean isInPlotGrid(Level level, Vec3 position) {
@@ -109,6 +118,14 @@ public final class SableCompat {
         }
         return facing;
     }
+    
+    public static Pose3dc logicalPose(Level level, Vec3 position) {
+        if (level == null || position == null) return new Pose3d();
+        SubLevelAccess access = SableCompanion.INSTANCE.getContaining(level, position);
+        if (access == null) return new Pose3d(new Vector3d(position.x, position.y, position.z), new Quaterniond(), new Vector3d(), new Vector3d());
+        return access.logicalPose();
+    }
+            
 
     private static double positiveDegrees(double degrees) {
         double heading = degrees % 360.0;

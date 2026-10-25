@@ -20,6 +20,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes
 import net.neoforged.bus.api.SubscribeEvent
 import net.neoforged.neoforge.client.event.{ClientTickEvent, InputEvent, RenderLevelStageEvent}
 import org.joml.{Matrix4f, Vector4f}
+import li.cil.oc.util.SableCompat
 import dev.ryanhcode.sable.companion.SableCompanion
 import org.joml.Quaternionf
 
@@ -91,15 +92,11 @@ object ProjectorRenderer extends BlockEntityRendererProvider[Projector] {
 
   private[tileentity] def projectedHit(projector: Projector, start: Vec3, end: Vec3): Option[ProjectorHit] = {
     val stack = new PoseStack()
-    val pos = if (SableCompanion.INSTANCE.isInPlotGrid(projector.getLevel, projector.getBlockPos))
-                SableCompanion.INSTANCE.projectOutOfSubLevel(projector.getLevel, projector.getBlockPos.getCenter)
-              else projector.getBlockPos.getCenter()
-    stack.translate(pos.x, pos.y, pos.z)
+    val pos = SableCompat.physicalPosition(projector.getLevel, projector.getBlockPos)
+    val orientation = SableCompat.logicalPose(projector.getLevel, projector.getBlockPos.getCenter).orientation
 
-    if (SableCompanion.INSTANCE.isInPlotGrid(projector.getLevel, projector.getBlockPos)) {
-      val subLevelAccess = SableCompanion.INSTANCE.getContaining(projector.getLevel, projector.getBlockPos)
-      stack.mulPose(new Quaternionf(subLevelAccess.logicalPose.orientation))
-    }
+    stack.translate(pos.x, pos.y, pos.z)
+    stack.mulPose(new Quaternionf(orientation))
     projector.getProjectionDirection match {
       case Direction.WEST  => stack.mulPose(Axis.YP.rotationDegrees(-90))
       case Direction.NORTH => stack.mulPose(Axis.YP.rotationDegrees(180))
@@ -165,7 +162,7 @@ object ProjectorRenderer extends BlockEntityRendererProvider[Projector] {
     
     if (hit.getType != HitResult.Type.BLOCK) maxProjectionDistance.toFloat
 
-    SableCompanion.INSTANCE.rectilinearDistanceWithSubLevels(projector.getLevel, projector.getBlockPos.getCenter, hit.getLocation).toFloat - surfaceOffset
+    SableCompat.distanceRectilinear(projector.getLevel, projector.getBlockPos.getCenter, hit.getLocation).toFloat - surfaceOffset
   }
 }
 
