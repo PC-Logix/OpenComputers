@@ -34,7 +34,7 @@ public final class UpgradeTank extends SimpleItemBase {
             var tag = stack.get(DataComponents.CUSTOM_DATA).copyTag()
                 .getCompound(Settings.namespace() + "data");
             FluidStack.parse(context.level().registryAccess(), tag).ifPresent(fluid ->
-                tooltip.add(Component.literal(fluid.getDisplayName().getString() + ": " + fluid.getAmount() + "/16000")
+                tooltip.add(Component.literal(fluid.getHoverName().getString() + ": " + fluid.getAmount() + "/16000")
                     .setStyle(Tooltip.DefaultStyle)));
         }
     }

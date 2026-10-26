@@ -20,7 +20,7 @@ public interface TankLevelControl extends TankAware, LevelAware, SideRestricted 
         var properties = new ExtendedArgumentsJava(args).optTankProperties(handler.get(), 1, null);
         if (properties != null) return ResultWrapper.result(selected.get().is(properties.contents().getFluid()));
         for (int index = 0; index < handler.get().getTanks(); index++) {
-            if (selected.get().isFluidEqual(handler.get().getFluidInTank(index))) return ResultWrapper.result(true);
+            if (FluidStack.isSameFluidSameComponents(selected.get(), handler.get().getFluidInTank(index))) return ResultWrapper.result(true);
         }
         return ResultWrapper.result(false);
     }

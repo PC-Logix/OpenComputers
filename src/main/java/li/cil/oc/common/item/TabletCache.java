@@ -138,18 +138,26 @@ public final class TabletCache {
             if (tablet == null || tablet.node() == null) return;
 
             tablet.machine().stop();
-            tablet.data.isRunning = tablet.machine().isRunning();
-            if (tablet.autoSave) tablet.writeToNBT(tablet.player.registryAccess());
+            if (tablet.autoSave) {
+                tablet.data.isRunning = tablet.machine().isRunning();
+                tablet.writeToNBT(tablet.player.registryAccess());
+                tablet.setChanged();
+            }
 
             for (Node node : tablet.machine().node().network().nodes()) node.remove();
-            tablet.setChanged();
         }
 
         public void clear(Level level) {
             synchronized (cache) {
                 List<String> ids = new ArrayList<>();
                 cache.asMap().forEach((id, tablet) -> {
-                    if (tablet.getEnvironmentLevel() == level) ids.add(id);
+                    if (tablet.getEnvironmentLevel() == level) {
+                        if (tablet.node() != null) {
+                            tablet.writeToNBT(tablet.player.registryAccess());
+                            tablet.autoSave = false;
+                        }
+                        ids.add(id);
+                    }
                 });
                 cache.invalidateAll(ids);
                 cache.cleanUp();

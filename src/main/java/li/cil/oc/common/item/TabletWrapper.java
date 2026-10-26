@@ -11,6 +11,8 @@ import li.cil.oc.api.network.Message;
 import li.cil.oc.api.network.Node;
 import li.cil.oc.common.Slot;
 import li.cil.oc.common.Tier;
+import li.cil.oc.common.datacomponents.OCComponentsJava;
+import li.cil.oc.common.datacomponents.MachineData;
 import li.cil.oc.common.item.data.TabletData;
 import li.cil.oc.common.menu.Tablet;
 import li.cil.oc.integration.opencomputers.DriverScreen;
@@ -62,10 +64,21 @@ public final class TabletWrapper extends TabletWrapperBase {
         this.isInitialized = !environmentLevel.isClientSide();
         readFromNBT(player.registryAccess());
         if (!environmentLevel.isClientSide()) {
+            // Loading an address on a connected node removes and reconnects it.
+            // Do that first, so restoring the machine cannot tear down its components.
+            MachineData savedMachine = stack.get(OCComponentsJava.MACHINE.get());
+            li.cil.oc.server.network.Node machineNode = (li.cil.oc.server.network.Node) machine.node();
+            if (savedMachine != null && savedMachine.nodeAddress().isPresent()) {
+                machineNode.loadAddress(savedMachine.nodeAddress().get());
+            } else {
+                machineNode.loadData(stack);
+            }
             li.cil.oc.api.Network.joinNewNetwork(machine.node());
+            // Restored Lua state may access components, so connect them before loading it.
+            machine.loadData(stack);
             double charge = Math.max(0, data.energy - tablet.node().globalBuffer());
             tablet.node().changeBuffer(charge);
-            writeToNBT(player.registryAccess());
+            syncRunningState();
         }
     }
 
@@ -93,7 +106,6 @@ public final class TabletWrapper extends TabletWrapperBase {
         loadData(stack);
         if (!environmentLevel.isClientSide()) {
             tablet.loadData(stack);
-            machine.loadData(stack);
         }
     }
 

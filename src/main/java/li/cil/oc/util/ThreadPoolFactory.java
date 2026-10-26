@@ -74,12 +74,9 @@ public final class ThreadPoolFactory {
         return Executors.newScheduledThreadPool(threads, new ThreadFactory() {
             private final String baseName = "OpenComputers-" + name + "-";
             private final AtomicInteger threadNumber = new AtomicInteger(1);
-            private final ThreadGroup group = System.getSecurityManager() == null
-                ? Thread.currentThread().getThreadGroup() : System.getSecurityManager().getThreadGroup();
-
             @Override
             public Thread newThread(Runnable runnable) {
-                Thread thread = new Thread(group, runnable, baseName + threadNumber.getAndIncrement());
+                Thread thread = new Thread(runnable, baseName + threadNumber.getAndIncrement());
                 if (!thread.isDaemon()) thread.setDaemon(true);
                 if (thread.getPriority() != priority) thread.setPriority(priority);
                 return thread;

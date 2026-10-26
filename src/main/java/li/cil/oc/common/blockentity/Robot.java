@@ -621,7 +621,7 @@ public class Robot extends RobotBlockEntity {
     @Override public int getTankCapacity(int tankIndex) { IFluidTank t = getFluidTank(selectedTank); return t == null ? 0 : t.getCapacity(); }
     @Override public boolean isFluidValid(int tankIndex, FluidStack resource) { return true; }
     @Override public int fill(FluidStack resource, IFluidHandler.FluidAction action) { IFluidTank t = getFluidTank(selectedTank); return t == null ? 0 : t.fill(resource, action); }
-    @Override public FluidStack drain(FluidStack resource, IFluidHandler.FluidAction action) { IFluidTank t = getFluidTank(selectedTank); return t == null || t.getFluid() == null || !t.getFluid().isFluidEqual(resource) ? FluidStack.EMPTY : t.drain(resource.getAmount(), action); }
+    @Override public FluidStack drain(FluidStack resource, IFluidHandler.FluidAction action) { IFluidTank t = getFluidTank(selectedTank); return t == null || t.getFluid() == null || !FluidStack.isSameFluidSameComponents(t.getFluid(), resource) ? FluidStack.EMPTY : t.drain(resource.getAmount(), action); }
     @Override public FluidStack drain(int maxDrain, IFluidHandler.FluidAction action) { IFluidTank t = getFluidTank(selectedTank); return t == null ? FluidStack.EMPTY : t.drain(maxDrain, action); }
 
     @FunctionalInterface private interface PacketAction { void send() throws java.io.IOException; }

@@ -29,6 +29,6 @@ public interface TankAware {
     }
 
     default boolean haveSameFluidType(FluidStack first, FluidStack second) {
-        return first.isFluidEqual(second);
+        return FluidStack.isSameFluidSameComponents(first, second);
     }
 }

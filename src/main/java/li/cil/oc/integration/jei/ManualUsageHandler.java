@@ -8,6 +8,9 @@ import li.cil.oc.api.Manual;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
+import mezz.jei.api.gui.inputs.IJeiInputHandler;
+import mezz.jei.api.gui.inputs.IJeiUserInput;
+import mezz.jei.api.gui.widgets.IRecipeExtrasBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
@@ -16,6 +19,7 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -73,6 +77,21 @@ public final class ManualUsageHandler {
         }
 
         @Override
+        public void createRecipeExtras(IRecipeExtrasBuilder builder, ManualUsageRecipe recipe, IFocusGroup focuses) {
+            builder.addInputHandler(new IJeiInputHandler() {
+                @Override
+                public ScreenRectangle getArea() {
+                    return new ScreenRectangle(buttonX, buttonY, buttonWidth, buttonHeight);
+                }
+
+                @Override
+                public boolean handleInput(double mouseX, double mouseY, IJeiUserInput input) {
+                    return handleManualInput(recipe, mouseX, mouseY, input);
+                }
+            });
+        }
+
+        @Override
         public void draw(ManualUsageRecipe recipe, IRecipeSlotsView slots, GuiGraphics graphics, double mouseX, double mouseY) {
             int fill = isOverButton(mouseX, mouseY) ? 0xFFA0A0A0 : 0xFF707070;
             graphics.fill(buttonX, buttonY, buttonX + buttonWidth, buttonY + buttonHeight, fill);
@@ -81,12 +100,13 @@ public final class ManualUsageHandler {
             graphics.drawCenteredString(Minecraft.getInstance().font, text, buttonX + buttonWidth / 2, buttonY + 6, 0xFFFFFF);
         }
 
-        @Override
-        public boolean handleInput(ManualUsageRecipe recipe, double mouseX, double mouseY, InputConstants.Key input) {
-            if (input.getType() != InputConstants.Type.MOUSE || input.getValue() != GLFW.GLFW_MOUSE_BUTTON_LEFT
+        private boolean handleManualInput(ManualUsageRecipe recipe, double mouseX, double mouseY, IJeiUserInput input) {
+            var key = input.getKey();
+            if (key.getType() != InputConstants.Type.MOUSE || key.getValue() != GLFW.GLFW_MOUSE_BUTTON_LEFT
                     || !isOverButton(mouseX, mouseY)) return false;
             var minecraft = Minecraft.getInstance();
             if (minecraft.player == null) return false;
+            if (input.isSimulate()) return true;
             minecraft.player.closeContainer();
             Manual.openFor(minecraft.player);
             Manual.navigate(recipe.path());
