@@ -7,7 +7,7 @@ import com.mojang.blaze3d.vertex._
 import com.mojang.math.Axis
 import li.cil.oc.Settings
 import li.cil.oc.common.blockentity.Hologram
-import li.cil.oc.util.RenderState
+import li.cil.oc.util.{RenderState, SableCompat}
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.blockentity.{BlockEntityRenderer, BlockEntityRendererProvider}
 import net.minecraft.client.renderer.{GameRenderer, MultiBufferSource}
@@ -51,12 +51,9 @@ class HologramRenderer extends BlockEntityRenderer[Hologram] {
 
     RenderState.checkError(getClass.getName + ".render: entering")
 
-    val pos = hologram.getBlockPos
+    val pos = SableCompat.physicalPosition(hologram.getLevel, hologram.getBlockPos)
     val eye = Minecraft.getInstance.player.getEyePosition(partialTick)
-    val dx = eye.x - (pos.getX + 0.5)
-    val dy = eye.y - (pos.getY + 0.5)
-    val dz = eye.z - (pos.getZ + 0.5)
-    val distSq = dx * dx + dy * dy + dz * dz
+    val distSq = pos.subtract(eye).lengthSqr
 
     val fadeDistSq = hologram.getFadeStartDistanceSquared
     val maxDistSq  = hologram.getViewDistance * hologram.getViewDistance
