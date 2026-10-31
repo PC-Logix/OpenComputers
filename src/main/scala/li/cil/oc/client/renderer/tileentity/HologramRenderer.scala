@@ -7,7 +7,7 @@ import com.mojang.blaze3d.vertex._
 import com.mojang.math.Axis
 import li.cil.oc.Settings
 import li.cil.oc.common.blockentity.Hologram
-import li.cil.oc.util.RenderState
+import li.cil.oc.util.{RenderState, SableCompat}
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.blockentity.{BlockEntityRenderer, BlockEntityRendererProvider}
 import net.minecraft.client.renderer.{GameRenderer, MultiBufferSource}
@@ -15,7 +15,7 @@ import net.minecraft.core.Direction
 import net.minecraft.world.phys.AABB
 import net.neoforged.bus.api.SubscribeEvent
 import net.neoforged.neoforge.client.event.ClientTickEvent
-import org.joml.Quaternionf
+import org.joml.{Quaternionf, Matrix4f}
 
 import java.util.concurrent.TimeUnit
 import scala.util.Random
@@ -51,12 +51,9 @@ class HologramRenderer extends BlockEntityRenderer[Hologram] {
 
     RenderState.checkError(getClass.getName + ".render: entering")
 
-    val pos = hologram.getBlockPos
+    val pos = SableCompat.physicalPosition(hologram.getLevel, hologram.getBlockPos)
     val eye = Minecraft.getInstance.player.getEyePosition(partialTick)
-    val dx = eye.x - (pos.getX + 0.5)
-    val dy = eye.y - (pos.getY + 0.5)
-    val dz = eye.z - (pos.getZ + 0.5)
-    val distSq = dx * dx + dy * dy + dz * dz
+    val distSq = pos.subtract(eye).lengthSqr
 
     val fadeDistSq = hologram.getFadeStartDistanceSquared
     val maxDistSq  = hologram.getViewDistance * hologram.getViewDistance
@@ -136,8 +133,9 @@ class HologramRenderer extends BlockEntityRenderer[Hologram] {
     }
 
     if (hologram.visibleQuads > 0) {
-      val modelView  = stack.last().pose()
-      val projection = RenderSystem.getProjectionMatrix
+      val modelView  = stack.last.pose
+      val projection = new Matrix4f(RenderSystem.getProjectionMatrix)
+                       .mul(RenderSystem.getModelViewMatrix)
       val shader     = GameRenderer.getPositionColorShader
 
       RenderSystem.enableDepthTest()
