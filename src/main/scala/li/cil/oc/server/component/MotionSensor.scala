@@ -105,7 +105,7 @@ class MotionSensor(val host: EnvironmentHost) extends prefab.AbstractManagedEnvi
     val origin = new Vec3(x, y, z)
     val path = target.subtract(origin).normalize()
     val eye = origin.add(path)
-    val trace = world.clip(new ClipContext(eye, target, ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, null.asInstanceOf[CollisionContext]))
+    val trace = world.clip(new ClipContext(eye, target, ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, CollisionContext.empty()))
     trace.getType == HitResult.Type.MISS
   }
 
