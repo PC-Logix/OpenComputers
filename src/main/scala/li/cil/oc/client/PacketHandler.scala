@@ -236,7 +236,7 @@ object PacketHandler extends CommonPacketHandler {
       val fmFrequency = p.readUnsignedShort(); val fmIntensity = p.readFloat(); val amFrequency = p.readUnsignedShort()
       val attack = p.readUnsignedShort(); val decay = p.readUnsignedShort(); val sustain = p.readFloat(); val release = p.readUnsignedShort()
       Audio.playWave(x.toFloat, y.toFloat, z.toFloat, mode, frequency, duration, delay, volume,
-        fmFrequency, fmIntensity, amFrequency, attack, decay, sustain, release)
+        fmFrequency, fmIntensity, amFrequency, attack, decay, sustain, release, SoundSource.RECORDS)
     }
   }
 
@@ -1106,7 +1106,7 @@ object PacketHandler extends CommonPacketHandler {
       val z = p.readInt()
       val frequency = p.readShort()
       val duration = p.readShort()
-      Audio.play(x + 0.5f, y + 0.5f, z + 0.5f, frequency, duration)
+      Audio.play(x + 0.5f, y + 0.5f, z + 0.5f, SoundSource.BLOCKS, frequency, duration)
     }
   }
 

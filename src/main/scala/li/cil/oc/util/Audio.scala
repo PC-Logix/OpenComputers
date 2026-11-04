@@ -35,7 +35,7 @@ object Audio {
 
   private val sources = mutable.Set.empty[Source]
 
-  private def volume = Minecraft.getInstance.options.getSoundSourceVolume(SoundSource.BLOCKS)
+  private def volume(source: SoundSource) = Minecraft.getInstance.options.getSoundSourceVolume(source)
 
   private var disableAudio = false
 
@@ -74,7 +74,7 @@ object Audio {
     })
     true
   }
-  
+
   def play(x: Float, y: Float, z: Float, pcm: Array[Byte], gain: Float): Unit = {
     if (pcm == null || pcm.isEmpty) return
 
@@ -95,20 +95,20 @@ object Audio {
       }
     }
   }
-  
-  def play(x: Float, y: Float, z: Float, frequencyInHz: Int, durationInMilliseconds: Int): Unit = {
-    play(x, y, z, ".", frequencyInHz, durationInMilliseconds)
+
+  def play(x: Float, y: Float, z: Float, source: SoundSource, frequencyInHz: Int, durationInMilliseconds: Int): Unit = {
+    play(x, y, z, ".", source, frequencyInHz, durationInMilliseconds)
   }
 
   def playWave(x: Float, y: Float, z: Float, mode: Int, frequency: Int, durationMillis: Int, delayMillis: Int,
                requestedGain: Float, fmFrequency: Int, fmIntensity: Float, amFrequency: Int,
-               attack: Int, decay: Int, sustain: Float, release: Int): Unit = {
+               attack: Int, decay: Int, sustain: Float, release: Int, source: SoundSource): Unit = {
     val mc = Minecraft.getInstance
     if (mc == null || mc.player == null) return
     // Wave packets carry a physical position. This keeps sounds attached to
     // moving Sable sublevels while retaining OpenAL's local listener space.
     val physical = new Vec3(x, y, z)
-    val gain = physicalGain(physical, maxDistance).toFloat * volume * requestedGain.max(0).min(1)
+    val gain = physicalGain(physical, maxDistance).toFloat * volume(source) * requestedGain.max(0).min(1)
     if (gain <= 0 || amplitude <= 0) return
     val delay = delayMillis.max(0).min(16000)
     val duration = durationMillis.max(50).min(5000)
@@ -139,10 +139,10 @@ object Audio {
     play(local.x.toFloat, local.y.toFloat, local.z.toFloat, data, gain)
   }
 
-  def play(x: Float, y: Float, z: Float, pattern: String, frequencyInHz: Int = 1000, durationInMilliseconds: Int = 200): Unit = {
+  def play(x: Float, y: Float, z: Float, pattern: String, source: SoundSource = SoundSource.BLOCKS, frequencyInHz: Int = 1000, durationInMilliseconds: Int = 200): Unit = {
     val mc = Minecraft.getInstance
     val distanceBasedGain = math.max(0, 1 - mc.player.position.distanceTo(new Vec3(x, y, z)) / maxDistance).toFloat
-    val gain = distanceBasedGain * volume
+    val gain = distanceBasedGain * volume(source)
     if (gain <= 0 || amplitude <= 0) return
 
     if (disableAudio) {
