@@ -131,7 +131,7 @@ class AudioSession(
         AL10.alSource3f(alSource, AL10.AL_POSITION, x, y, z)
 
         val maxDistance = Settings.get.beepRadius
-        val volume = mc.options.getSoundSourceVolume(net.minecraft.sounds.SoundSource.BLOCKS)
+        val volume = mc.options.getSoundSourceVolume(net.minecraft.sounds.SoundSource.RECORDS)
         val distanceBasedGain = Audio.physicalGain(pos, maxDistance).toFloat
         val gain = distanceBasedGain * volume
 
@@ -269,7 +269,7 @@ class AudioSession(
     AL10.alSource3f(alSource, AL10.AL_POSITION, local.x.toFloat, local.y.toFloat, local.z.toFloat)
 
     val maxDistance = Settings.get.beepRadius
-    val volume = mc.options.getSoundSourceVolume(net.minecraft.sounds.SoundSource.BLOCKS)
+    val volume = mc.options.getSoundSourceVolume(net.minecraft.sounds.SoundSource.RECORDS)
     val distanceGain = Audio.physicalGain(pos, maxDistance).toFloat
     val gain = distanceGain * volume
     // OpenAL's AL_MAX_DISTANCE clamps attenuation; it does not silence a
