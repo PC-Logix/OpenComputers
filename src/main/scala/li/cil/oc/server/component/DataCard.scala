@@ -10,6 +10,7 @@ import java.security.interfaces.XECPublicKey
 import java.security.spec.PKCS8EncodedKeySpec
 import java.security.spec.X509EncodedKeySpec
 import java.util
+import java.util.Base64
 import java.util.zip.DeflaterOutputStream
 import java.util.zip.InflaterOutputStream
 import javax.crypto.Cipher
@@ -32,7 +33,6 @@ import net.minecraft.core.HolderLookup
 import net.minecraft.core.component.DataComponentHolder
 import net.minecraft.nbt.CompoundTag
 import net.neoforged.neoforge.common.MutableDataComponentHolder
-import org.apache.commons.codec.binary.Base64
 import org.apache.commons.io.output.ByteArrayOutputStream
 
 import scala.collection.convert.ImplicitConversionsToJava._
@@ -97,12 +97,12 @@ object DataCard {
 
     @Callback(direct = true, limit = 32, doc = """function(data:string):string -- Applies base64 encoding to the data.""")
     def encode64(context: Context, args: Arguments): Array[AnyRef] = {
-      result(Base64.encodeBase64(trivialCost(context, args)))
+      result(Base64.getEncoder.encode(trivialCost(context, args)))
     }
 
     @Callback(direct = true, limit = 32, doc = """function(data:string):string -- Applies base64 decoding to the data.""")
     def decode64(context: Context, args: Arguments): Array[AnyRef] = {
-      result(Base64.decodeBase64(trivialCost(context, args)))
+      result(Base64.getMimeDecoder.decode(trivialCost(context, args)))
     }
 
     @Callback(direct = true, limit = 4, doc = """function(data:string):string -- Applies deflate compression to the data.""")
