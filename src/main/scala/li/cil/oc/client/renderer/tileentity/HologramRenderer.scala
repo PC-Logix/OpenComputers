@@ -15,7 +15,7 @@ import net.minecraft.core.Direction
 import net.minecraft.world.phys.AABB
 import net.neoforged.bus.api.SubscribeEvent
 import net.neoforged.neoforge.client.event.ClientTickEvent
-import org.joml.Quaternionf
+import org.joml.{Quaternionf, Matrix4f}
 
 import java.util.concurrent.TimeUnit
 import scala.util.Random
@@ -136,8 +136,9 @@ class HologramRenderer extends BlockEntityRenderer[Hologram] {
     }
 
     if (hologram.visibleQuads > 0) {
-      val modelView  = stack.last().pose()
-      val projection = RenderSystem.getProjectionMatrix
+      val modelView  = stack.last.pose
+      val projection = new Matrix4f(RenderSystem.getProjectionMatrix)
+                       .mul(RenderSystem.getModelViewMatrix)
       val shader     = GameRenderer.getPositionColorShader
 
       RenderSystem.enableDepthTest()
