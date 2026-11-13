@@ -44,4 +44,19 @@ public interface WirelessEndpoint {
      *               point, for example.
      */
     void receivePacket(Packet packet, WirelessEndpoint sender);
+
+    /**
+     * Makes the endpoint receive a single packet with a remaining strength.
+     *
+     * @param packet the packet to receive.
+     * @param sender the endpoint that sent the message. This is not
+     *               necessarily the original sender of the packet, just
+     *               the last point it went through, such as an access
+     *               point, for example.
+     * @param remainingStrength the remaining strength of the packet.
+     * @see #receivePacket(Packet, WirelessEndpoint)
+     */
+    default void receivePacket(Packet packet, WirelessEndpoint sender, Double remainingStrength){
+        receivePacket(packet, sender);
+    }
 }

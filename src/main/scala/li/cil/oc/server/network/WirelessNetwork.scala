@@ -92,8 +92,11 @@ object WirelessNetwork {
           filter(_._2 <= range * range).
           map {
           case (c, distance) => (c, Math.sqrt(distance))
-        } filter isUnobstructed(endpoint, strength) map (_._1)
-      case _ => Iterable.empty[WirelessEndpoint]
+        } flatMap { case (c, dist) =>
+          val (unobstructed, remainingStrength) = isUnobstructed(endpoint, strength)(c, dist)
+          if (unobstructed) Some((c, remainingStrength)) else None
+        }
+      case _ => Iterable.empty[(WirelessEndpoint, Double)]
     }
   }
 
@@ -119,7 +122,7 @@ object WirelessNetwork {
       SableCompat.distanceSquared(reference.getWirelessLevel, referencePosition, endpointPosition)
     })
 
-  private def isUnobstructed(reference: WirelessEndpoint, strength: Double)(info: (WirelessEndpoint, Double)): Boolean = {
+  private def isUnobstructed(reference: WirelessEndpoint, strength: Double)(info: (WirelessEndpoint, Double)): (Boolean, Double) = {
     val (endpoint, distance) = info
     val gap = distance - 1
     if (gap > 0) {
@@ -176,9 +179,9 @@ object WirelessNetwork {
       hardness *= gap / samples
 
       // See if we have enough power to overcome the obstructions.
-      strength - gap > hardness
+      (strength - gap > hardness, strength - gap -hardness)
     }
-    else true
+    else (true, strength)
   }
 
   private def subtract(v1: Vec3, v2: Vec3) = new Vec3(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z)
